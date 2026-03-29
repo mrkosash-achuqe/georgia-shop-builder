@@ -55,6 +55,15 @@ export const translations = {
       guarantee: "ხარისხის გარანტია",
       similarProducts: "მსგავსი პროდუქტები",
     },
+    cart: {
+      title: "კალათა",
+      empty: "კალათა ცარიელია",
+      continueShopping: "შოპინგის გაგრძელება",
+      total: "ჯამი",
+      checkout: "შეკვეთის გაფორმება",
+      clearCart: "კალათის გასუფთავება",
+      addedToCart: "დაემატა კალათაში",
+    },
   },
   en: {
     nav: {
@@ -109,6 +118,15 @@ export const translations = {
       easyReturns: "Easy Returns",
       guarantee: "Quality Guarantee",
       similarProducts: "Similar Products",
+    },
+    cart: {
+      title: "Cart",
+      empty: "Your cart is empty",
+      continueShopping: "Continue Shopping",
+      total: "Total",
+      checkout: "Checkout",
+      clearCart: "Clear Cart",
+      addedToCart: "Added to cart",
     },
   },
 } as const;
