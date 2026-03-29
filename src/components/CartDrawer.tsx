@@ -1,11 +1,12 @@
 import { X, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CartDrawer = () => {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice, isOpen, setIsOpen } = useCart();
   const { lang, t } = useLanguage();
+  const navigate = useNavigate();
   const ct = t.cart;
 
   if (!isOpen) return null;
@@ -120,7 +121,13 @@ const CartDrawer = () => {
                 {totalPrice} {t.products.currency}
               </span>
             </div>
-            <button className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                navigate("/checkout");
+              }}
+              className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            >
               {ct.checkout}
             </button>
             <button
