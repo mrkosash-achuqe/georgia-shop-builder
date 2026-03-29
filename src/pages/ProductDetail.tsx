@@ -2,14 +2,18 @@ import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
 import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
+import { CartProvider } from "@/context/CartContext";
+import { useCart } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CartDrawer from "@/components/CartDrawer";
 import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
 const ProductDetailContent = () => {
   const { id } = useParams<{ id: string }>();
   const { lang, t } = useLanguage();
+  const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
@@ -165,6 +169,10 @@ const ProductDetailContent = () => {
 
               <button
                 disabled={!product.inStock}
+                onClick={() => {
+                  addToCart(product, quantity);
+                  setQuantity(1);
+                }}
                 className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ShoppingCart className="h-5 w-5" />
@@ -209,13 +217,16 @@ const ProductDetailContent = () => {
       <div className="mt-auto">
         <Footer />
       </div>
+      <CartDrawer />
     </div>
   );
 };
 
 const ProductDetail = () => (
   <LanguageProvider>
-    <ProductDetailContent />
+    <CartProvider>
+      <ProductDetailContent />
+    </CartProvider>
   </LanguageProvider>
 );
 
