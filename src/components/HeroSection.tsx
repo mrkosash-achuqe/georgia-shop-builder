@@ -5,7 +5,7 @@ const HeroSection = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="container mx-auto px-4 py-6">
+    <section>
       <div className="relative rounded-2xl overflow-hidden h-[300px] md:h-[380px]">
         <img
           src={heroBanner}
