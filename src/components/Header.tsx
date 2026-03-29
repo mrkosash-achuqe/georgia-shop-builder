@@ -1,4 +1,5 @@
-import { Search, Globe, User, ShoppingCart } from "lucide-react";
+import { useState } from "react";
+import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { Link } from "react-router-dom";
@@ -6,81 +7,184 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
   const { totalItems, setIsOpen } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navLinks = [
+    { label: t.nav.aboutUs, href: "#" },
+    { label: t.nav.blog, href: "#" },
+    { label: t.nav.contact, href: "#" },
+    { label: t.nav.delivery, href: "#" },
+    { label: t.nav.returns, href: "#" },
+  ];
 
   return (
-    <header className="bg-card border-b border-border">
-      {/* Top bar */}
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-2xl font-bold text-foreground tracking-tight">საპოვნელა</span>
-          <span className="text-xs text-muted-foreground">Sapovnela.com</span>
-        </Link>
+    <>
+      <header className="bg-card border-b border-border sticky top-0 z-30">
+        {/* Top bar */}
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
+          {/* Hamburger (mobile) */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="md:hidden p-1.5 text-foreground hover:text-primary transition-colors"
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
 
-        {/* Search */}
-        <div className="flex-1 max-w-xl mx-4 hidden md:flex">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder={t.nav.search}
-              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md bg-primary p-2 text-primary-foreground hover:opacity-90 transition-opacity">
-              <Search className="h-4 w-4" />
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 shrink-0">
+            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">საპოვნელა</span>
+            <span className="text-xs text-muted-foreground hidden sm:inline">Sapovnela.com</span>
+          </Link>
+
+          {/* Search (desktop) */}
+          <div className="flex-1 max-w-xl mx-4 hidden md:flex">
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder={t.nav.search}
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <button className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md bg-primary p-2 text-primary-foreground hover:opacity-90 transition-opacity">
+                <Search className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Right actions */}
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={() => setLang(lang === "ka" ? "en" : "ka")}
+              className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Globe className="h-4 w-4" />
+              <span className="hidden sm:inline">{lang === "ka" ? "EN" : "ქარ"}</span>
+            </button>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="relative flex items-center text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1.5 -right-2.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+            <button className="hidden sm:flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <User className="h-4 w-4" />
+              <span>{t.nav.signIn}</span>
             </button>
           </div>
         </div>
 
-        {/* Right actions */}
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={() => setLang(lang === "ka" ? "en" : "ka")}
-            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Globe className="h-4 w-4" />
-            <span>{lang === "ka" ? "EN" : "ქარ"}</span>
-          </button>
-          <button
-            onClick={() => setIsOpen(true)}
-            className="relative flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            {totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-2.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </button>
-          <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <User className="h-4 w-4" />
-            <span className="hidden sm:inline">{t.nav.signIn}</span>
-          </button>
+        {/* Navigation (desktop) */}
+        <nav className="container mx-auto px-4 py-2 hidden md:flex items-center gap-6 text-sm font-medium">
+          {navLinks.map((link) => (
+            <a key={link.label} href={link.href} className="text-foreground hover:text-primary transition-colors">
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Mobile search */}
+        <div className="md:hidden px-4 pb-3">
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder={t.nav.search}
+              className="w-full rounded-lg border border-border bg-background px-4 py-2 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <button className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md bg-primary p-2 text-primary-foreground">
+              <Search className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Navigation */}
-      <nav className="container mx-auto px-4 py-2 hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="#" className="text-foreground hover:text-primary transition-colors">{t.nav.aboutUs}</a>
-        <a href="#" className="text-foreground hover:text-primary transition-colors">{t.nav.blog}</a>
-        <a href="#" className="text-foreground hover:text-primary transition-colors">{t.nav.contact}</a>
-        <a href="#" className="text-foreground hover:text-primary transition-colors">{t.nav.delivery}</a>
-        <a href="#" className="text-foreground hover:text-primary transition-colors">{t.nav.returns}</a>
-      </nav>
-
-      {/* Mobile search */}
-      <div className="md:hidden px-4 pb-3">
-        <div className="relative w-full">
-          <input
-            type="text"
-            placeholder={t.nav.search}
-            className="w-full rounded-lg border border-border bg-background px-4 py-2 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+      {/* Mobile menu overlay */}
+      {mobileMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40"
+            onClick={() => setMobileMenuOpen(false)}
           />
-          <button className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md bg-primary p-2 text-primary-foreground">
-            <Search className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </header>
+          <div className="fixed top-0 left-0 h-full w-72 bg-card border-r border-border shadow-2xl z-50 flex flex-col animate-in slide-in-from-left duration-300">
+            {/* Menu header */}
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <span className="text-lg font-bold text-foreground">საპოვნელა</span>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* User action */}
+            <div className="p-4 border-b border-border">
+              <button className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm">
+                <User className="h-4 w-4" />
+                {t.nav.signIn}
+              </button>
+            </div>
+
+            {/* Nav links */}
+            <nav className="flex-1 overflow-y-auto p-4">
+              <ul className="space-y-1">
+                {navLinks.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-between px-3 py-3 rounded-lg text-foreground hover:bg-secondary hover:text-primary transition-colors text-sm font-medium"
+                    >
+                      {link.label}
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Categories in mobile menu */}
+              <div className="mt-6">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">
+                  {t.categories.title}
+                </h3>
+                <ul className="space-y-1">
+                  {t.categories.items.map((cat, i) => (
+                    <li key={i}>
+                      <a
+                        href="#"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-foreground hover:bg-secondary hover:text-primary transition-colors"
+                      >
+                        {cat}
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </nav>
+
+            {/* Language switch */}
+            <div className="p-4 border-t border-border">
+              <button
+                onClick={() => {
+                  setLang(lang === "ka" ? "en" : "ka");
+                  setMobileMenuOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              >
+                <Globe className="h-4 w-4" />
+                {lang === "ka" ? "English" : "ქართული"}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
