@@ -1,18 +1,21 @@
-import { Search, Globe, User } from "lucide-react";
+import { Search, Globe, User, ShoppingCart } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCart } from "@/context/CartContext";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
+  const { totalItems, setIsOpen } = useCart();
 
   return (
     <header className="bg-card border-b border-border">
       {/* Top bar */}
       <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
         {/* Logo */}
-        <div className="flex items-center gap-2 shrink-0">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
           <span className="text-2xl font-bold text-foreground tracking-tight">საპოვნელა</span>
           <span className="text-xs text-muted-foreground">Sapovnela.com</span>
-        </div>
+        </Link>
 
         {/* Search */}
         <div className="flex-1 max-w-xl mx-4 hidden md:flex">
@@ -36,6 +39,17 @@ const Header = () => {
           >
             <Globe className="h-4 w-4" />
             <span>{lang === "ka" ? "EN" : "ქარ"}</span>
+          </button>
+          <button
+            onClick={() => setIsOpen(true)}
+            className="relative flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {totalItems > 0 && (
+              <span className="absolute -top-1.5 -right-2.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
           </button>
           <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <User className="h-4 w-4" />
