@@ -165,6 +165,13 @@ export const translations = {
       clearCart: "Clear Cart",
       addedToCart: "Added to cart",
     },
+    auth: {
+      signIn: "Sign In",
+      googleSignIn: "Sign in with Google",
+      signOut: "Sign Out",
+      myAccount: "My Account",
+      termsNote: "By signing in you agree to our Terms of Service",
+    },
     checkout: {
       title: "Checkout",
       backToShop: "Back to Shop",
