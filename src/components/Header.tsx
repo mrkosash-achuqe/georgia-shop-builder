@@ -1,12 +1,16 @@
 import { useState } from "react";
-import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight } from "lucide-react";
+import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
-import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
   const { totalItems, setIsOpen } = useCart();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -16,6 +20,8 @@ const Header = () => {
     { label: t.nav.delivery, href: "#" },
     { label: t.nav.returns, href: "#" },
   ];
+
+  const userInitial = profile?.full_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || "U";
 
   return (
     <>
@@ -71,10 +77,31 @@ const Header = () => {
                 </span>
               )}
             </button>
-            <button className="hidden sm:flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              <User className="h-4 w-4" />
-              <span>{t.nav.signIn}</span>
-            </button>
+
+            {user ? (
+              <div className="hidden sm:flex items-center gap-2">
+                <Avatar className="h-7 w-7">
+                  <AvatarImage src={profile?.avatar_url || ""} />
+                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">{userInitial}</AvatarFallback>
+                </Avatar>
+                <span className="text-sm text-foreground max-w-[100px] truncate">{profile?.full_name || t.auth.myAccount}</span>
+                <button
+                  onClick={signOut}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  title={t.auth.signOut}
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => navigate("/auth")}
+                className="hidden sm:flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <User className="h-4 w-4" />
+                <span>{t.nav.signIn}</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -123,10 +150,35 @@ const Header = () => {
 
             {/* User action */}
             <div className="p-4 border-b border-border">
-              <button className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm">
-                <User className="h-4 w-4" />
-                {t.nav.signIn}
-              </button>
+              {user ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={profile?.avatar_url || ""} />
+                      <AvatarFallback className="text-sm bg-primary text-primary-foreground">{userInitial}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{profile?.full_name || t.auth.myAccount}</p>
+                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { signOut(); setMobileMenuOpen(false); }}
+                    className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {t.auth.signOut}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}
+                  className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm"
+                >
+                  <User className="h-4 w-4" />
+                  {t.nav.signIn}
+                </button>
+              )}
             </div>
 
             {/* Nav links */}
