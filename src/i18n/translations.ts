@@ -64,6 +64,13 @@ export const translations = {
       clearCart: "კალათის გასუფთავება",
       addedToCart: "დაემატა კალათაში",
     },
+    auth: {
+      signIn: "შესვლა",
+      googleSignIn: "Google-ით შესვლა",
+      signOut: "გამოსვლა",
+      myAccount: "ჩემი ანგარიში",
+      termsNote: "შესვლით თქვენ ეთანხმებით მომსახურების პირობებს",
+    },
     checkout: {
       title: "შეკვეთის გაფორმება",
       backToShop: "მაღაზიაში დაბრუნება",
