@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, Heart } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
 import { CartProvider } from "@/context/CartContext";
-import { useWishlist } from "@/context/WishlistContext";
+import { WishlistProvider, useWishlist } from "@/context/WishlistContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
