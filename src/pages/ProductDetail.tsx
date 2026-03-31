@@ -226,7 +226,9 @@ const ProductDetailContent = () => {
 const ProductDetail = () => (
   <LanguageProvider>
     <CartProvider>
-      <ProductDetailContent />
+      <WishlistProvider>
+        <ProductDetailContent />
+      </WishlistProvider>
     </CartProvider>
   </LanguageProvider>
 );

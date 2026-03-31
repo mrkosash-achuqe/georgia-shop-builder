@@ -46,7 +46,7 @@ const WishlistContent = () => {
 };
 
 const Wishlist = () => (
-  <LanguageProvider><CartProvider><WishlistContent /></CartProvider></LanguageProvider>
+  <LanguageProvider><CartProvider><WishlistProvider><WishlistContent /></WishlistProvider></CartProvider></LanguageProvider>
 );
 
 export default Wishlist;
