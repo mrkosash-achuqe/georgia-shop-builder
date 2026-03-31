@@ -39,8 +39,8 @@ const Header = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">საპოვნელა</span>
-            <span className="text-xs text-muted-foreground hidden sm:inline">Sapovnela.com</span>
+            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">აჩუქე</span>
+            <span className="text-xs text-muted-foreground hidden sm:inline">achuqe.com</span>
           </Link>
 
           {/* Search (desktop) */}
