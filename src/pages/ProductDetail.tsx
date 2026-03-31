@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
