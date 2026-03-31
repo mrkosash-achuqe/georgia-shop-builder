@@ -39,7 +39,7 @@ export const translations = {
       contact: "დაგვიკავშირდით",
       rights: "ყველა უფლება დაცულია",
       phone: "+995 571 99 77 71",
-      email: "sapovnela24@gmail.com",
+      email: "info@achuqe.com",
     },
     productDetail: {
       backToHome: "მთავარ გვერდზე",
