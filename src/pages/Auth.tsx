@@ -26,8 +26,8 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground">საპოვნელა</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sapovnela.com</p>
+          <h1 className="text-2xl font-bold text-foreground">აჩუქე</h1>
+          <p className="text-sm text-muted-foreground mt-1">achuqe.com</p>
         </div>
 
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">

@@ -1,7 +1,24 @@
 import { ChevronRight } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-const CategoriesSidebar = () => {
+interface CategoriesSidebarProps {
+  selectedCategory?: string | null;
+  onSelectCategory?: (category: string | null) => void;
+}
+
+const categoryKeys = [
+  "cutting-board-sets",
+  "clocks",
+  "candle-holders",
+  "gift-boxes",
+  "photo-frames",
+  "kids",
+  "cutting-boards",
+  "corporate",
+  "other",
+];
+
+const CategoriesSidebar = ({ selectedCategory, onSelectCategory }: CategoriesSidebarProps) => {
   const { t } = useLanguage();
 
   return (
@@ -11,15 +28,33 @@ const CategoriesSidebar = () => {
         {t.categories.title}
       </h2>
       <ul className="space-y-1">
+        {/* All categories */}
+        <li>
+          <button
+            onClick={() => onSelectCategory?.(null)}
+            className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm w-full text-left transition-colors ${
+              selectedCategory === null
+                ? "bg-primary/10 text-primary font-semibold"
+                : "text-foreground hover:bg-secondary hover:text-primary"
+            }`}
+          >
+            <ChevronRight className="h-3.5 w-3.5" />
+            {t.categories.all}
+          </button>
+        </li>
         {t.categories.items.map((item, i) => (
           <li key={i}>
-            <a
-              href="#"
-              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-foreground hover:bg-secondary hover:text-primary transition-colors group"
+            <button
+              onClick={() => onSelectCategory?.(categoryKeys[i])}
+              className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm w-full text-left transition-colors group ${
+                selectedCategory === categoryKeys[i]
+                  ? "bg-primary/10 text-primary font-semibold"
+                  : "text-foreground hover:bg-secondary hover:text-primary"
+              }`}
             >
               <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
               {item}
-            </a>
+            </button>
           </li>
         ))}
       </ul>

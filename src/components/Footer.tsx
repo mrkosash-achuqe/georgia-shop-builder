@@ -1,4 +1,5 @@
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 const Footer = () => {
@@ -6,39 +7,82 @@ const Footer = () => {
 
   return (
     <footer>
-      {/* Contact bar */}
-      <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div>
-          <h3 className="text-base font-semibold text-foreground mb-2">{t.footer.contact}</h3>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5" />
-              {t.footer.phone}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Mail className="h-3.5 w-3.5" />
-              {t.footer.email}
-            </span>
+      {/* Main footer */}
+      <div className="bg-card border-t border-border">
+        <div className="container mx-auto px-4 py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* About */}
+            <div>
+              <h3 className="text-lg font-bold text-foreground mb-3">აჩუქე</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{t.footer.aboutDesc}</p>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-base font-semibold text-foreground mb-3">{t.footer.quickLinks}</h3>
+              <ul className="space-y-2 text-sm">
+                {[
+                  { label: t.nav.aboutUs, to: "/about" },
+                  { label: t.nav.blog, to: "/blog" },
+                  { label: t.nav.contact, to: "/contact" },
+                ].map((link) => (
+                  <li key={link.to}>
+                    <Link to={link.to} className="text-muted-foreground hover:text-primary transition-colors">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Info */}
+            <div>
+              <h3 className="text-base font-semibold text-foreground mb-3">{t.footer.info}</h3>
+              <ul className="space-y-2 text-sm">
+                {[
+                  { label: t.nav.delivery, to: "/delivery" },
+                  { label: t.nav.returns, to: "/returns" },
+                ].map((link) => (
+                  <li key={link.to}>
+                    <Link to={link.to} className="text-muted-foreground hover:text-primary transition-colors">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h3 className="text-base font-semibold text-foreground mb-3">{t.footer.contact}</h3>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p className="flex items-center gap-2"><Phone className="h-4 w-4 text-primary shrink-0" />{t.footer.phone}</p>
+                <p className="flex items-center gap-2"><Mail className="h-4 w-4 text-primary shrink-0" />{t.footer.email}</p>
+                <p className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary shrink-0" />{t.contact.addressValue}</p>
+              </div>
+
+              {/* Social */}
+              <div className="flex items-center gap-3 mt-4">
+                {["facebook", "instagram", "tiktok", "youtube"].map((social) => (
+                  <a
+                    key={social}
+                    href="#"
+                    className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+                    aria-label={social}
+                  >
+                    <SocialIcon name={social} />
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-3">
-          {["facebook", "instagram", "tiktok", "youtube"].map((social) => (
-            <a
-              key={social}
-              href="#"
-              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-              aria-label={social}
-            >
-              <SocialIcon name={social} />
-            </a>
-          ))}
         </div>
       </div>
 
       {/* Copyright */}
       <div className="bg-footer text-footer py-4">
         <div className="container mx-auto px-4 text-center text-sm">
-          2025 © Sapovnela.com {t.footer.rights}
+          2025 © achuqe.com — {t.footer.rights}
         </div>
       </div>
     </footer>

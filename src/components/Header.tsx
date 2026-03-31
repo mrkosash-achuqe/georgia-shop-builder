@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut } from "lucide-react";
+import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -14,11 +14,11 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: t.nav.aboutUs, href: "#" },
-    { label: t.nav.blog, href: "#" },
-    { label: t.nav.contact, href: "#" },
-    { label: t.nav.delivery, href: "#" },
-    { label: t.nav.returns, href: "#" },
+    { label: t.nav.aboutUs, href: "/about" },
+    { label: t.nav.blog, href: "/blog" },
+    { label: t.nav.contact, href: "/contact" },
+    { label: t.nav.delivery, href: "/delivery" },
+    { label: t.nav.returns, href: "/returns" },
   ];
 
   const userInitial = profile?.full_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || "U";
@@ -39,8 +39,8 @@ const Header = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">საპოვნელა</span>
-            <span className="text-xs text-muted-foreground hidden sm:inline">Sapovnela.com</span>
+            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">აჩუქე</span>
+            <span className="text-xs text-muted-foreground hidden sm:inline">achuqe.com</span>
           </Link>
 
           {/* Search (desktop) */}
@@ -66,6 +66,15 @@ const Header = () => {
               <Globe className="h-4 w-4" />
               <span className="hidden sm:inline">{lang === "ka" ? "EN" : "ქარ"}</span>
             </button>
+
+            <Link
+              to="/wishlist"
+              className="text-muted-foreground hover:text-foreground transition-colors hidden sm:flex"
+              title={t.nav.wishlist}
+            >
+              <Heart className="h-5 w-5" />
+            </Link>
+
             <button
               onClick={() => setIsOpen(true)}
               className="relative flex items-center text-muted-foreground hover:text-foreground transition-colors"
@@ -108,9 +117,9 @@ const Header = () => {
         {/* Navigation (desktop) */}
         <nav className="container mx-auto px-4 py-2 hidden md:flex items-center gap-6 text-sm font-medium">
           {navLinks.map((link) => (
-            <a key={link.label} href={link.href} className="text-foreground hover:text-primary transition-colors">
+            <Link key={link.label} to={link.href} className="text-foreground hover:text-primary transition-colors">
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -139,7 +148,7 @@ const Header = () => {
           <div className="fixed top-0 left-0 h-full w-72 bg-card border-r border-border shadow-2xl z-50 flex flex-col animate-in slide-in-from-left duration-300">
             {/* Menu header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <span className="text-lg font-bold text-foreground">საპოვნელა</span>
+              <span className="text-lg font-bold text-foreground">აჩუქე</span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
@@ -183,17 +192,30 @@ const Header = () => {
 
             {/* Nav links */}
             <nav className="flex-1 overflow-y-auto p-4">
+              {/* Wishlist link */}
+              <Link
+                to="/wishlist"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3 py-3 rounded-lg text-foreground hover:bg-secondary hover:text-primary transition-colors text-sm font-medium mb-1"
+              >
+                <span className="flex items-center gap-2">
+                  <Heart className="h-4 w-4" />
+                  {t.nav.wishlist}
+                </span>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </Link>
+
               <ul className="space-y-1">
                 {navLinks.map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
+                    <Link
+                      to={link.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center justify-between px-3 py-3 rounded-lg text-foreground hover:bg-secondary hover:text-primary transition-colors text-sm font-medium"
                     >
                       {link.label}
                       <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

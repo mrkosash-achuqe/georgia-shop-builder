@@ -1,6 +1,7 @@
 import { Heart, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Product } from "@/data/products";
+import { useWishlist } from "@/context/WishlistContext";
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +11,8 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
   const name = lang === "ka" ? product.nameKa : product.nameEn;
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const wishlisted = isInWishlist(product.id);
 
   return (
     <Link
@@ -29,11 +32,19 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            toggleWishlist(product);
           }}
-          className="absolute bottom-3 right-3 bg-card/80 backdrop-blur-sm rounded-full p-2 text-muted-foreground hover:text-primary transition-colors"
+          className={`absolute bottom-3 right-3 bg-card/80 backdrop-blur-sm rounded-full p-2 transition-colors ${
+            wishlisted ? "text-primary" : "text-muted-foreground hover:text-primary"
+          }`}
         >
-          <Heart className="h-4 w-4" />
+          <Heart className={`h-4 w-4 ${wishlisted ? "fill-primary" : ""}`} />
         </button>
+        {!product.inStock && (
+          <div className="absolute top-3 left-3 bg-destructive text-destructive-foreground text-xs font-medium px-2 py-1 rounded-md">
+            {lang === "ka" ? "არ არის მარაგში" : "Out of Stock"}
+          </div>
+        )}
       </div>
       <div className="p-3">
         <h3 className="text-sm font-medium text-foreground line-clamp-1 mb-1.5">{name}</h3>
