@@ -38,7 +38,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="bg-footer text-footer py-4">
         <div className="container mx-auto px-4 text-center text-sm">
-          2025 © Sapovnela.com {t.footer.rights}
+          2025 © achuqe.com — {t.footer.rights}
         </div>
       </div>
     </footer>

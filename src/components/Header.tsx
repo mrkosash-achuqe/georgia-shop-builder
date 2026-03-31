@@ -139,7 +139,7 @@ const Header = () => {
           <div className="fixed top-0 left-0 h-full w-72 bg-card border-r border-border shadow-2xl z-50 flex flex-col animate-in slide-in-from-left duration-300">
             {/* Menu header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <span className="text-lg font-bold text-foreground">საპოვნელა</span>
+              <span className="text-lg font-bold text-foreground">აჩუქე</span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"

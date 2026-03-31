@@ -140,7 +140,7 @@ export const translations = {
       contact: "Contact Us",
       rights: "All Rights Reserved",
       phone: "+995 571 99 77 71",
-      email: "sapovnela24@gmail.com",
+      email: "info@achuqe.com",
     },
     productDetail: {
       backToHome: "Back to Home",
