@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft, RotateCcw, RefreshCw, AlertTriangle, Banknote } from "lucide-react";
-import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -50,7 +50,7 @@ const ReturnsContent = () => {
 };
 
 const Returns = () => (
-  <LanguageProvider><CartProvider><ReturnsContent /></CartProvider></LanguageProvider>
+  <CartProvider><ReturnsContent /></CartProvider>
 );
 
 export default Returns;

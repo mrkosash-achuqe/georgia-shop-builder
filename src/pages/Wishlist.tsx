@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft, Heart } from "lucide-react";
-import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider, useWishlist } from "@/context/WishlistContext";
 import Header from "@/components/Header";
@@ -46,7 +46,7 @@ const WishlistContent = () => {
 };
 
 const Wishlist = () => (
-  <LanguageProvider><CartProvider><WishlistProvider><WishlistContent /></WishlistProvider></CartProvider></LanguageProvider>
+  <CartProvider><WishlistProvider><WishlistContent /></WishlistProvider></CartProvider>
 );
 
 export default Wishlist;
