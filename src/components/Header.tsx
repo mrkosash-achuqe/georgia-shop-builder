@@ -3,7 +3,7 @@ import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Header = () => {
