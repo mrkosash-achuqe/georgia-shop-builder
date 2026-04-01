@@ -104,7 +104,7 @@ const Header = () => {
               </div>
             ) : (
               <button
-                onClick={() => navigate("/auth")}
+                onClick={() => setAuthModalOpen(true)}
                 className="hidden sm:flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <User className="h-4 w-4" />
