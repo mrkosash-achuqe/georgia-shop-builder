@@ -50,7 +50,7 @@ const DeliveryContent = () => {
 };
 
 const Delivery = () => (
-  <LanguageProvider><CartProvider><DeliveryContent /></CartProvider></LanguageProvider>
+  <CartProvider><DeliveryContent /></CartProvider>
 );
 
 export default Delivery;

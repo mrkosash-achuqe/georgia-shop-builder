@@ -50,7 +50,7 @@ const ReturnsContent = () => {
 };
 
 const Returns = () => (
-  <LanguageProvider><CartProvider><ReturnsContent /></CartProvider></LanguageProvider>
+  <CartProvider><ReturnsContent /></CartProvider>
 );
 
 export default Returns;

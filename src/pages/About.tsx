@@ -58,7 +58,7 @@ const AboutContent = () => {
 };
 
 const About = () => (
-  <LanguageProvider><CartProvider><AboutContent /></CartProvider></LanguageProvider>
+  <CartProvider><AboutContent /></CartProvider>
 );
 
 export default About;
