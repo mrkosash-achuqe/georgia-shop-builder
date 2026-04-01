@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft, Award, Hand, Sparkles, Truck } from "lucide-react";
-import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
