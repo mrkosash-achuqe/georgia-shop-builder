@@ -115,11 +115,19 @@ const Header = () => {
         </div>
 
         {/* Navigation (desktop) */}
-        <nav className="container mx-auto px-4 py-2 hidden md:flex items-center gap-6 text-sm font-medium">
-          {navLinks.map((link) => (
-            <Link key={link.label} to={link.href} className="text-foreground hover:text-primary transition-colors">
-              {link.label}
-            </Link>
+        <nav className="container mx-auto px-4 py-2.5 hidden md:flex items-center justify-center gap-1 text-sm font-medium border-t border-border/50">
+          {navLinks.map((link, i) => (
+            <span key={link.label} className="flex items-center">
+              <Link
+                to={link.href}
+                className="relative px-4 py-1.5 rounded-full text-foreground hover:text-primary hover:bg-primary/5 transition-all duration-200"
+              >
+                {link.label}
+              </Link>
+              {i < navLinks.length - 1 && (
+                <span className="w-1 h-1 rounded-full bg-border mx-1" />
+              )}
+            </span>
           ))}
         </nav>
 
