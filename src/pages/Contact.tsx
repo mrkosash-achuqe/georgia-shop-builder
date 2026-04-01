@@ -99,7 +99,7 @@ const ContactContent = () => {
 };
 
 const Contact = () => (
-  <LanguageProvider><CartProvider><ContactContent /></CartProvider></LanguageProvider>
+  <CartProvider><ContactContent /></CartProvider>
 );
 
 export default Contact;

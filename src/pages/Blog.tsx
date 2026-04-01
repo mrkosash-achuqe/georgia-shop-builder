@@ -85,7 +85,7 @@ const BlogContent = () => {
 };
 
 const Blog = () => (
-  <LanguageProvider><CartProvider><BlogContent /></CartProvider></LanguageProvider>
+  <CartProvider><BlogContent /></CartProvider>
 );
 
 export default Blog;
