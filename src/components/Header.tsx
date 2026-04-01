@@ -188,7 +188,7 @@ const Header = () => {
                 </div>
               ) : (
                 <button
-                  onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}
+                  onClick={() => { setAuthModalOpen(true); setMobileMenuOpen(false); }}
                   className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm"
                 >
                   <User className="h-4 w-4" />
