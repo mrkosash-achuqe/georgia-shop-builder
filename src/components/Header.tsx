@@ -9,8 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
   const { totalItems, setIsOpen } = useCart();
-  const { user, profile, signOut } = useAuth();
-  const navigate = useNavigate();
+  const { user, profile, signOut, setAuthModalOpen } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
