@@ -3,14 +3,13 @@ import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
   const { totalItems, setIsOpen } = useCart();
-  const { user, profile, signOut } = useAuth();
-  const navigate = useNavigate();
+  const { user, profile, signOut, setAuthModalOpen } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -104,7 +103,7 @@ const Header = () => {
               </div>
             ) : (
               <button
-                onClick={() => navigate("/auth")}
+                onClick={() => setAuthModalOpen(true)}
                 className="hidden sm:flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <User className="h-4 w-4" />
@@ -189,7 +188,7 @@ const Header = () => {
                 </div>
               ) : (
                 <button
-                  onClick={() => { navigate("/auth"); setMobileMenuOpen(false); }}
+                  onClick={() => { setAuthModalOpen(true); setMobileMenuOpen(false); }}
                   className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm"
                 >
                   <User className="h-4 w-4" />

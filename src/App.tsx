@@ -5,10 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
+import AuthModal from "@/components/AuthModal";
 import Index from "./pages/Index.tsx";
 import ProductDetail from "./pages/ProductDetail.tsx";
 import Checkout from "./pages/Checkout.tsx";
-import Auth from "./pages/Auth.tsx";
 import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
 import Delivery from "./pages/Delivery.tsx";
@@ -27,11 +27,11 @@ const App = () => (
       <LanguageProvider>
       <BrowserRouter>
         <AuthProvider>
+          <AuthModal />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/auth" element={<Auth />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/delivery" element={<Delivery />} />
