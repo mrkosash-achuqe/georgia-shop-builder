@@ -15,6 +15,7 @@ import Delivery from "./pages/Delivery.tsx";
 import Returns from "./pages/Returns.tsx";
 import Blog from "./pages/Blog.tsx";
 import Wishlist from "./pages/Wishlist.tsx";
+import Admin from "./pages/Admin.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/returns" element={<Returns />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

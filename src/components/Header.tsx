@@ -1,16 +1,24 @@
-import { useState } from "react";
-import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart, Shield } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
   const { totalItems, setIsOpen } = useCart();
   const { user, profile, signOut, setAuthModalOpen } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (!user) { setIsAdmin(false); return; }
+    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
 
   const navLinks = [
     { label: t.nav.aboutUs, href: "/about" },
@@ -93,6 +101,11 @@ const Header = () => {
                   <AvatarFallback className="text-xs bg-primary text-primary-foreground">{userInitial}</AvatarFallback>
                 </Avatar>
                 <span className="text-sm text-foreground max-w-[100px] truncate">{profile?.full_name || t.auth.myAccount}</span>
+                {isAdmin && (
+                  <Link to="/admin" className="text-primary hover:text-primary/80 transition-colors" title="ადმინ პანელი">
+                    <Shield className="h-4 w-4" />
+                  </Link>
+                )}
                 <button
                   onClick={signOut}
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
