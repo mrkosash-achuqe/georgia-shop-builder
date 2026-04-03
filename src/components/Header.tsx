@@ -101,6 +101,11 @@ const Header = () => {
                   <AvatarFallback className="text-xs bg-primary text-primary-foreground">{userInitial}</AvatarFallback>
                 </Avatar>
                 <span className="text-sm text-foreground max-w-[100px] truncate">{profile?.full_name || t.auth.myAccount}</span>
+                {isAdmin && (
+                  <Link to="/admin" className="text-primary hover:text-primary/80 transition-colors" title="ადმინ პანელი">
+                    <Shield className="h-4 w-4" />
+                  </Link>
+                )}
                 <button
                   onClick={signOut}
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
