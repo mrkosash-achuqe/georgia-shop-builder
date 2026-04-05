@@ -30,21 +30,25 @@ const App = () => (
       <LanguageProvider>
       <BrowserRouter>
         <AuthProvider>
-          <AuthModal />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/delivery" element={<Delivery />} />
-            <Route path="/returns" element={<Returns />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/admin" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <CartProvider>
+            <WishlistProvider>
+              <AuthModal />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/delivery" element={<Delivery />} />
+                <Route path="/returns" element={<Returns />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/admin" element={<Admin />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </WishlistProvider>
+          </CartProvider>
         </AuthProvider>
       </BrowserRouter>
       </LanguageProvider>
