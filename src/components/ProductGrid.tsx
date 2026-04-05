@@ -1,26 +1,46 @@
 import { useLanguage } from "@/i18n/LanguageContext";
-import { products } from "@/data/products";
+import { Product } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 interface ProductGridProps {
   selectedCategory?: string | null;
   searchQuery?: string;
 }
 
-const categoryMap: Record<string, string> = {
-  "cutting-board-sets": "cutting-board-sets",
-  "clocks": "clocks",
-  "candle-holders": "candle-holders",
-  "gift-boxes": "gift-boxes",
-  "photo-frames": "photo-frames",
-  "kids": "kids",
-  "cutting-boards": "cutting-boards",
-  "corporate": "corporate",
-  "other": "other",
-};
+const mapDbProduct = (row: any): Product => ({
+  id: row.id,
+  img: row.images?.[0] || "/placeholder.svg",
+  images: row.images?.length ? row.images : ["/placeholder.svg"],
+  nameKa: row.name_ka,
+  nameEn: row.name_en,
+  descKa: row.desc_ka,
+  descEn: row.desc_en,
+  price: Number(row.price),
+  rating: Number(row.rating),
+  reviews: row.reviews_count,
+  category: row.category,
+  material: row.material,
+  dimensions: row.dimensions,
+  inStock: row.in_stock,
+});
 
 const ProductGrid = ({ selectedCategory, searchQuery }: ProductGridProps) => {
   const { lang, t } = useLanguage();
+
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map(mapDbProduct);
+    },
+  });
 
   let filtered = products;
 
@@ -44,7 +64,11 @@ const ProductGrid = ({ selectedCategory, searchQuery }: ProductGridProps) => {
       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6">
         {t.products.title}
       </h2>
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-lg text-muted-foreground">{t.products.noResults}</p>
         </div>
