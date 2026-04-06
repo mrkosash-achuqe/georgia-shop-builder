@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/data/products";
+import { useWishlist } from "@/context/WishlistContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -32,6 +33,7 @@ const ProductDetailContent = () => {
   const { id } = useParams<{ id: string }>();
   const { lang, t } = useLanguage();
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
@@ -164,8 +166,15 @@ const ProductDetailContent = () => {
               <button disabled={!product.inStock} onClick={() => { addToCart(product, quantity); setQuantity(1); }} className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
                 <ShoppingCart className="h-5 w-5" />{tp.addToCart}
               </button>
-              <button className="p-3 rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary transition-colors">
-                <Heart className="h-5 w-5" />
+              <button
+                onClick={() => product && toggleWishlist(product)}
+                className={`p-3 rounded-lg border transition-colors ${
+                  product && isInWishlist(product.id)
+                    ? "border-primary text-primary"
+                    : "border-border text-muted-foreground hover:text-primary hover:border-primary"
+                }`}
+              >
+                <Heart className={`h-5 w-5 ${product && isInWishlist(product.id) ? "fill-primary" : ""}`} />
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

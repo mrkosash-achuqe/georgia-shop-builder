@@ -224,7 +224,7 @@ export const translations = {
     },
     products: {
       title: "Recommended Products",
-      currency: "₾",
+      currency: "GEL",
       noResults: "No products found",
       searchResults: "Search Results",
     },
