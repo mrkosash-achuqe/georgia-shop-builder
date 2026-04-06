@@ -1,15 +1,13 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft, RotateCcw, RefreshCw, AlertTriangle, Banknote } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 
-const ReturnsContent = () => {
+const Returns = () => {
   const { t } = useLanguage();
   const rt = t.returns;
-
   const sections = [
     { icon: RotateCcw, title: rt.policyTitle, desc: rt.policyDesc },
     { icon: RefreshCw, title: rt.exchangeTitle, desc: rt.exchangeDesc },
@@ -22,13 +20,10 @@ const ReturnsContent = () => {
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
-          <ChevronLeft className="h-4 w-4" />
-          {t.productDetail.backToHome}
+          <ChevronLeft className="h-4 w-4" />{t.productDetail.backToHome}
         </Link>
-
         <h1 className="text-3xl font-bold text-foreground mb-2">{rt.title}</h1>
         <p className="text-muted-foreground mb-8">{rt.subtitle}</p>
-
         <div className="space-y-4">
           {sections.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="bg-card rounded-xl border border-border p-6 flex items-start gap-4">
@@ -48,9 +43,5 @@ const ReturnsContent = () => {
     </div>
   );
 };
-
-const Returns = () => (
-  <CartProvider><ReturnsContent /></CartProvider>
-);
 
 export default Returns;

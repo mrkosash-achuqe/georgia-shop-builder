@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { CartProvider } from "@/context/CartContext";
-import { WishlistProvider } from "@/context/WishlistContext";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import CategoriesSidebar from "@/components/CategoriesSidebar";
@@ -13,31 +11,27 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <CartProvider>
-      <WishlistProvider>
-        <div className="min-h-screen flex flex-col bg-background">
-          <Header />
-          <div className="container mx-auto px-4 py-6">
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="md:w-64 shrink-0">
-                <CategoriesSidebar
-                  selectedCategory={selectedCategory}
-                  onSelectCategory={setSelectedCategory}
-                />
-              </div>
-              <div className="flex-1">
-                <HeroSection />
-              </div>
-            </div>
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="md:w-64 shrink-0">
+            <CategoriesSidebar
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+            />
           </div>
-          <ProductGrid selectedCategory={selectedCategory} searchQuery={searchQuery} />
-          <div className="mt-auto">
-            <Footer />
+          <div className="flex-1">
+            <HeroSection />
           </div>
-          <CartDrawer />
         </div>
-      </WishlistProvider>
-    </CartProvider>
+      </div>
+      <ProductGrid selectedCategory={selectedCategory} searchQuery={searchQuery} />
+      <div className="mt-auto">
+        <Footer />
+      </div>
+      <CartDrawer />
+    </div>
   );
 };
 

@@ -2,12 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, Phone, Mail, MapPin, Clock, CheckCircle2, Send } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 
-const ContactContent = () => {
+const Contact = () => {
   const { t } = useLanguage();
   const ct = t.contact;
   const [sent, setSent] = useState(false);
@@ -26,12 +25,9 @@ const ContactContent = () => {
           <ChevronLeft className="h-4 w-4" />
           {t.productDetail.backToHome}
         </Link>
-
         <h1 className="text-3xl font-bold text-foreground mb-2">{ct.title}</h1>
         <p className="text-muted-foreground mb-8">{ct.subtitle}</p>
-
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Contact form */}
           <div className="lg:flex-1">
             {sent ? (
               <div className="bg-card rounded-xl border border-border p-8 text-center">
@@ -43,35 +39,22 @@ const ContactContent = () => {
               <form onSubmit={handleSubmit} className="bg-card rounded-xl border border-border p-6 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1.5">{ct.nameLabel}</label>
-                  <input
-                    required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
+                  <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1.5">{ct.emailLabel}</label>
-                  <input
-                    type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
+                  <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1.5">{ct.messageLabel}</label>
-                  <textarea
-                    required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder={ct.messagePlaceholder}
-                    className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                  />
+                  <textarea required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={ct.messagePlaceholder} className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
                 </div>
                 <button type="submit" className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-                  <Send className="h-4 w-4" />
-                  {ct.send}
+                  <Send className="h-4 w-4" />{ct.send}
                 </button>
               </form>
             )}
           </div>
-
-          {/* Contact info */}
           <div className="lg:w-80 space-y-4">
             {[
               { icon: Phone, label: t.footer.contact, value: t.footer.phone },
@@ -97,9 +80,5 @@ const ContactContent = () => {
     </div>
   );
 };
-
-const Contact = () => (
-  <CartProvider><ContactContent /></CartProvider>
-);
 
 export default Contact;

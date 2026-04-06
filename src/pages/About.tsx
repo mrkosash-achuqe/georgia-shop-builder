@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft, Award, Hand, Sparkles, Truck } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 
-const AboutContent = () => {
+const About = () => {
   const { t } = useLanguage();
   const at = t.about;
 
@@ -25,20 +24,14 @@ const AboutContent = () => {
           <ChevronLeft className="h-4 w-4" />
           {t.productDetail.backToHome}
         </Link>
-
-        {/* Hero */}
         <div className="bg-card rounded-2xl border border-border p-8 md:p-12 mb-8 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{at.heroTitle}</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed text-lg">{at.heroDesc}</p>
         </div>
-
-        {/* Mission */}
         <div className="bg-card rounded-xl border border-border p-6 md:p-8 mb-8">
           <h2 className="text-2xl font-bold text-foreground mb-4">{at.missionTitle}</h2>
           <p className="text-muted-foreground leading-relaxed">{at.missionDesc}</p>
         </div>
-
-        {/* Values grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {values.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="bg-card rounded-xl border border-border p-6 text-center">
@@ -56,9 +49,5 @@ const AboutContent = () => {
     </div>
   );
 };
-
-const About = () => (
-  <CartProvider><AboutContent /></CartProvider>
-);
 
 export default About;

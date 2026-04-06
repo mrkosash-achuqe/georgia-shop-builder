@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck } from "lucide-react";
-import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
-import { CartProvider } from "@/context/CartContext";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,7 +9,7 @@ import CartDrawer from "@/components/CartDrawer";
 
 type PaymentMethod = "card" | "cash" | "transfer";
 
-const CheckoutContent = () => {
+const Checkout = () => {
   const { lang, t } = useLanguage();
   const { items, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
@@ -19,29 +18,14 @@ const CheckoutContent = () => {
   const [step, setStep] = useState<"form" | "confirmed">("form");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    email: "",
-    city: "",
-    address: "",
-    note: "",
-  });
+  const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", city: "", address: "", note: "" });
 
   const deliveryFee = totalPrice >= 100 ? 0 : 10;
   const grandTotal = totalPrice + deliveryFee;
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => {
-        const next = { ...prev };
-        delete next[field];
-        return next;
-      });
-    }
+    if (errors[field]) setErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
   };
 
   const validate = () => {
@@ -57,13 +41,7 @@ const CheckoutContent = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      setStep("confirmed");
-      clearCart();
-    }
-  };
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); if (validate()) { setStep("confirmed"); clearCart(); } };
 
   if (items.length === 0 && step !== "confirmed") {
     return (
@@ -72,13 +50,10 @@ const CheckoutContent = () => {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="text-lg text-muted-foreground mb-4">{ct.emptyCart}</p>
-            <Link to="/" className="text-primary hover:underline font-medium">
-              {ct.backToShop}
-            </Link>
+            <Link to="/" className="text-primary hover:underline font-medium">{ct.backToShop}</Link>
           </div>
         </div>
-        <Footer />
-        <CartDrawer />
+        <Footer /><CartDrawer />
       </div>
     );
   }
@@ -93,46 +68,21 @@ const CheckoutContent = () => {
               <CheckCircle2 className="h-8 w-8 text-primary" />
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-3">{ct.orderConfirmed}</h1>
-            <p className="text-muted-foreground mb-2">{ct.orderNumber}: #SPV-{Date.now().toString().slice(-6)}</p>
+            <p className="text-muted-foreground mb-2">{ct.orderNumber}: #ACH-{Date.now().toString().slice(-6)}</p>
             <p className="text-muted-foreground mb-8">{ct.confirmationMessage}</p>
-            <button
-              onClick={() => navigate("/")}
-              className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-            >
-              {ct.backToShop}
-            </button>
+            <button onClick={() => navigate("/")} className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">{ct.backToShop}</button>
           </div>
         </div>
-        <Footer />
-        <CartDrawer />
+        <Footer /><CartDrawer />
       </div>
     );
   }
 
-  const InputField = ({
-    label,
-    field,
-    type = "text",
-    placeholder = "",
-    colSpan = false,
-  }: {
-    label: string;
-    field: string;
-    type?: string;
-    placeholder?: string;
-    colSpan?: boolean;
-  }) => (
+  const InputField = ({ label, field, type = "text", placeholder = "", colSpan = false }: { label: string; field: string; type?: string; placeholder?: string; colSpan?: boolean }) => (
     <div className={colSpan ? "sm:col-span-2" : ""}>
       <label className="block text-sm font-medium text-foreground mb-1.5">{label}</label>
-      <input
-        type={type}
-        value={(form as Record<string, string>)[field] || ""}
-        onChange={(e) => updateField(field, e.target.value)}
-        placeholder={placeholder}
-        className={`w-full rounded-lg border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors ${
-          errors[field] ? "border-destructive" : "border-border"
-        }`}
-      />
+      <input type={type} value={(form as Record<string, string>)[field] || ""} onChange={(e) => updateField(field, e.target.value)} placeholder={placeholder}
+        className={`w-full rounded-lg border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors ${errors[field] ? "border-destructive" : "border-border"}`} />
       {errors[field] && <p className="text-xs text-destructive mt-1">{errors[field]}</p>}
     </div>
   );
@@ -140,28 +90,16 @@ const CheckoutContent = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-
       <main className="container mx-auto px-4 py-6 flex-1">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          {ct.backToShop}
+        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
+          <ChevronLeft className="h-4 w-4" />{ct.backToShop}
         </Link>
-
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{ct.title}</h1>
-
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left: form */}
             <div className="lg:flex-1 space-y-8">
-              {/* Address */}
               <section className="bg-card rounded-xl border border-border p-5 md:p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  {ct.deliveryAddress}
-                </h2>
+                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2"><MapPin className="h-5 w-5 text-primary" />{ct.deliveryAddress}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputField label={ct.firstName} field="firstName" />
                   <InputField label={ct.lastName} field="lastName" />
@@ -171,122 +109,61 @@ const CheckoutContent = () => {
                   <InputField label={ct.address} field="address" colSpan />
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-foreground mb-1.5">{ct.note}</label>
-                    <textarea
-                      value={form.note}
-                      onChange={(e) => updateField("note", e.target.value)}
-                      rows={3}
-                      placeholder={ct.notePlaceholder}
-                      className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                    />
+                    <textarea value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={3} placeholder={ct.notePlaceholder}
+                      className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
                   </div>
                 </div>
               </section>
-
-              {/* Payment method */}
               <section className="bg-card rounded-xl border border-border p-5 md:p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-primary" />
-                  {ct.paymentMethod}
-                </h2>
+                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2"><CreditCard className="h-5 w-5 text-primary" />{ct.paymentMethod}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {([
                     { id: "card" as const, label: ct.payCard, icon: CreditCard },
                     { id: "cash" as const, label: ct.payCash, icon: Truck },
                     { id: "transfer" as const, label: ct.payTransfer, icon: ShieldCheck },
                   ]).map(({ id, label, icon: Icon }) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => setPaymentMethod(id)}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-sm font-medium ${
-                        paymentMethod === id
-                          ? "border-primary bg-primary/5 text-primary"
-                          : "border-border text-muted-foreground hover:border-primary/50"
-                      }`}
-                    >
-                      <Icon className="h-6 w-6" />
-                      {label}
+                    <button key={id} type="button" onClick={() => setPaymentMethod(id)}
+                      className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-sm font-medium ${paymentMethod === id ? "border-primary bg-primary/5 text-primary" : "border-border text-muted-foreground hover:border-primary/50"}`}>
+                      <Icon className="h-6 w-6" />{label}
                     </button>
                   ))}
                 </div>
               </section>
             </div>
-
-            {/* Right: order summary */}
             <div className="lg:w-96">
               <div className="bg-card rounded-xl border border-border p-5 md:p-6 sticky top-24">
                 <h2 className="text-lg font-semibold text-foreground mb-4">{ct.orderSummary}</h2>
-
                 <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
                   {items.map((item) => {
                     const name = lang === "ka" ? item.product.nameKa : item.product.nameEn;
                     return (
                       <div key={item.product.id} className="flex gap-3">
-                        <img
-                          src={item.product.img}
-                          alt={name}
-                          className="w-14 h-14 rounded-lg object-cover shrink-0"
-                        />
+                        <img src={item.product.img} alt={name} className="w-14 h-14 rounded-lg object-cover shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground line-clamp-1">{name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {item.quantity} × {item.product.price} {t.products.currency}
-                          </p>
+                          <p className="text-xs text-muted-foreground">{item.quantity} × {item.product.price} {t.products.currency}</p>
                         </div>
-                        <span className="text-sm font-semibold text-foreground shrink-0">
-                          {item.quantity * item.product.price} {t.products.currency}
-                        </span>
+                        <span className="text-sm font-semibold text-foreground shrink-0">{item.quantity * item.product.price} {t.products.currency}</span>
                       </div>
                     );
                   })}
                 </div>
-
                 <div className="border-t border-border pt-4 space-y-2 text-sm">
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>{ct.subtotal}</span>
-                    <span>{totalPrice} {t.products.currency}</span>
-                  </div>
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>{ct.delivery}</span>
-                    <span>{deliveryFee === 0 ? ct.free : `${deliveryFee} ${t.products.currency}`}</span>
-                  </div>
-                  <div className="flex justify-between text-foreground font-bold text-lg pt-2 border-t border-border">
-                    <span>{ct.total}</span>
-                    <span className="text-primary">{grandTotal} {t.products.currency}</span>
-                  </div>
+                  <div className="flex justify-between text-muted-foreground"><span>{ct.subtotal}</span><span>{totalPrice} {t.products.currency}</span></div>
+                  <div className="flex justify-between text-muted-foreground"><span>{ct.delivery}</span><span>{deliveryFee === 0 ? ct.free : `${deliveryFee} ${t.products.currency}`}</span></div>
+                  <div className="flex justify-between text-foreground font-bold text-lg pt-2 border-t border-border"><span>{ct.total}</span><span className="text-primary">{grandTotal} {t.products.currency}</span></div>
                 </div>
-
-                <button
-                  type="submit"
-                  className="w-full mt-6 bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold text-base hover:opacity-90 transition-opacity"
-                >
-                  {ct.placeOrder}
-                </button>
-
-                <p className="text-xs text-muted-foreground text-center mt-3 flex items-center justify-center gap-1">
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  {ct.securePayment}
-                </p>
+                <button type="submit" className="w-full mt-6 bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold text-base hover:opacity-90 transition-opacity">{ct.placeOrder}</button>
+                <p className="text-xs text-muted-foreground text-center mt-3 flex items-center justify-center gap-1"><ShieldCheck className="h-3.5 w-3.5" />{ct.securePayment}</p>
               </div>
             </div>
           </div>
         </form>
       </main>
-
-      <div className="mt-auto">
-        <Footer />
-      </div>
+      <div className="mt-auto"><Footer /></div>
       <CartDrawer />
     </div>
   );
 };
-
-const Checkout = () => (
-  <LanguageProvider>
-    <CartProvider>
-      <CheckoutContent />
-    </CartProvider>
-  </LanguageProvider>
-);
 
 export default Checkout;
