@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft, Heart } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { CartProvider } from "@/context/CartContext";
-import { WishlistProvider, useWishlist } from "@/context/WishlistContext";
+import { useWishlist } from "@/context/WishlistContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import ProductCard from "@/components/ProductCard";
 
-const WishlistContent = () => {
+const Wishlist = () => {
   const { lang, t } = useLanguage();
   const { items } = useWishlist();
 
@@ -17,15 +16,11 @@ const WishlistContent = () => {
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
-          <ChevronLeft className="h-4 w-4" />
-          {t.productDetail.backToHome}
+          <ChevronLeft className="h-4 w-4" />{t.productDetail.backToHome}
         </Link>
-
         <h1 className="text-3xl font-bold text-foreground mb-8 flex items-center gap-3">
-          <Heart className="h-7 w-7 text-primary" />
-          {t.wishlist.title}
+          <Heart className="h-7 w-7 text-primary" />{t.wishlist.title}
         </h1>
-
         {items.length === 0 ? (
           <div className="text-center py-16">
             <Heart className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
@@ -44,9 +39,5 @@ const WishlistContent = () => {
     </div>
   );
 };
-
-const Wishlist = () => (
-  <CartProvider><WishlistProvider><WishlistContent /></WishlistProvider></CartProvider>
-);
 
 export default Wishlist;
