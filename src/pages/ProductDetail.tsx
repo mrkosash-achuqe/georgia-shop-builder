@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/data/products";
+import { useWishlist } from "@/context/WishlistContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
