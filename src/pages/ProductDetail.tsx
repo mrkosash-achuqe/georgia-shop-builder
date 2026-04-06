@@ -33,6 +33,7 @@ const ProductDetailContent = () => {
   const { id } = useParams<{ id: string }>();
   const { lang, t } = useLanguage();
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
