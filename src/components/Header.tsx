@@ -228,6 +228,11 @@ const Header = () => {
                 <span className="flex items-center gap-2">
                   <Heart className="h-4 w-4" />
                   {t.nav.wishlist}
+                  {wishlistItems.length > 0 && (
+                    <span className="bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                      {wishlistItems.length}
+                    </span>
+                  )}
                 </span>
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
