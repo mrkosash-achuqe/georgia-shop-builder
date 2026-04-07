@@ -51,8 +51,8 @@ const Blog = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogPosts.map((post) => (
             <article key={post.id} className="bg-card rounded-xl border border-border overflow-hidden group">
-              <div className="aspect-video overflow-hidden">
-                <img src={post.img} alt={lang === "ka" ? post.titleKa : post.titleEn} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              <div className="aspect-video overflow-hidden relative bg-secondary">
+                <img src={post.img} alt={lang === "ka" ? post.titleKa : post.titleEn} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               </div>
               <div className="p-5">
                 <time className="text-xs text-muted-foreground">{post.date}</time>
