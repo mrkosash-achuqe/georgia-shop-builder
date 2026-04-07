@@ -3,6 +3,7 @@ import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +12,7 @@ const Header = () => {
   const { lang, setLang, t } = useLanguage();
   const { totalItems, setIsOpen } = useCart();
   const { user, profile, signOut, setAuthModalOpen } = useAuth();
+  const { items: wishlistItems } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -76,10 +78,15 @@ const Header = () => {
 
             <Link
               to="/wishlist"
-              className="text-muted-foreground hover:text-foreground transition-colors hidden sm:flex"
+              className="relative text-muted-foreground hover:text-foreground transition-colors hidden sm:flex"
               title={t.nav.wishlist}
             >
               <Heart className="h-5 w-5" />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-1.5 -right-2.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {wishlistItems.length}
+                </span>
+              )}
             </Link>
 
             <button
