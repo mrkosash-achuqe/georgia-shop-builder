@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
-import { ChevronLeft, Heart } from "lucide-react";
+import { ChevronLeft, Heart, X, Star } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useWishlist } from "@/context/WishlistContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
-import ProductCard from "@/components/ProductCard";
 
 const Wishlist = () => {
   const { lang, t } = useLanguage();
-  const { items } = useWishlist();
+  const { items, toggleWishlist } = useWishlist();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -20,6 +19,9 @@ const Wishlist = () => {
         </Link>
         <h1 className="text-3xl font-bold text-foreground mb-8 flex items-center gap-3">
           <Heart className="h-7 w-7 text-primary" />{t.wishlist.title}
+          {items.length > 0 && (
+            <span className="text-lg font-normal text-muted-foreground">({items.length})</span>
+          )}
         </h1>
         {items.length === 0 ? (
           <div className="text-center py-16">
@@ -27,10 +29,42 @@ const Wishlist = () => {
             <p className="text-lg text-muted-foreground">{t.wishlist.empty}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-            {items.map((product) => (
-              <ProductCard key={product.id} product={product} lang={lang} currency={t.products.currency} />
-            ))}
+          <div className="space-y-3">
+            {items.map((product) => {
+              const name = lang === "ka" ? product.nameKa : product.nameEn;
+              return (
+                <div key={product.id} className="flex items-center gap-4 bg-card rounded-xl border border-border p-3 hover:shadow-md transition-shadow">
+                  <Link to={`/product/${product.id}`} className="shrink-0">
+                    <img
+                      src={product.img}
+                      alt={name}
+                      className="w-20 h-20 rounded-lg object-cover border border-border"
+                    />
+                  </Link>
+                  <div className="flex-1 min-w-0">
+                    <Link to={`/product/${product.id}`} className="text-sm font-medium text-foreground hover:text-primary transition-colors line-clamp-1">
+                      {name}
+                    </Link>
+                    <div className="flex items-center gap-1 mt-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-3 w-3 ${i < Math.floor(product.rating) ? "fill-star text-star" : "text-border"}`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-sm font-bold text-primary mt-1">{product.price} {t.products.currency}</p>
+                  </div>
+                  <button
+                    onClick={() => toggleWishlist(product)}
+                    className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0"
+                    title={lang === "ka" ? "წაშლა" : "Remove"}
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </main>
