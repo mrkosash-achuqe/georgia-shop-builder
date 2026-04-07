@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart, Shield } from "lucide-react";
+import { Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart, Shield } from "lucide-react";
+import SearchDropdown from "@/components/SearchDropdown";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
