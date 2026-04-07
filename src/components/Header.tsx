@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Search, Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart, Shield } from "lucide-react";
+import { Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart, Shield } from "lucide-react";
+import SearchDropdown from "@/components/SearchDropdown";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -54,16 +55,7 @@ const Header = () => {
 
           {/* Search (desktop) */}
           <div className="flex-1 max-w-xl mx-4 hidden md:flex">
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder={t.nav.search}
-                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md bg-primary p-2 text-primary-foreground hover:opacity-90 transition-opacity">
-                <Search className="h-4 w-4" />
-              </button>
-            </div>
+            <SearchDropdown />
           </div>
 
           {/* Right actions */}
@@ -152,16 +144,7 @@ const Header = () => {
 
         {/* Mobile search */}
         <div className="md:hidden px-4 pb-3">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder={t.nav.search}
-              className="w-full rounded-lg border border-border bg-background px-4 py-2 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md bg-primary p-2 text-primary-foreground">
-              <Search className="h-4 w-4" />
-            </button>
-          </div>
+          <SearchDropdown />
         </div>
       </header>
 
