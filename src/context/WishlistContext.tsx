@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
 import { Product } from "@/data/products";
 
 interface WishlistContextType {
@@ -9,8 +9,26 @@ interface WishlistContextType {
 
 const WishlistContext = createContext<WishlistContextType | null>(null);
 
+const STORAGE_KEY = "achuqe_wishlist_v1";
+
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<Product[]>([]);
+  const [items, setItems] = useState<Product[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as Product[]) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      /* ignore */
+    }
+  }, [items]);
 
   const toggleWishlist = useCallback((product: Product) => {
     setItems((prev) => {
