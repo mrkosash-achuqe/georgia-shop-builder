@@ -376,6 +376,7 @@ export const translations = {
       empty: "Your wishlist is empty",
       addedToWishlist: "Added to wishlist",
       removedFromWishlist: "Removed from wishlist",
+      clear: "Clear wishlist",
     },
   },
 } as const;

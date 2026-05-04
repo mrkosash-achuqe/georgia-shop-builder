@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ChevronLeft, Heart, X, Star } from "lucide-react";
+import { ChevronLeft, Heart, X, Star, Trash2 } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useWishlist } from "@/context/WishlistContext";
 import Header from "@/components/Header";
@@ -8,7 +8,7 @@ import CartDrawer from "@/components/CartDrawer";
 
 const Wishlist = () => {
   const { lang, t } = useLanguage();
-  const { items, toggleWishlist } = useWishlist();
+  const { items, toggleWishlist, clearWishlist } = useWishlist();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -21,6 +21,15 @@ const Wishlist = () => {
           <Heart className="h-7 w-7 text-primary" />{t.wishlist.title}
           {items.length > 0 && (
             <span className="text-lg font-normal text-muted-foreground">({items.length})</span>
+          )}
+          {items.length > 0 && (
+            <button
+              onClick={clearWishlist}
+              className="ml-auto inline-flex items-center gap-1.5 text-sm font-normal text-muted-foreground hover:text-destructive transition-colors px-3 py-1.5 rounded-lg hover:bg-destructive/10"
+            >
+              <Trash2 className="h-4 w-4" />
+              {t.wishlist.clear}
+            </button>
           )}
         </h1>
         {items.length === 0 ? (
