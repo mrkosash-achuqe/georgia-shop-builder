@@ -5,6 +5,7 @@ interface WishlistContextType {
   items: Product[];
   toggleWishlist: (product: Product) => void;
   isInWishlist: (productId: string) => boolean;
+  clearWishlist: () => void;
 }
 
 const WishlistContext = createContext<WishlistContextType | null>(null);
@@ -43,8 +44,10 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     [items]
   );
 
+  const clearWishlist = useCallback(() => setItems([]), []);
+
   return (
-    <WishlistContext.Provider value={{ items, toggleWishlist, isInWishlist }}>
+    <WishlistContext.Provider value={{ items, toggleWishlist, isInWishlist, clearWishlist }}>
       {children}
     </WishlistContext.Provider>
   );

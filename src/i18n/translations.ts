@@ -187,6 +187,7 @@ export const translations = {
       empty: "სურვილების სია ცარიელია",
       addedToWishlist: "დაემატა სურვილების სიაში",
       removedFromWishlist: "წაიშალა სურვილების სიიდან",
+      clear: "სიის გასუფთავება",
     },
   },
   en: {
