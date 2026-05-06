@@ -77,7 +77,13 @@ function isValidUsage(usage) {
   if (allKeys.has(usage)) return true;
   // prefix of some leaf?
   const prefix = usage + ".";
-  return allKeysArr.some((k) => k.startsWith(prefix));
+  if (allKeysArr.some((k) => k.startsWith(prefix))) return true;
+  // any ancestor is a leaf? (e.g. t.categories.items.map -> categories.items is a leaf array)
+  const parts = usage.split(".");
+  for (let i = parts.length - 1; i > 0; i--) {
+    if (allKeys.has(parts.slice(0, i).join("."))) return true;
+  }
+  return false;
 }
 
 const invalidUsages = [];
