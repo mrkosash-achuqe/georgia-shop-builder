@@ -73,6 +73,10 @@ export const translations = {
       checkout: "შეკვეთის გაფორმება",
       clearCart: "კალათის გასუფთავება",
       addedToCart: "დაემატა კალათაში",
+      confirmTitle: "კალათის გასუფთავება?",
+      confirmDesc: "ნამდვილად გსურთ კალათიდან ყველა პროდუქტის წაშლა? ამ მოქმედების გაუქმება შეუძლებელია.",
+      confirmAction: "დიახ, გასუფთავება",
+      cancel: "გაუქმება",
     },
     auth: {
       signIn: "შესვლა",
@@ -188,6 +192,10 @@ export const translations = {
       addedToWishlist: "დაემატა სურვილების სიაში",
       removedFromWishlist: "წაიშალა სურვილების სიიდან",
       clear: "სიის გასუფთავება",
+      confirmTitle: "სიის გასუფთავება?",
+      confirmDesc: "ნამდვილად გსურთ სურვილების სიის სრულად გასუფთავება? ამ მოქმედების გაუქმება შეუძლებელია.",
+      confirmAction: "დიახ, გასუფთავება",
+      cancel: "გაუქმება",
     },
   },
   en: {
@@ -262,6 +270,10 @@ export const translations = {
       checkout: "Checkout",
       clearCart: "Clear Cart",
       addedToCart: "Added to cart",
+      confirmTitle: "Clear cart?",
+      confirmDesc: "Are you sure you want to remove all items from your cart? This action cannot be undone.",
+      confirmAction: "Yes, clear",
+      cancel: "Cancel",
     },
     auth: {
       signIn: "Sign In",
@@ -377,6 +389,10 @@ export const translations = {
       addedToWishlist: "Added to wishlist",
       removedFromWishlist: "Removed from wishlist",
       clear: "Clear wishlist",
+      confirmTitle: "Clear wishlist?",
+      confirmDesc: "Are you sure you want to clear your entire wishlist? This action cannot be undone.",
+      confirmAction: "Yes, clear",
+      cancel: "Cancel",
     },
   },
 } as const;

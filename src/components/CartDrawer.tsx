@@ -2,6 +2,17 @@ import { X, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const CartDrawer = () => {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice, isOpen, setIsOpen } = useCart();
@@ -130,12 +141,28 @@ const CartDrawer = () => {
             >
               {ct.checkout}
             </button>
-            <button
-              onClick={clearCart}
-              className="w-full text-sm text-muted-foreground hover:text-destructive transition-colors"
-            >
-              {ct.clearCart}
-            </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="w-full text-sm text-muted-foreground hover:text-destructive transition-colors">
+                  {ct.clearCart}
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{ct.confirmTitle}</AlertDialogTitle>
+                  <AlertDialogDescription>{ct.confirmDesc}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{ct.cancel}</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={clearCart}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {ct.confirmAction}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
       </div>

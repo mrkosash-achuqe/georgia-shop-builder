@@ -5,6 +5,17 @@ import { useWishlist } from "@/context/WishlistContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Wishlist = () => {
   const { lang, t } = useLanguage();
@@ -23,13 +34,31 @@ const Wishlist = () => {
             <span className="text-lg font-normal text-muted-foreground">({items.length})</span>
           )}
           {items.length > 0 && (
-            <button
-              onClick={clearWishlist}
-              className="ml-auto inline-flex items-center gap-1.5 text-sm font-normal text-muted-foreground hover:text-destructive transition-colors px-3 py-1.5 rounded-lg hover:bg-destructive/10"
-            >
-              <Trash2 className="h-4 w-4" />
-              {t.wishlist.clear}
-            </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  className="ml-auto inline-flex items-center gap-1.5 text-sm font-normal text-muted-foreground hover:text-destructive transition-colors px-3 py-1.5 rounded-lg hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  {t.wishlist.clear}
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t.wishlist.confirmTitle}</AlertDialogTitle>
+                  <AlertDialogDescription>{t.wishlist.confirmDesc}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t.wishlist.cancel}</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={clearWishlist}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {t.wishlist.confirmAction}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </h1>
         {items.length === 0 ? (
