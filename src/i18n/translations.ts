@@ -73,6 +73,10 @@ export const translations = {
       checkout: "შეკვეთის გაფორმება",
       clearCart: "კალათის გასუფთავება",
       addedToCart: "დაემატა კალათაში",
+      confirmTitle: "კალათის გასუფთავება?",
+      confirmDesc: "ნამდვილად გსურთ კალათიდან ყველა პროდუქტის წაშლა? ამ მოქმედების გაუქმება შეუძლებელია.",
+      confirmAction: "დიახ, გასუფთავება",
+      cancel: "გაუქმება",
     },
     auth: {
       signIn: "შესვლა",
@@ -266,6 +270,10 @@ export const translations = {
       checkout: "Checkout",
       clearCart: "Clear Cart",
       addedToCart: "Added to cart",
+      confirmTitle: "Clear cart?",
+      confirmDesc: "Are you sure you want to remove all items from your cart? This action cannot be undone.",
+      confirmAction: "Yes, clear",
+      cancel: "Cancel",
     },
     auth: {
       signIn: "Sign In",
