@@ -2,13 +2,21 @@
 // Validates i18n translations:
 // 1. KA and EN trees have identical key structure
 // 2. Every `t.x.y(.z)` usage in src/ resolves to an existing translation key
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, extname } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const TRANSLATIONS_PATH = join(ROOT, "src/i18n/translations.ts");
 const SRC_DIR = join(ROOT, "src");
+
+// CLI args: --json[=path]   --quiet
+const argv = process.argv.slice(2);
+const quiet = argv.includes("--quiet");
+const jsonArg = argv.find((a) => a === "--json" || a.startsWith("--json="));
+const jsonOut = jsonArg
+  ? (jsonArg.includes("=") ? jsonArg.split("=")[1] : "i18n-report.json")
+  : null;
 
 // --- Load translations by stripping TS and evaluating ---
 const tsSrc = readFileSync(TRANSLATIONS_PATH, "utf8");
