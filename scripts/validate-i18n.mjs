@@ -156,23 +156,24 @@ function ghAnnotation(level, file, line, message) {
 const BOLD = "\x1b[1m", DIM = "\x1b[2m", RED = "\x1b[31m", YEL = "\x1b[33m",
       GRN = "\x1b[32m", CYN = "\x1b[36m", RST = "\x1b[0m";
 const ok = (n) => (n === 0 ? `${GRN}✓${RST}` : `${RED}✗${RST}`);
-const sectionHeader = (title) => console.log(`\n${BOLD}${title}${RST}`);
+const log = (...a) => { if (!quiet) console.log(...a); };
+const sectionHeader = (title) => log(`\n${BOLD}${title}${RST}`);
 
-console.log(`${BOLD}=== i18n validation ===${RST}`);
-console.log(`${DIM}translations: ${TRANSLATIONS_REL}${RST}`);
-console.log(`${DIM}scanned files: ${srcFiles.length} | KA keys: ${kaKeys.size} | EN keys: ${enKeys.size}${RST}`);
+log(`${BOLD}=== i18n validation ===${RST}`);
+log(`${DIM}translations: ${TRANSLATIONS_REL}${RST}`);
+log(`${DIM}scanned files: ${srcFiles.length} | KA keys: ${kaKeys.size} | EN keys: ${enKeys.size}${RST}`);
 
 // 1. Missing in EN (defined in KA, not in EN)
 sectionHeader(`${ok(missingInEn.length)} Missing in EN  (${missingInEn.length})`);
 if (missingInEn.length === 0) {
-  console.log(`   ${DIM}— none —${RST}`);
+  log(`   ${DIM}— none —${RST}`);
 } else {
   for (const key of missingInEn) {
     const line = findKeyLine(key);
     const loc = line ? `${TRANSLATIONS_REL}:${line}` : TRANSLATIONS_REL;
-    console.log(`   ${RED}✗${RST} ${BOLD}${key}${RST}`);
-    console.log(`       ${DIM}defined at:${RST} ${loc}`);
-    console.log(`       ${YEL}fix:${RST} add "${key}" to translations.en`);
+    log(`   ${RED}✗${RST} ${BOLD}${key}${RST}`);
+    log(`       ${DIM}defined at:${RST} ${loc}`);
+    log(`       ${YEL}fix:${RST} add "${key}" to translations.en`);
     ghAnnotation("error", TRANSLATIONS_REL, line,
       `i18n: key "${key}" is missing in EN translations`);
   }
@@ -181,14 +182,14 @@ if (missingInEn.length === 0) {
 // 2. Missing in KA (defined in EN, not in KA)
 sectionHeader(`${ok(missingInKa.length)} Missing in KA  (${missingInKa.length})`);
 if (missingInKa.length === 0) {
-  console.log(`   ${DIM}— none —${RST}`);
+  log(`   ${DIM}— none —${RST}`);
 } else {
   for (const key of missingInKa) {
     const line = findKeyLine(key);
     const loc = line ? `${TRANSLATIONS_REL}:${line}` : TRANSLATIONS_REL;
-    console.log(`   ${RED}✗${RST} ${BOLD}${key}${RST}`);
-    console.log(`       ${DIM}defined at:${RST} ${loc}`);
-    console.log(`       ${YEL}fix:${RST} add "${key}" to translations.ka`);
+    log(`   ${RED}✗${RST} ${BOLD}${key}${RST}`);
+    log(`       ${DIM}defined at:${RST} ${loc}`);
+    log(`       ${YEL}fix:${RST} add "${key}" to translations.ka`);
     ghAnnotation("error", TRANSLATIONS_REL, line,
       `i18n: key "${key}" is missing in KA translations`);
   }
@@ -196,21 +197,23 @@ if (missingInKa.length === 0) {
 
 // 3. Invalid usages — show every location, suggestions, and code snippets
 sectionHeader(`${ok(invalidUsages.length)} Invalid t.* usages  (${invalidUsages.length})`);
+const invalidUsagesEnriched = invalidUsages.map(({ key, locs }) => ({
+  key, locs, suggestions: suggest(key, allKeysArr),
+}));
 if (invalidUsages.length === 0) {
-  console.log(`   ${DIM}— none —${RST}`);
+  log(`   ${DIM}— none —${RST}`);
 } else {
-  for (const { key, locs } of invalidUsages) {
-    console.log(`   ${RED}✗${RST} ${BOLD}t.${key}${RST}  ${DIM}(${locs.length} usage${locs.length === 1 ? "" : "s"})${RST}`);
-    const hints = suggest(key, allKeysArr);
+  for (const { key, locs, suggestions: hints } of invalidUsagesEnriched) {
+    log(`   ${RED}✗${RST} ${BOLD}t.${key}${RST}  ${DIM}(${locs.length} usage${locs.length === 1 ? "" : "s"})${RST}`);
     if (hints.length) {
-      console.log(`       ${CYN}did you mean:${RST} ${hints.map((h) => `t.${h}`).join(", ")}`);
+      log(`       ${CYN}did you mean:${RST} ${hints.map((h) => `t.${h}`).join(", ")}`);
     }
     for (const l of locs) {
       const rel = l.file.replace(/^\//, "");
-      console.log(`       ${DIM}↳${RST} ${rel}:${l.line}`);
+      log(`       ${DIM}↳${RST} ${rel}:${l.line}`);
       try {
         const snippet = readFileSync(join(ROOT, rel), "utf8").split("\n")[l.line - 1] || "";
-        console.log(`           ${DIM}${snippet.trim().slice(0, 140)}${RST}`);
+        log(`           ${DIM}${snippet.trim().slice(0, 140)}${RST}`);
       } catch {}
       ghAnnotation("error", rel, l.line,
         `i18n: invalid translation key "t.${key}"` +
@@ -221,27 +224,86 @@ if (invalidUsages.length === 0) {
 
 // 4. Unused keys (warning only)
 sectionHeader(`${unusedKeys.length === 0 ? GRN + "✓" + RST : YEL + "•" + RST} Unused translation keys  (${unusedKeys.length})`);
+const unusedKeysEnriched = unusedKeys.map((key) => ({ key, line: findKeyLine(key) }));
 if (unusedKeys.length === 0) {
-  console.log(`   ${DIM}— none —${RST}`);
+  log(`   ${DIM}— none —${RST}`);
 } else {
-  for (const key of unusedKeys) {
-    const line = findKeyLine(key);
-    console.log(`   ${YEL}•${RST} ${key}  ${DIM}${line ? `(${TRANSLATIONS_REL}:${line})` : ""}${RST}`);
+  for (const { key, line } of unusedKeysEnriched) {
+    log(`   ${YEL}•${RST} ${key}  ${DIM}${line ? `(${TRANSLATIONS_REL}:${line})` : ""}${RST}`);
   }
 }
 
 // --- Summary ---
 const errors = missingInEn.length + missingInKa.length + invalidUsages.length;
-console.log(
+log(
   `\n${BOLD}Summary:${RST} ` +
   `missing-en=${missingInEn.length}  ` +
   `missing-ka=${missingInKa.length}  ` +
   `invalid-usages=${invalidUsages.length}  ` +
   `unused=${unusedKeys.length}`
 );
-console.log(
+log(
   errors === 0
     ? `${GRN}${BOLD}✓ All i18n checks passed${RST}`
     : `${RED}${BOLD}✗ ${errors} i18n error(s) found${RST}`
 );
+
+// --- JSON export ---
+const report = {
+  schemaVersion: 1,
+  generatedAt: new Date().toISOString(),
+  translationsFile: TRANSLATIONS_REL,
+  stats: {
+    scannedFiles: srcFiles.length,
+    kaKeys: kaKeys.size,
+    enKeys: enKeys.size,
+    usagesFound: usages.size,
+    errorCount: errors,
+    warningCount: unusedKeys.length,
+  },
+  status: errors === 0 ? "ok" : "error",
+  missingInEn: missingInEn.map((key) => ({
+    key, file: TRANSLATIONS_REL, line: findKeyLine(key),
+    fix: `add "${key}" to translations.en`,
+  })),
+  missingInKa: missingInKa.map((key) => ({
+    key, file: TRANSLATIONS_REL, line: findKeyLine(key),
+    fix: `add "${key}" to translations.ka`,
+  })),
+  invalidUsages: invalidUsagesEnriched.map(({ key, locs, suggestions }) => ({
+    key,
+    suggestions,
+    locations: locs.map((l) => ({ file: l.file.replace(/^\//, ""), line: l.line })),
+  })),
+  unusedKeys: unusedKeysEnriched.map(({ key, line }) => ({
+    key, file: TRANSLATIONS_REL, line,
+  })),
+};
+
+const jsonStr = JSON.stringify(report, null, 2);
+
+if (jsonOut) {
+  const outPath = jsonOut.startsWith("/") ? jsonOut : join(ROOT, jsonOut);
+  try { mkdirSync(join(outPath, ".."), { recursive: true }); } catch {}
+  writeFileSync(outPath, jsonStr + "\n");
+  if (!quiet) console.log(`\n${DIM}JSON report written to:${RST} ${outPath.replace(ROOT, "")}`);
+}
+if (quiet) {
+  // In quiet mode, still emit the JSON to stdout for piping
+  process.stdout.write(jsonStr + "\n");
+}
+
+// GitHub Actions: expose summary outputs for downstream steps
+if (IS_CI && process.env.GITHUB_OUTPUT) {
+  try {
+    const out = `status=${report.status}\n` +
+      `errors=${errors}\n` +
+      `missing_en=${missingInEn.length}\n` +
+      `missing_ka=${missingInKa.length}\n` +
+      `invalid_usages=${invalidUsages.length}\n` +
+      `unused=${unusedKeys.length}\n`;
+    writeFileSync(process.env.GITHUB_OUTPUT, out, { flag: "a" });
+  } catch {}
+}
+
 process.exit(errors === 0 ? 0 : 1);
