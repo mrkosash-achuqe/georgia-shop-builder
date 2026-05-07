@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint:i18n": "node scripts/validate-i18n.mjs"
+    "lint:i18n": "node scripts/validate-i18n.mjs",
+    "lint:i18n:json": "node scripts/validate-i18n.mjs --json=i18n-report.json"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
