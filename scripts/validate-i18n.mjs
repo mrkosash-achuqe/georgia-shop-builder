@@ -101,25 +101,139 @@ for (const leaf of allKeysArr) {
   if (!hit) unusedKeys.push(leaf);
 }
 
+// --- Helpers for richer reporting ---
+const IS_CI = !!process.env.GITHUB_ACTIONS;
+const TRANSLATIONS_REL = "src/i18n/translations.ts";
+
+// Build a map of leaf-key -> line number in translations.ts (KA side)
+const translationsLines = readFileSync(TRANSLATIONS_PATH, "utf8").split("\n");
+function findKeyLine(dottedKey) {
+  const last = dottedKey.split(".").pop();
+  const re = new RegExp(`(^|[^\\w])${last}\\s*:`);
+  for (let i = 0; i < translationsLines.length; i++) {
+    if (re.test(translationsLines[i])) return i + 1;
+  }
+  return null;
+}
+
+// Levenshtein for "did you mean" suggestions
+function distance(a, b) {
+  const m = a.length, n = b.length;
+  if (!m) return n; if (!n) return m;
+  const dp = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+  return dp[m][n];
+}
+function suggest(usage, pool, max = 3) {
+  return [...pool]
+    .map((k) => ({ k, d: distance(usage, k) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, max)
+    .filter((x) => x.d <= Math.max(3, Math.floor(usage.length / 2)))
+    .map((x) => x.k);
+}
+
+function ghAnnotation(level, file, line, message) {
+  if (!IS_CI) return;
+  const loc = file ? `file=${file.replace(/^\//, "")}${line ? `,line=${line}` : ""}` : "";
+  console.log(`::${level} ${loc}::${message.replace(/\n/g, "%0A")}`);
+}
+
 // --- Report ---
-const c = (n) => (n === 0 ? "✓" : "✗");
-console.log("=== i18n validation ===\n");
+const BOLD = "\x1b[1m", DIM = "\x1b[2m", RED = "\x1b[31m", YEL = "\x1b[33m",
+      GRN = "\x1b[32m", CYN = "\x1b[36m", RST = "\x1b[0m";
+const ok = (n) => (n === 0 ? `${GRN}✓${RST}` : `${RED}✗${RST}`);
+const sectionHeader = (title) => console.log(`\n${BOLD}${title}${RST}`);
 
-console.log(`${c(missingInEn.length)} Keys in KA but missing in EN: ${missingInEn.length}`);
-missingInEn.forEach((k) => console.log("   - " + k));
+console.log(`${BOLD}=== i18n validation ===${RST}`);
+console.log(`${DIM}translations: ${TRANSLATIONS_REL}${RST}`);
+console.log(`${DIM}scanned files: ${srcFiles.length} | KA keys: ${kaKeys.size} | EN keys: ${enKeys.size}${RST}`);
 
-console.log(`\n${c(missingInKa.length)} Keys in EN but missing in KA: ${missingInKa.length}`);
-missingInKa.forEach((k) => console.log("   - " + k));
+// 1. Missing in EN (defined in KA, not in EN)
+sectionHeader(`${ok(missingInEn.length)} Missing in EN  (${missingInEn.length})`);
+if (missingInEn.length === 0) {
+  console.log(`   ${DIM}— none —${RST}`);
+} else {
+  for (const key of missingInEn) {
+    const line = findKeyLine(key);
+    const loc = line ? `${TRANSLATIONS_REL}:${line}` : TRANSLATIONS_REL;
+    console.log(`   ${RED}✗${RST} ${BOLD}${key}${RST}`);
+    console.log(`       ${DIM}defined at:${RST} ${loc}`);
+    console.log(`       ${YEL}fix:${RST} add "${key}" to translations.en`);
+    ghAnnotation("error", TRANSLATIONS_REL, line,
+      `i18n: key "${key}" is missing in EN translations`);
+  }
+}
 
-console.log(`\n${c(invalidUsages.length)} Invalid t.* usages: ${invalidUsages.length}`);
-invalidUsages.forEach(({ key, locs }) => {
-  console.log(`   - t.${key}`);
-  locs.slice(0, 3).forEach((l) => console.log(`       ${l.file}:${l.line}`));
-});
+// 2. Missing in KA (defined in EN, not in KA)
+sectionHeader(`${ok(missingInKa.length)} Missing in KA  (${missingInKa.length})`);
+if (missingInKa.length === 0) {
+  console.log(`   ${DIM}— none —${RST}`);
+} else {
+  for (const key of missingInKa) {
+    const line = findKeyLine(key);
+    const loc = line ? `${TRANSLATIONS_REL}:${line}` : TRANSLATIONS_REL;
+    console.log(`   ${RED}✗${RST} ${BOLD}${key}${RST}`);
+    console.log(`       ${DIM}defined at:${RST} ${loc}`);
+    console.log(`       ${YEL}fix:${RST} add "${key}" to translations.ka`);
+    ghAnnotation("error", TRANSLATIONS_REL, line,
+      `i18n: key "${key}" is missing in KA translations`);
+  }
+}
 
-console.log(`\n• Unused translation keys: ${unusedKeys.length}`);
-unusedKeys.forEach((k) => console.log("   - " + k));
+// 3. Invalid usages — show every location, suggestions, and code snippets
+sectionHeader(`${ok(invalidUsages.length)} Invalid t.* usages  (${invalidUsages.length})`);
+if (invalidUsages.length === 0) {
+  console.log(`   ${DIM}— none —${RST}`);
+} else {
+  for (const { key, locs } of invalidUsages) {
+    console.log(`   ${RED}✗${RST} ${BOLD}t.${key}${RST}  ${DIM}(${locs.length} usage${locs.length === 1 ? "" : "s"})${RST}`);
+    const hints = suggest(key, allKeysArr);
+    if (hints.length) {
+      console.log(`       ${CYN}did you mean:${RST} ${hints.map((h) => `t.${h}`).join(", ")}`);
+    }
+    for (const l of locs) {
+      const rel = l.file.replace(/^\//, "");
+      console.log(`       ${DIM}↳${RST} ${rel}:${l.line}`);
+      try {
+        const snippet = readFileSync(join(ROOT, rel), "utf8").split("\n")[l.line - 1] || "";
+        console.log(`           ${DIM}${snippet.trim().slice(0, 140)}${RST}`);
+      } catch {}
+      ghAnnotation("error", rel, l.line,
+        `i18n: invalid translation key "t.${key}"` +
+        (hints.length ? ` — did you mean ${hints.map((h) => `t.${h}`).join(", ")}?` : ""));
+    }
+  }
+}
 
+// 4. Unused keys (warning only)
+sectionHeader(`${unusedKeys.length === 0 ? GRN + "✓" + RST : YEL + "•" + RST} Unused translation keys  (${unusedKeys.length})`);
+if (unusedKeys.length === 0) {
+  console.log(`   ${DIM}— none —${RST}`);
+} else {
+  for (const key of unusedKeys) {
+    const line = findKeyLine(key);
+    console.log(`   ${YEL}•${RST} ${key}  ${DIM}${line ? `(${TRANSLATIONS_REL}:${line})` : ""}${RST}`);
+  }
+}
+
+// --- Summary ---
 const errors = missingInEn.length + missingInKa.length + invalidUsages.length;
-console.log(`\n${errors === 0 ? "✓ All checks passed" : `✗ ${errors} error(s) found`}`);
+console.log(
+  `\n${BOLD}Summary:${RST} ` +
+  `missing-en=${missingInEn.length}  ` +
+  `missing-ka=${missingInKa.length}  ` +
+  `invalid-usages=${invalidUsages.length}  ` +
+  `unused=${unusedKeys.length}`
+);
+console.log(
+  errors === 0
+    ? `${GRN}${BOLD}✓ All i18n checks passed${RST}`
+    : `${RED}${BOLD}✗ ${errors} i18n error(s) found${RST}`
+);
 process.exit(errors === 0 ? 0 : 1);
