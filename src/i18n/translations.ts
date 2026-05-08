@@ -386,6 +386,10 @@ export const translations = {
       subtitle: "News and Articles",
       readMore: "Read More",
       comingSoon: "New articles coming soon...",
+      author: "Author",
+      readTime: "min read",
+      close: "Close",
+      publishedOn: "Published on",
     },
     wishlist: {
       title: "Wishlist",
