@@ -118,7 +118,6 @@ for (const leaf of allKeysArr) {
 
 // --- Helpers for richer reporting ---
 const IS_CI = !!process.env.GITHUB_ACTIONS;
-const TRANSLATIONS_REL = "src/i18n/translations.ts";
 
 // Build a map of leaf-key -> line number in translations.ts (KA side)
 const translationsLines = readFileSync(TRANSLATIONS_PATH, "utf8").split("\n");
