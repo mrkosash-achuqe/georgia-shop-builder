@@ -185,6 +185,10 @@ export const translations = {
       subtitle: "სიახლეები და სტატიები",
       readMore: "წაიკითხე მეტი",
       comingSoon: "მალე დაემატება ახალი სტატიები...",
+      author: "ავტორი",
+      readTime: "წუთი წასაკითხად",
+      close: "დახურვა",
+      publishedOn: "გამოქვეყნდა",
     },
     wishlist: {
       title: "სურვილების სია",
