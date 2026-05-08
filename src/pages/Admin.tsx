@@ -43,15 +43,15 @@ const emptyProduct = {
 };
 
 const categoryLabels: Record<string, { ka: string; en: string }> = {
-  clocks: { ka: "საათები", en: "Clocks" },
-  "cutting-boards": { ka: "საჭრელი დაფები", en: "Cutting Boards" },
-  "cutting-board-sets": { ka: "დაფების ნაკრები", en: "Board Sets" },
-  "gift-boxes": { ka: "საჩუქრის ყუთები", en: "Gift Boxes" },
-  "photo-frames": { ka: "ფოტო ჩარჩოები", en: "Photo Frames" },
-  "candle-holders": { ka: "სანთლის სადგრები", en: "Candle Holders" },
+  "cutting-board-sets": { ka: "შამფურების ნაკრები", en: "Cutting Board Sets" },
+  clocks: { ka: "საათი", en: "Clocks" },
+  "candle-holders": { ka: "სანათი", en: "Candle Holders" },
+  "gift-boxes": { ka: "სასაჩუქრე ყუთი", en: "Gift Boxes" },
+  "photo-frames": { ka: "ფოტო ჩარჩო", en: "Photo Frames" },
   kids: { ka: "საბავშვო", en: "Kids" },
+  "cutting-boards": { ka: "შამფურები", en: "Cutting Boards" },
   corporate: { ka: "კორპორატიული", en: "Corporate" },
-  other: { ka: "სხვა", en: "Other" },
+  other: { ka: "სხვადასხვა", en: "Other" },
 };
 
 const categories = Object.keys(categoryLabels);
