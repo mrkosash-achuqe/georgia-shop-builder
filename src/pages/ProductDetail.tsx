@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
-import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn } from "lucide-react";
+import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn, Plus, Minus } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import Header from "@/components/Header";
@@ -48,6 +48,9 @@ const ProductDetailContent = () => {
   const [zoomOpen, setZoomOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+  const [personalizationOpen, setPersonalizationOpen] = useState(false);
+  const [personalizationEnabled, setPersonalizationEnabled] = useState(false);
+  const [personalizationName, setPersonalizationName] = useState("");
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -166,6 +169,48 @@ const ProductDetailContent = () => {
               )}
             </div>
             <p className="text-muted-foreground leading-relaxed mb-6">{desc}</p>
+            <div className="bg-card rounded-xl border border-border mb-6 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setPersonalizationOpen((v) => !v)}
+                className="w-full flex items-center justify-between gap-3 p-4 text-left hover:bg-secondary/50 transition-colors"
+                aria-expanded={personalizationOpen}
+              >
+                <span className="font-semibold text-foreground">{tp.personalizationTitle}</span>
+                <span className="flex items-center justify-center w-7 h-7 rounded-md border border-border text-muted-foreground shrink-0">
+                  {personalizationOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                </span>
+              </button>
+              {personalizationOpen && (
+                <div className="px-4 pb-4 pt-1 border-t border-border space-y-3">
+                  <h4 className="font-medium text-foreground">{tp.personalizationHeader}</h4>
+                  <div className="text-sm text-muted-foreground">
+                    <p className="mb-1">{tp.personalizationNote}</p>
+                    <ul className="list-disc pl-5 space-y-1">
+                      <li>{tp.personalizationDetail}</li>
+                    </ul>
+                  </div>
+                  <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={personalizationEnabled}
+                      onChange={(e) => setPersonalizationEnabled(e.target.checked)}
+                      className="h-4 w-4 rounded border-border accent-primary"
+                    />
+                    {tp.personalizationCheckbox}
+                  </label>
+                  {personalizationEnabled && (
+                    <input
+                      type="text"
+                      value={personalizationName}
+                      onChange={(e) => setPersonalizationName(e.target.value)}
+                      placeholder={tp.personalizationPlaceholder}
+                      className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  )}
+                </div>
+              )}
+            </div>
             <div className="bg-card rounded-xl border border-border p-4 mb-6">
               <h3 className="font-semibold text-foreground mb-3">{tp.details}</h3>
               <div className="space-y-2 text-sm">
