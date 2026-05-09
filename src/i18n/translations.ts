@@ -67,6 +67,12 @@ export const translations = {
       sku: "პროდუქტის კოდი",
       zoomHint: "დააჭირეთ სურათს გასადიდებლად",
       closeZoom: "დახურვა",
+      personalizationTitle: "პერსონალიზაციის დამატება (არასავალდებულო)",
+      personalizationHeader: "პერსონალიზაცია",
+      personalizationNote: "გთხოვთ გაითვალისწინოთ:",
+      personalizationDetail: "სახელი (გთხოვთ, მიუთითოთ რომელი სახელი განთავსდება ცენტრში)",
+      personalizationCheckbox: "მსურს პერსონალიზაცია",
+      personalizationPlaceholder: "ჩაწერეთ სახელი",
     },
     cart: {
       title: "კალათა",
