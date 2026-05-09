@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import {
   Plus, Pencil, Trash2, Upload, X, Save, ArrowLeft,
   Image as ImageIcon, Package, Search, Filter, Eye, ChevronDown,
-  LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle
+  LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle, Minus
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -72,6 +72,9 @@ const Admin = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [personalizationOpen, setPersonalizationOpen] = useState(false);
+  const [personalizationEnabled, setPersonalizationEnabled] = useState(false);
+  const [personalizationNote, setPersonalizationNote] = useState("");
 
   useEffect(() => {
     if (authLoading) return;
