@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
-import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2 } from "lucide-react";
+import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import Header from "@/components/Header";
@@ -11,6 +11,15 @@ import { Product } from "@/data/products";
 import { useWishlist } from "@/context/WishlistContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
+const generateSku = (id: string): string => {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  }
+  return String(hash % 900000 + 100000);
+};
 
 const mapDbProduct = (row: any): Product => ({
   id: row.id,
@@ -36,6 +45,9 @@ const ProductDetailContent = () => {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [zoomOpen, setZoomOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -113,7 +125,17 @@ const ProductDetailContent = () => {
           {/* Gallery */}
           <div className="lg:w-1/2">
             <div className="bg-card rounded-2xl border border-border overflow-hidden mb-3">
-              <img src={product.images[selectedImage]} alt={name} className="w-full aspect-square object-cover" width={600} height={600} />
+              <button
+                type="button"
+                onClick={() => { setZoomLevel(1); setZoomPos({ x: 50, y: 50 }); setZoomOpen(true); }}
+                className="relative w-full block group"
+                aria-label={tp.zoomHint}
+              >
+                <img src={product.images[selectedImage]} alt={name} className="w-full aspect-square object-cover" width={600} height={600} />
+                <span className="absolute bottom-2 right-2 flex items-center gap-1.5 bg-background/90 text-foreground text-xs px-2.5 py-1.5 rounded-md border border-border opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn className="h-3.5 w-3.5" /> {tp.zoomHint}
+                </span>
+              </button>
             </div>
             <div className="flex gap-3">
               {product.images.map((img, i) => (
@@ -147,6 +169,10 @@ const ProductDetailContent = () => {
             <div className="bg-card rounded-xl border border-border p-4 mb-6">
               <h3 className="font-semibold text-foreground mb-3">{tp.details}</h3>
               <div className="space-y-2 text-sm">
+                <div className="flex justify-between py-1.5 border-b border-border">
+                  <span className="text-muted-foreground">{tp.sku}</span>
+                  <span className="text-foreground font-mono font-medium">#{generateSku(product.id)}</span>
+                </div>
                 <div className="flex justify-between py-1.5 border-b border-border">
                   <span className="text-muted-foreground">{tp.material}</span>
                   <span className="text-foreground font-medium">{product.material}</span>
@@ -200,6 +226,47 @@ const ProductDetailContent = () => {
       </main>
       <div className="mt-auto"><Footer /></div>
       <CartDrawer />
+      <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
+        <DialogContent className="max-w-5xl p-0 bg-background border-border overflow-hidden">
+          <div
+            className="relative w-full h-[80vh] overflow-hidden bg-secondary cursor-zoom-in"
+            onClick={() => setZoomLevel((z) => (z >= 3 ? 1 : z + 1))}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setZoomPos({
+                x: ((e.clientX - rect.left) / rect.width) * 100,
+                y: ((e.clientY - rect.top) / rect.height) * 100,
+              });
+            }}
+          >
+            <img
+              src={product.images[selectedImage]}
+              alt={name}
+              className="w-full h-full object-contain transition-transform duration-200 select-none pointer-events-none"
+              style={{
+                transform: `scale(${zoomLevel})`,
+                transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+              }}
+            />
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-background/90 border border-border rounded-md px-3 py-1.5 text-xs text-muted-foreground">
+              <ZoomIn className="h-3.5 w-3.5" /> {Math.round(zoomLevel * 100)}%
+            </div>
+          </div>
+          {product.images.length > 1 && (
+            <div className="flex gap-2 p-3 border-t border-border overflow-x-auto">
+              {product.images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setSelectedImage(i); setZoomLevel(1); }}
+                  className={`w-16 h-16 rounded-lg border-2 overflow-hidden shrink-0 transition-all ${selectedImage === i ? "border-primary" : "border-border hover:border-primary/50"}`}
+                >
+                  <img src={img} alt={`${name} ${i + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
