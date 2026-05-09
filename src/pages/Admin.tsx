@@ -531,6 +531,52 @@ const Admin = () => {
               </div>
             </div>
 
+            {/* Personalization (optional) */}
+            <div className="bg-card rounded-xl border border-border overflow-hidden">
+              <label className="flex items-center gap-3 p-4 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={personalizationEnabled}
+                  onChange={(e) => {
+                    setPersonalizationEnabled(e.target.checked);
+                    if (e.target.checked) setPersonalizationOpen(true);
+                  }}
+                  className="h-4 w-4 rounded border-border accent-primary"
+                />
+                <span className="font-semibold text-foreground flex-1">
+                  პერსონალიზაციის დამატება (არასავალდებულო)
+                </span>
+                {personalizationEnabled && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.preventDefault(); setPersonalizationOpen((v) => !v); }}
+                    className="flex items-center justify-center w-7 h-7 rounded-md border border-border text-muted-foreground"
+                    aria-expanded={personalizationOpen}
+                  >
+                    {personalizationOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </button>
+                )}
+              </label>
+              {personalizationEnabled && personalizationOpen && (
+                <div className="px-4 pb-4 pt-1 border-t border-border space-y-3">
+                  <h4 className="font-medium text-foreground">პერსონალიზაცია</h4>
+                  <p className="text-sm text-muted-foreground">
+                    გთხოვთ გაითვალისწინოთ: სახელი (გთხოვთ, მიუთითოთ რომელი სახელი განთავსდება ცენტრში)
+                  </p>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">
+                    შენიშვნა მომხმარებლისთვის
+                  </label>
+                  <textarea
+                    value={personalizationNote}
+                    onChange={(e) => setPersonalizationNote(e.target.value)}
+                    placeholder="მაგ: ჩაწერეთ სახელი, რომელიც განთავსდება ცენტრში"
+                    rows={3}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Bottom save */}
             <div className="flex justify-end gap-3 pb-8">
               <button
