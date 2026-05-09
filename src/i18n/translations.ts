@@ -64,6 +64,9 @@ export const translations = {
       easyReturns: "მარტივი დაბრუნება",
       guarantee: "ხარისხის გარანტია",
       similarProducts: "მსგავსი პროდუქტები",
+      sku: "პროდუქტის კოდი",
+      zoomHint: "დააჭირეთ სურათს გასადიდებლად",
+      closeZoom: "დახურვა",
     },
     cart: {
       title: "კალათა",
@@ -265,6 +268,9 @@ export const translations = {
       easyReturns: "Easy Returns",
       guarantee: "Quality Guarantee",
       similarProducts: "Similar Products",
+      sku: "Product Code",
+      zoomHint: "Click image to zoom",
+      closeZoom: "Close",
     },
     cart: {
       title: "Cart",
