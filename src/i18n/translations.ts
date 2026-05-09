@@ -277,6 +277,12 @@ export const translations = {
       sku: "Product Code",
       zoomHint: "Click image to zoom",
       closeZoom: "Close",
+      personalizationTitle: "Add personalization (optional)",
+      personalizationHeader: "Personalization",
+      personalizationNote: "Please note:",
+      personalizationDetail: "Name (please specify which name will be placed in the center)",
+      personalizationCheckbox: "I want personalization",
+      personalizationPlaceholder: "Enter the name",
     },
     cart: {
       title: "Cart",
