@@ -27,6 +27,8 @@ type DBProduct = {
   reviews_count: number;
   in_stock: boolean;
   created_at: string;
+  personalization_enabled?: boolean;
+  personalization_note?: string;
 };
 
 const emptyProduct = {
@@ -162,6 +164,8 @@ const Admin = () => {
       dimensions: editingProduct.dimensions || "",
       images: editingProduct.images || [],
       in_stock: editingProduct.in_stock ?? true,
+      personalization_enabled: personalizationEnabled,
+      personalization_note: personalizationEnabled ? personalizationNote : "",
     };
 
     if (isNew) {
@@ -653,7 +657,13 @@ const Admin = () => {
             <p className="text-muted-foreground text-sm mt-1">დაამატეთ, შეცვალეთ ან წაშალეთ პროდუქტები</p>
           </div>
           <button
-            onClick={() => { setEditingProduct({ ...emptyProduct }); setIsNew(true); }}
+            onClick={() => {
+              setEditingProduct({ ...emptyProduct });
+              setIsNew(true);
+              setPersonalizationEnabled(false);
+              setPersonalizationOpen(false);
+              setPersonalizationNote("");
+            }}
             className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
           >
             <Plus className="h-5 w-5" />
@@ -722,7 +732,13 @@ const Admin = () => {
             </p>
             {!searchQuery && !filterCategory && (
               <button
-                onClick={() => { setEditingProduct({ ...emptyProduct }); setIsNew(true); }}
+                onClick={() => {
+                  setEditingProduct({ ...emptyProduct });
+                  setIsNew(true);
+                  setPersonalizationEnabled(false);
+                  setPersonalizationOpen(false);
+                  setPersonalizationNote("");
+                }}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity"
               >
                 <Plus className="h-4 w-4" />
@@ -744,7 +760,13 @@ const Admin = () => {
                   )}
                   <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
-                      onClick={() => { setEditingProduct({ ...p }); setIsNew(false); }}
+                      onClick={() => {
+                        setEditingProduct({ ...p });
+                        setIsNew(false);
+                        setPersonalizationEnabled(!!p.personalization_enabled);
+                        setPersonalizationOpen(!!p.personalization_enabled);
+                        setPersonalizationNote(p.personalization_note || "");
+                      }}
                       className="p-2 bg-card/90 backdrop-blur-sm rounded-lg hover:bg-card shadow-md"
                     >
                       <Pencil className="h-3.5 w-3.5" />
@@ -814,7 +836,13 @@ const Admin = () => {
                 </div>
                 <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
                   <button
-                    onClick={() => { setEditingProduct({ ...p }); setIsNew(false); }}
+                    onClick={() => {
+                      setEditingProduct({ ...p });
+                      setIsNew(false);
+                      setPersonalizationEnabled(!!p.personalization_enabled);
+                      setPersonalizationOpen(!!p.personalization_enabled);
+                      setPersonalizationNote(p.personalization_note || "");
+                    }}
                     className="p-2.5 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                     title="რედაქტირება"
                   >

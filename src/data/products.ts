@@ -22,6 +22,8 @@ export interface Product {
   material: string;
   dimensions: string;
   inStock: boolean;
+  personalizationEnabled?: boolean;
+  personalizationNote?: string;
 }
 
 export const products: Product[] = [

@@ -36,6 +36,8 @@ const mapDbProduct = (row: any): Product => ({
   material: row.material,
   dimensions: row.dimensions,
   inStock: row.in_stock,
+  personalizationEnabled: !!row.personalization_enabled,
+  personalizationNote: row.personalization_note || "",
 });
 
 const ProductDetailContent = () => {
@@ -169,6 +171,7 @@ const ProductDetailContent = () => {
               )}
             </div>
             <p className="text-muted-foreground leading-relaxed mb-6">{desc}</p>
+            {product.personalizationEnabled && (
             <div className="bg-card rounded-xl border border-border mb-6 overflow-hidden">
               <button
                 type="button"
@@ -211,6 +214,7 @@ const ProductDetailContent = () => {
                 </div>
               )}
             </div>
+            )}
             <div className="bg-card rounded-xl border border-border p-4 mb-6">
               <h3 className="font-semibold text-foreground mb-3">{tp.details}</h3>
               <div className="space-y-2 text-sm">
