@@ -760,7 +760,13 @@ const Admin = () => {
                   )}
                   <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
-                      onClick={() => { setEditingProduct({ ...p }); setIsNew(false); }}
+                      onClick={() => {
+                        setEditingProduct({ ...p });
+                        setIsNew(false);
+                        setPersonalizationEnabled(!!p.personalization_enabled);
+                        setPersonalizationOpen(!!p.personalization_enabled);
+                        setPersonalizationNote(p.personalization_note || "");
+                      }}
                       className="p-2 bg-card/90 backdrop-blur-sm rounded-lg hover:bg-card shadow-md"
                     >
                       <Pencil className="h-3.5 w-3.5" />
