@@ -27,6 +27,8 @@ type DBProduct = {
   reviews_count: number;
   in_stock: boolean;
   created_at: string;
+  personalization_enabled?: boolean;
+  personalization_note?: string;
 };
 
 const emptyProduct = {
@@ -162,6 +164,8 @@ const Admin = () => {
       dimensions: editingProduct.dimensions || "",
       images: editingProduct.images || [],
       in_stock: editingProduct.in_stock ?? true,
+      personalization_enabled: personalizationEnabled,
+      personalization_note: personalizationEnabled ? personalizationNote : "",
     };
 
     if (isNew) {
