@@ -38,7 +38,7 @@ const mapDbProduct = (row: any): Product => ({
   inStock: row.in_stock,
   personalizationEnabled: !!row.personalization_enabled,
   personalizationNote: row.personalization_note || "",
-} as Product & { personalizationEnabled: boolean; personalizationNote: string });
+});
 
 const ProductDetailContent = () => {
   const { id } = useParams<{ id: string }>();
@@ -171,7 +171,7 @@ const ProductDetailContent = () => {
               )}
             </div>
             <p className="text-muted-foreground leading-relaxed mb-6">{desc}</p>
-            {(product as any).personalizationEnabled && (
+            {product.personalizationEnabled && (
             <div className="bg-card rounded-xl border border-border mb-6 overflow-hidden">
               <button
                 type="button"
