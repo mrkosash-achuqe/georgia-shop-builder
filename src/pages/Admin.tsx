@@ -836,7 +836,13 @@ const Admin = () => {
                 </div>
                 <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
                   <button
-                    onClick={() => { setEditingProduct({ ...p }); setIsNew(false); }}
+                    onClick={() => {
+                      setEditingProduct({ ...p });
+                      setIsNew(false);
+                      setPersonalizationEnabled(!!p.personalization_enabled);
+                      setPersonalizationOpen(!!p.personalization_enabled);
+                      setPersonalizationNote(p.personalization_note || "");
+                    }}
                     className="p-2.5 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                     title="რედაქტირება"
                   >
