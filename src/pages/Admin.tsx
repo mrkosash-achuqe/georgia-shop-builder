@@ -657,7 +657,13 @@ const Admin = () => {
             <p className="text-muted-foreground text-sm mt-1">დაამატეთ, შეცვალეთ ან წაშალეთ პროდუქტები</p>
           </div>
           <button
-            onClick={() => { setEditingProduct({ ...emptyProduct }); setIsNew(true); }}
+            onClick={() => {
+              setEditingProduct({ ...emptyProduct });
+              setIsNew(true);
+              setPersonalizationEnabled(false);
+              setPersonalizationOpen(false);
+              setPersonalizationNote("");
+            }}
             className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
           >
             <Plus className="h-5 w-5" />
@@ -726,7 +732,13 @@ const Admin = () => {
             </p>
             {!searchQuery && !filterCategory && (
               <button
-                onClick={() => { setEditingProduct({ ...emptyProduct }); setIsNew(true); }}
+                onClick={() => {
+                  setEditingProduct({ ...emptyProduct });
+                  setIsNew(true);
+                  setPersonalizationEnabled(false);
+                  setPersonalizationOpen(false);
+                  setPersonalizationNote("");
+                }}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity"
               >
                 <Plus className="h-4 w-4" />
