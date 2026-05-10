@@ -27,6 +27,8 @@ export type Database = {
           material: string
           name_en: string
           name_ka: string
+          personalization_enabled: boolean
+          personalization_note: string
           price: number
           rating: number
           reviews_count: number
@@ -44,6 +46,8 @@ export type Database = {
           material?: string
           name_en?: string
           name_ka: string
+          personalization_enabled?: boolean
+          personalization_note?: string
           price?: number
           rating?: number
           reviews_count?: number
@@ -61,6 +65,8 @@ export type Database = {
           material?: string
           name_en?: string
           name_ka?: string
+          personalization_enabled?: boolean
+          personalization_note?: string
           price?: number
           rating?: number
           reviews_count?: number
