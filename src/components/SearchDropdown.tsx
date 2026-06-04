@@ -221,7 +221,14 @@ const SearchDropdown = () => {
                 {photoKeywords.length > 0 ? (
                   <div className="flex flex-wrap gap-1">
                     {photoKeywords.map((k) => (
-                      <span key={k} className="text-[11px] bg-secondary text-foreground px-2 py-0.5 rounded-full">{k}</span>
+                      <button
+                        key={k}
+                        type="button"
+                        onClick={() => { switchMode("text"); setQuery(k); }}
+                        className="text-[11px] bg-secondary hover:bg-primary hover:text-primary-foreground text-foreground px-2 py-0.5 rounded-full transition-colors cursor-pointer"
+                      >
+                        {k}
+                      </button>
                     ))}
                   </div>
                 ) : loading ? (
