@@ -224,7 +224,14 @@ const SearchDropdown = () => {
                       <button
                         key={k}
                         type="button"
-                        onClick={() => { switchMode("text"); setQuery(k); }}
+                        onClick={() => {
+                          setMode("text");
+                          setPhotoPreview(null);
+                          setPhotoKeywords([]);
+                          setResults([]);
+                          setQuery(k);
+                          setOpen(true);
+                        }}
                         className="text-[11px] bg-secondary hover:bg-primary hover:text-primary-foreground text-foreground px-2 py-0.5 rounded-full transition-colors cursor-pointer"
                       >
                         {k}
