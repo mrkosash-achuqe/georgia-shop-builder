@@ -224,13 +224,21 @@ const SearchDropdown = () => {
                       <button
                         key={k}
                         type="button"
-                        onClick={() => {
-                          setMode("text");
-                          setPhotoPreview(null);
-                          setPhotoKeywords([]);
-                          setResults([]);
-                          setQuery(k);
+                        onClick={async () => {
+                          setLoading(true);
                           setOpen(true);
+                          const like = `%${k}%`;
+                          const { data } = await supabase
+                            .from("products")
+                            .select("id, name_ka, name_en, price, images, desc_ka, desc_en, category")
+                            .or(
+                              `name_ka.ilike.${like},name_en.ilike.${like},desc_ka.ilike.${like},desc_en.ilike.${like},category.ilike.${like}`
+                            )
+                            .limit(8);
+                          setResults((data || []).map((p: any) => ({
+                            id: p.id, name_ka: p.name_ka, name_en: p.name_en, price: p.price, images: p.images,
+                          })));
+                          setLoading(false);
                         }}
                         className="text-[11px] bg-secondary hover:bg-primary hover:text-primary-foreground text-foreground px-2 py-0.5 rounded-full transition-colors cursor-pointer"
                       >
