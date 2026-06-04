@@ -32,7 +32,7 @@ serve(async (req) => {
           {
             role: "system",
             content:
-              "You analyze photos of handmade wooden products (cutting boards, clocks, photo frames, gift boxes, candle holders, wine holders, decor). Reply ONLY by calling the tool with short keywords (1-3 words each) in both Georgian and English describing the object type, material, and style. Avoid colors and brand names.",
+              "You analyze photos of handmade wooden products from a Georgian store. Product categories: cutting boards (საჭრელი დაფა / დაფა), cutting board sets (საჭრელი დაფების ნაკრები / ნაკრები), clocks (საათი / კედლის საათი), candle holders (სანთლის სადგამი), gift boxes (საჩუქრის ყუთი / ყუთი), photo frames (ფოტო ჩარჩო / ჩარჩო), kids items (საბავშვო), corporate gifts (კორპორატიული), wine holders (ღვინის სადგამი), decor (დეკორი). Reply ONLY via the tool with SHORT, SINGLE-WORD keywords (1-2 words max) using the EXACT Georgian/English nouns above that best match the product in the photo. Put the most likely category FIRST. No colors, no descriptions, no adjectives, no brand names.",
           },
           {
             role: "user",
