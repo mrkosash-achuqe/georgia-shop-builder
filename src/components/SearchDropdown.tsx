@@ -112,24 +112,21 @@ const SearchDropdown = () => {
         const kws: string[] = isKa ? data.keywords_ka || [] : data.keywords_en || [];
         setPhotoKeywords(kws);
         if (kws.length === 0) { setLoading(false); return; }
-        const col = isKa ? "name_ka" : "name_en";
-        const filterStr = kws.map((k) => `${col}.ilike.%${k}%`).join(",");
+        // Fetch all products and rank by keyword matches against name + description + category
         const { data: prods } = await supabase
           .from("products")
-          .select("id, name_ka, name_en, price, images")
-          .or(filterStr);
-        // Rank by how many keywords match the product name (best match first)
-        const kwsLower = kws.map((k) => k.toLowerCase());
+          .select("id, name_ka, name_en, desc_ka, desc_en, price, images, category");
+        const allKws = [...(data.keywords_ka || []), ...(data.keywords_en || [])].map((k: string) => k.toLowerCase());
         const ranked = (prods || [])
-          .map((p) => {
-            const hay = `${p.name_ka} ${p.name_en}`.toLowerCase();
-            const score = kwsLower.reduce((s, k) => (hay.includes(k) ? s + 1 : s), 0);
+          .map((p: any) => {
+            const hay = `${p.name_ka} ${p.name_en} ${p.desc_ka || ""} ${p.desc_en || ""} ${p.category || ""}`.toLowerCase();
+            const score = allKws.reduce((s, k) => (k && hay.includes(k) ? s + 1 : s), 0);
             return { p, score };
           })
           .filter((x) => x.score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, 8)
-          .map((x) => x.p);
+          .map((x) => ({ id: x.p.id, name_ka: x.p.name_ka, name_en: x.p.name_en, price: x.p.price, images: x.p.images }));
         setResults(ranked);
       } catch (err) {
         console.error(err);
