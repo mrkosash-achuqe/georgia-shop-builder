@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Loader2, Type, Hash, Camera, X, Upload } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -24,6 +24,7 @@ const generateSku = (id: string): string => {
 
 const SearchDropdown = () => {
   const { lang, t } = useLanguage();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("text");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -119,7 +120,14 @@ const SearchDropdown = () => {
           .select("id, name_ka, name_en, price, images")
           .or(filterStr)
           .limit(8);
-        setResults(prods || []);
+        const found = prods || [];
+        setResults(found);
+        if (found.length > 0) {
+          setOpen(false);
+          setPhotoPreview(null);
+          setPhotoKeywords([]);
+          navigate(`/product/${found[0].id}`);
+        }
       } catch (err) {
         console.error(err);
       } finally {
