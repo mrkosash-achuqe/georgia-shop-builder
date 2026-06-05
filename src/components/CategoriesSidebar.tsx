@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight, ChevronDown, Hash, Camera } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -24,12 +24,6 @@ const CategoriesSidebar = ({ selectedCategory, onSelectCategory }: CategoriesSid
   const { t, lang } = useLanguage();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(!isMobile);
-  const isKa = lang === "ka";
-
-  const triggerSearch = (mode: "code" | "photo") => {
-    window.dispatchEvent(new CustomEvent("open-search-mode", { detail: mode }));
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   return (
     <aside className="bg-card rounded-xl border border-border p-4 md:p-5">
@@ -47,22 +41,6 @@ const CategoriesSidebar = ({ selectedCategory, onSelectCategory }: CategoriesSid
       </button>
 
       <div className={`overflow-hidden transition-all duration-300 ${isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0 md:max-h-[600px] md:opacity-100"}`}>
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          <button
-            onClick={() => triggerSearch("code")}
-            className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium bg-secondary text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-          >
-            <Hash className="h-3.5 w-3.5" />
-            {isKa ? "კოდით ძიება" : "By Code"}
-          </button>
-          <button
-            onClick={() => triggerSearch("photo")}
-            className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium bg-secondary text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-          >
-            <Camera className="h-3.5 w-3.5" />
-            {isKa ? "ფოტოთი ძიება" : "By Photo"}
-          </button>
-        </div>
         <ul className="space-y-1">
           <li>
             <button
