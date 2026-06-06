@@ -61,6 +61,7 @@ const inferCategories = (terms: string[]) => {
 
 const SearchDropdown = () => {
   const { lang, t } = useLanguage();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("text");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -68,9 +69,37 @@ const SearchDropdown = () => {
   const [open, setOpen] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoKeywords, setPhotoKeywords] = useState<string[]>([]);
+  const [photoCategory, setPhotoCategory] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const isKa = lang === "ka";
+
+  const resetSearch = () => {
+    setOpen(false);
+    setQuery("");
+    setPhotoPreview(null);
+    setPhotoKeywords([]);
+    setPhotoCategory(null);
+  };
+
+  const openCategory = (category: string) => {
+    resetSearch();
+    navigate(`/?category=${encodeURIComponent(category)}#products`);
+  };
+
+  const openProduct = (id: string) => {
+    resetSearch();
+    navigate(`/product/${id}`);
+  };
+
+  const openBestPhotoMatch = () => {
+    if (results[0]) {
+      openProduct(results[0].id);
+      return;
+    }
+    const category = photoCategory || inferCategories(photoKeywords)[0];
+    if (category) openCategory(category);
+  };
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -138,6 +167,7 @@ const SearchDropdown = () => {
     setLoading(true);
     setOpen(true);
     setPhotoKeywords([]);
+    setPhotoCategory(null);
     setResults([]);
     const reader = new FileReader();
     reader.onload = async () => {
@@ -148,7 +178,10 @@ const SearchDropdown = () => {
         if (error) throw error;
         const kws: string[] = isKa ? data.keywords_ka || [] : data.keywords_en || [];
         setPhotoKeywords(kws);
-        if (kws.length === 0) { setLoading(false); return; }
+        const inferredCategories = inferCategories([...(data.keywords_ka || []), ...(data.keywords_en || [])]);
+        const bestCategory = inferredCategories[0] || null;
+        setPhotoCategory(bestCategory);
+        if (kws.length === 0 && !bestCategory) { setLoading(false); return; }
         // Fetch all products and rank by keyword matches against name + description + category
         const { data: prods } = await supabase
           .from("products")
@@ -157,13 +190,15 @@ const SearchDropdown = () => {
         const ranked = (prods || [])
           .map((p: any) => {
             const hay = `${p.name_ka} ${p.name_en} ${p.desc_ka || ""} ${p.desc_en || ""} ${p.category || ""}`.toLowerCase();
-            const score = allKws.reduce((s, k) => (k && hay.includes(k) ? s + 1 : s), 0);
+            const keywordScore = allKws.reduce((s, k) => (k && hay.includes(k) ? s + 2 : s), 0);
+            const categoryScore = inferredCategories.includes(p.category) ? 5 : 0;
+            const score = keywordScore + categoryScore;
             return { p, score };
           })
           .filter((x) => x.score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, 8)
-          .map((x) => ({ id: x.p.id, name_ka: x.p.name_ka, name_en: x.p.name_en, price: x.p.price, images: x.p.images }));
+          .map((x) => ({ id: x.p.id, name_ka: x.p.name_ka, name_en: x.p.name_en, price: x.p.price, images: x.p.images, category: x.p.category }));
         setResults(ranked);
       } catch (err) {
         console.error(err);
@@ -181,6 +216,7 @@ const SearchDropdown = () => {
     setResults([]);
     setPhotoPreview(null);
     setPhotoKeywords([]);
+    setPhotoCategory(null);
     if (m === "photo") setTimeout(() => fileRef.current?.click(), 50);
   };
 
