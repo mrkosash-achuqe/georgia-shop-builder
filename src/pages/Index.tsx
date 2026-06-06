@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import CategoriesSidebar from "@/components/CategoriesSidebar";
@@ -7,8 +8,17 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 
 const Index = () => {
+  const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const category = searchParams.get("category");
+    setSelectedCategory(category || null);
+    if (category && window.location.hash === "#products") {
+      setTimeout(() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -26,7 +36,9 @@ const Index = () => {
           </div>
         </div>
       </div>
-      <ProductGrid selectedCategory={selectedCategory} searchQuery={searchQuery} />
+      <div id="products">
+        <ProductGrid selectedCategory={selectedCategory} searchQuery={searchQuery} />
+      </div>
       <div className="mt-auto">
         <Footer />
       </div>

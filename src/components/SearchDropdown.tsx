@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Loader2, Type, Hash, Camera, X, Upload } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -10,6 +10,13 @@ interface SearchResult {
   name_en: string;
   price: number;
   images: string[];
+  category?: string;
+}
+
+interface ProductSearchRow extends SearchResult {
+  desc_ka?: string;
+  desc_en?: string;
+  category: string;
 }
 
 type Mode = "text" | "code" | "photo";
@@ -22,8 +29,45 @@ const generateSku = (id: string): string => {
   return String((hash % 900000) + 100000);
 };
 
+const categoryKeys = [
+  "cutting-board-sets",
+  "clocks",
+  "candle-holders",
+  "gift-boxes",
+  "photo-frames",
+  "kids",
+  "cutting-boards",
+  "corporate",
+  "other",
+];
+
+const categoryMatchers: Record<string, string[]> = {
+  "cutting-board-sets": ["cutting-board-sets", "ნაკრები", "საჭრელი დაფების ნაკრები", "შამფური", "შამფურები", "შამფურების ნაკრები", "skewer", "skewers", "skewer set", "set"],
+  clocks: ["clocks", "საათი", "კედლის საათი", "clock", "wall clock"],
+  "candle-holders": ["candle-holders", "სანთელი", "სანთლის სადგამი", "candle", "candle holder"],
+  "gift-boxes": ["gift-boxes", "საჩუქრის ყუთი", "ყუთი", "gift box", "box"],
+  "photo-frames": ["photo-frames", "ფოტო ჩარჩო", "ჩარჩო", "photo frame", "frame"],
+  kids: ["kids", "საბავშვო", "ბავშვი", "children", "kid", "kids"],
+  "cutting-boards": ["cutting-boards", "საჭრელი დაფა", "დაფა", "cutting board", "board"],
+  corporate: ["corporate", "კორპორატიული", "corporate gift", "business gift"],
+  other: ["other", "სხვა", "დეკორი", "decor", "decoration"],
+};
+
+const normalize = (value: string | null | undefined) => (value || "").toLowerCase().trim();
+
+const inferCategories = (terms: string[]) => {
+  const normalized = terms.map(normalize).filter(Boolean);
+  return categoryKeys.filter((category) =>
+    categoryMatchers[category].some((match) => {
+      const m = normalize(match);
+      return normalized.some((term) => term.includes(m) || m.includes(term));
+    })
+  );
+};
+
 const SearchDropdown = () => {
   const { lang, t } = useLanguage();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("text");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -31,9 +75,37 @@ const SearchDropdown = () => {
   const [open, setOpen] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoKeywords, setPhotoKeywords] = useState<string[]>([]);
+  const [photoCategory, setPhotoCategory] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const isKa = lang === "ka";
+
+  const resetSearch = () => {
+    setOpen(false);
+    setQuery("");
+    setPhotoPreview(null);
+    setPhotoKeywords([]);
+    setPhotoCategory(null);
+  };
+
+  const openCategory = (category: string) => {
+    resetSearch();
+    navigate(`/?category=${encodeURIComponent(category)}#products`);
+  };
+
+  const openProduct = (id: string) => {
+    resetSearch();
+    navigate(`/product/${id}`);
+  };
+
+  const openBestPhotoMatch = () => {
+    if (results[0]) {
+      openProduct(results[0].id);
+      return;
+    }
+    const category = photoCategory || inferCategories(photoKeywords)[0];
+    if (category) openCategory(category);
+  };
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -50,6 +122,7 @@ const SearchDropdown = () => {
         setMode(m);
         setQuery("");
         setResults([]);
+        setPhotoCategory(null);
         setOpen(true);
         if (m === "photo") setTimeout(() => fileRef.current?.click(), 50);
       }
@@ -101,6 +174,7 @@ const SearchDropdown = () => {
     setLoading(true);
     setOpen(true);
     setPhotoKeywords([]);
+    setPhotoCategory(null);
     setResults([]);
     const reader = new FileReader();
     reader.onload = async () => {
@@ -111,22 +185,27 @@ const SearchDropdown = () => {
         if (error) throw error;
         const kws: string[] = isKa ? data.keywords_ka || [] : data.keywords_en || [];
         setPhotoKeywords(kws);
-        if (kws.length === 0) { setLoading(false); return; }
+        const inferredCategories = inferCategories([...(data.keywords_ka || []), ...(data.keywords_en || [])]);
+        const bestCategory = inferredCategories[0] || null;
+        setPhotoCategory(bestCategory);
+        if (kws.length === 0 && !bestCategory) { setLoading(false); return; }
         // Fetch all products and rank by keyword matches against name + description + category
         const { data: prods } = await supabase
           .from("products")
           .select("id, name_ka, name_en, desc_ka, desc_en, price, images, category");
         const allKws = [...(data.keywords_ka || []), ...(data.keywords_en || [])].map((k: string) => k.toLowerCase());
         const ranked = (prods || [])
-          .map((p: any) => {
+          .map((p: ProductSearchRow) => {
             const hay = `${p.name_ka} ${p.name_en} ${p.desc_ka || ""} ${p.desc_en || ""} ${p.category || ""}`.toLowerCase();
-            const score = allKws.reduce((s, k) => (k && hay.includes(k) ? s + 1 : s), 0);
+            const keywordScore = allKws.reduce((s, k) => (k && hay.includes(k) ? s + 2 : s), 0);
+            const categoryScore = inferredCategories.includes(p.category) ? 5 : 0;
+            const score = keywordScore + categoryScore;
             return { p, score };
           })
           .filter((x) => x.score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, 8)
-          .map((x) => ({ id: x.p.id, name_ka: x.p.name_ka, name_en: x.p.name_en, price: x.p.price, images: x.p.images }));
+          .map((x) => ({ id: x.p.id, name_ka: x.p.name_ka, name_en: x.p.name_en, price: x.p.price, images: x.p.images, category: x.p.category }));
         setResults(ranked);
       } catch (err) {
         console.error(err);
@@ -144,6 +223,7 @@ const SearchDropdown = () => {
     setResults([]);
     setPhotoPreview(null);
     setPhotoKeywords([]);
+    setPhotoCategory(null);
     if (m === "photo") setTimeout(() => fileRef.current?.click(), 50);
   };
 
@@ -197,7 +277,11 @@ const SearchDropdown = () => {
             className="flex-1 bg-transparent px-2 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0"
           />
         )}
-        <button className="rounded-md bg-primary p-2 text-primary-foreground hover:opacity-90 transition-opacity shrink-0">
+        <button
+          type="button"
+          onClick={() => { if (mode === "photo") openBestPhotoMatch(); }}
+          className="rounded-md bg-primary p-2 text-primary-foreground hover:opacity-90 transition-opacity shrink-0"
+        >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
         </button>
         <input
@@ -213,7 +297,9 @@ const SearchDropdown = () => {
         <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-xl z-50 max-h-[32rem] overflow-y-auto">
           {mode === "photo" && photoPreview && (
             <div className="flex items-center gap-3 p-3 border-b border-border">
-              <img src={photoPreview} alt="" className="w-14 h-14 rounded-lg object-cover border border-border shrink-0" />
+              <button type="button" onClick={openBestPhotoMatch} className="shrink-0" title={isKa ? "ნაპოვნზე გადასვლა" : "Open match"}>
+                <img src={photoPreview} alt="" className="w-14 h-14 rounded-lg object-cover border border-border" />
+              </button>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground mb-1">
                   {isKa ? "AI-ის ანალიზი:" : "AI analysis:"}
@@ -227,6 +313,7 @@ const SearchDropdown = () => {
                         onClick={async () => {
                           setLoading(true);
                           setOpen(true);
+                          const categoryFallback = inferCategories([k])[0] || photoCategory;
                           const like = `%${k}%`;
                           const { data } = await supabase
                             .from("products")
@@ -235,9 +322,11 @@ const SearchDropdown = () => {
                               `name_ka.ilike.${like},name_en.ilike.${like},desc_ka.ilike.${like},desc_en.ilike.${like},category.ilike.${like}`
                             )
                             .limit(8);
-                          setResults((data || []).map((p: any) => ({
-                            id: p.id, name_ka: p.name_ka, name_en: p.name_en, price: p.price, images: p.images,
-                          })));
+                          const matches = (data || []).map((p: ProductSearchRow) => ({
+                            id: p.id, name_ka: p.name_ka, name_en: p.name_en, price: p.price, images: p.images, category: p.category,
+                          }));
+                          setResults(matches);
+                          if (matches.length === 0 && categoryFallback) openCategory(categoryFallback);
                           setLoading(false);
                         }}
                         className="text-[11px] bg-secondary hover:bg-primary hover:text-primary-foreground text-foreground px-2 py-0.5 rounded-full transition-colors cursor-pointer"
@@ -266,10 +355,10 @@ const SearchDropdown = () => {
             </div>
           ) : (
             results.map((r) => (
-              <Link
+              <button
                 key={r.id}
-                to={`/product/${r.id}`}
-                onClick={() => { setOpen(false); setQuery(""); setPhotoPreview(null); setPhotoKeywords([]); }}
+                type="button"
+                onClick={() => openProduct(r.id)}
                 className="flex items-center gap-3 px-3 py-2.5 hover:bg-secondary transition-colors"
               >
                 <img
@@ -286,7 +375,7 @@ const SearchDropdown = () => {
                     )}
                   </div>
                 </div>
-              </Link>
+              </button>
             ))
           )}
         </div>
