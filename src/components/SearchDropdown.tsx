@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Loader2, Type, Hash, Camera, X, Upload } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -10,6 +10,7 @@ interface SearchResult {
   name_en: string;
   price: number;
   images: string[];
+  category?: string;
 }
 
 type Mode = "text" | "code" | "photo";
@@ -20,6 +21,42 @@ const generateSku = (id: string): string => {
     hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
   }
   return String((hash % 900000) + 100000);
+};
+
+const categoryKeys = [
+  "cutting-board-sets",
+  "clocks",
+  "candle-holders",
+  "gift-boxes",
+  "photo-frames",
+  "kids",
+  "cutting-boards",
+  "corporate",
+  "other",
+];
+
+const categoryMatchers: Record<string, string[]> = {
+  "cutting-board-sets": ["cutting-board-sets", "ნაკრები", "საჭრელი დაფების ნაკრები", "შამფური", "შამფურები", "შამფურების ნაკრები", "skewer", "skewers", "skewer set", "set"],
+  clocks: ["clocks", "საათი", "კედლის საათი", "clock", "wall clock"],
+  "candle-holders": ["candle-holders", "სანთელი", "სანთლის სადგამი", "candle", "candle holder"],
+  "gift-boxes": ["gift-boxes", "საჩუქრის ყუთი", "ყუთი", "gift box", "box"],
+  "photo-frames": ["photo-frames", "ფოტო ჩარჩო", "ჩარჩო", "photo frame", "frame"],
+  kids: ["kids", "საბავშვო", "ბავშვი", "children", "kid", "kids"],
+  "cutting-boards": ["cutting-boards", "საჭრელი დაფა", "დაფა", "cutting board", "board"],
+  corporate: ["corporate", "კორპორატიული", "corporate gift", "business gift"],
+  other: ["other", "სხვა", "დეკორი", "decor", "decoration"],
+};
+
+const normalize = (value: string | null | undefined) => (value || "").toLowerCase().trim();
+
+const inferCategories = (terms: string[]) => {
+  const normalized = terms.map(normalize).filter(Boolean);
+  return categoryKeys.filter((category) =>
+    categoryMatchers[category].some((match) => {
+      const m = normalize(match);
+      return normalized.some((term) => term.includes(m) || m.includes(term));
+    })
+  );
 };
 
 const SearchDropdown = () => {
