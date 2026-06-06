@@ -116,6 +116,7 @@ const SearchDropdown = () => {
         setMode(m);
         setQuery("");
         setResults([]);
+        setPhotoCategory(null);
         setOpen(true);
         if (m === "photo") setTimeout(() => fileRef.current?.click(), 50);
       }
@@ -270,7 +271,11 @@ const SearchDropdown = () => {
             className="flex-1 bg-transparent px-2 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0"
           />
         )}
-        <button className="rounded-md bg-primary p-2 text-primary-foreground hover:opacity-90 transition-opacity shrink-0">
+        <button
+          type="button"
+          onClick={() => { if (mode === "photo") openBestPhotoMatch(); }}
+          className="rounded-md bg-primary p-2 text-primary-foreground hover:opacity-90 transition-opacity shrink-0"
+        >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
         </button>
         <input
@@ -286,7 +291,9 @@ const SearchDropdown = () => {
         <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-xl z-50 max-h-[32rem] overflow-y-auto">
           {mode === "photo" && photoPreview && (
             <div className="flex items-center gap-3 p-3 border-b border-border">
-              <img src={photoPreview} alt="" className="w-14 h-14 rounded-lg object-cover border border-border shrink-0" />
+              <button type="button" onClick={openBestPhotoMatch} className="shrink-0" title={isKa ? "ნაპოვნზე გადასვლა" : "Open match"}>
+                <img src={photoPreview} alt="" className="w-14 h-14 rounded-lg object-cover border border-border" />
+              </button>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground mb-1">
                   {isKa ? "AI-ის ანალიზი:" : "AI analysis:"}
@@ -300,6 +307,7 @@ const SearchDropdown = () => {
                         onClick={async () => {
                           setLoading(true);
                           setOpen(true);
+                          const categoryFallback = inferCategories([k])[0] || photoCategory;
                           const like = `%${k}%`;
                           const { data } = await supabase
                             .from("products")
@@ -308,9 +316,11 @@ const SearchDropdown = () => {
                               `name_ka.ilike.${like},name_en.ilike.${like},desc_ka.ilike.${like},desc_en.ilike.${like},category.ilike.${like}`
                             )
                             .limit(8);
-                          setResults((data || []).map((p: any) => ({
-                            id: p.id, name_ka: p.name_ka, name_en: p.name_en, price: p.price, images: p.images,
-                          })));
+                          const matches = (data || []).map((p: any) => ({
+                            id: p.id, name_ka: p.name_ka, name_en: p.name_en, price: p.price, images: p.images, category: p.category,
+                          }));
+                          setResults(matches);
+                          if (matches.length === 0 && categoryFallback) openCategory(categoryFallback);
                           setLoading(false);
                         }}
                         className="text-[11px] bg-secondary hover:bg-primary hover:text-primary-foreground text-foreground px-2 py-0.5 rounded-full transition-colors cursor-pointer"
@@ -339,10 +349,10 @@ const SearchDropdown = () => {
             </div>
           ) : (
             results.map((r) => (
-              <Link
+              <button
                 key={r.id}
-                to={`/product/${r.id}`}
-                onClick={() => { setOpen(false); setQuery(""); setPhotoPreview(null); setPhotoKeywords([]); }}
+                type="button"
+                onClick={() => openProduct(r.id)}
                 className="flex items-center gap-3 px-3 py-2.5 hover:bg-secondary transition-colors"
               >
                 <img
@@ -359,7 +369,7 @@ const SearchDropdown = () => {
                     )}
                   </div>
                 </div>
-              </Link>
+              </button>
             ))
           )}
         </div>
