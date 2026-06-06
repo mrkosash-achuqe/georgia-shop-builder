@@ -13,6 +13,12 @@ interface SearchResult {
   category?: string;
 }
 
+interface ProductSearchRow extends SearchResult {
+  desc_ka?: string;
+  desc_en?: string;
+  category: string;
+}
+
 type Mode = "text" | "code" | "photo";
 
 const generateSku = (id: string): string => {
@@ -189,7 +195,7 @@ const SearchDropdown = () => {
           .select("id, name_ka, name_en, desc_ka, desc_en, price, images, category");
         const allKws = [...(data.keywords_ka || []), ...(data.keywords_en || [])].map((k: string) => k.toLowerCase());
         const ranked = (prods || [])
-          .map((p: any) => {
+          .map((p: ProductSearchRow) => {
             const hay = `${p.name_ka} ${p.name_en} ${p.desc_ka || ""} ${p.desc_en || ""} ${p.category || ""}`.toLowerCase();
             const keywordScore = allKws.reduce((s, k) => (k && hay.includes(k) ? s + 2 : s), 0);
             const categoryScore = inferredCategories.includes(p.category) ? 5 : 0;
@@ -316,7 +322,7 @@ const SearchDropdown = () => {
                               `name_ka.ilike.${like},name_en.ilike.${like},desc_ka.ilike.${like},desc_en.ilike.${like},category.ilike.${like}`
                             )
                             .limit(8);
-                          const matches = (data || []).map((p: any) => ({
+                          const matches = (data || []).map((p: ProductSearchRow) => ({
                             id: p.id, name_ka: p.name_ka, name_en: p.name_en, price: p.price, images: p.images, category: p.category,
                           }));
                           setResults(matches);
