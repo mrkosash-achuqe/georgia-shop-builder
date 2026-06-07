@@ -122,6 +122,18 @@ const Header = () => {
                 <span>{t.nav.signIn}</span>
               </button>
             )}
+
+            {/* Mobile admin shortcut */}
+            {user && isAdmin && (
+              <Link
+                to="/admin"
+                className="sm:hidden text-primary hover:text-primary/80 transition-colors"
+                title="ადმინ პანელი"
+                aria-label="ადმინ პანელი"
+              >
+                <Shield className="h-5 w-5" />
+              </Link>
+            )}
           </div>
         </div>
 
@@ -202,6 +214,21 @@ const Header = () => {
 
             {/* Nav links */}
             <nav className="flex-1 overflow-y-auto p-4">
+              {/* Admin link (mobile) */}
+              {user && isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between px-3 py-3 rounded-lg bg-primary/10 text-primary hover:bg-primary/15 transition-colors text-sm font-semibold mb-2"
+                >
+                  <span className="flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    ადმინ პანელი
+                  </span>
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              )}
+
               {/* Wishlist link */}
               <Link
                 to="/wishlist"
