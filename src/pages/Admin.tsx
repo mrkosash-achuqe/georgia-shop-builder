@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import {
   Plus, Pencil, Trash2, Upload, X, Save, ArrowLeft,
   Image as ImageIcon, Package, Search, Filter, Eye, ChevronDown,
-  LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle, Minus
+  LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle, Minus, Users as UsersIcon
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -613,6 +613,16 @@ const Admin = () => {
       <DeleteModal />
 
       <div className="container mx-auto px-4 py-6 sm:py-8">
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6 border-b border-border overflow-x-auto">
+          <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px">
+            <Package className="h-4 w-4" /> პროდუქტები
+          </span>
+          <Link to="/admin/users" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
+            <UsersIcon className="h-4 w-4" /> მომხმარებლები
+          </Link>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
           <div className="bg-card rounded-xl sm:rounded-2xl border border-border p-3 sm:p-5">
