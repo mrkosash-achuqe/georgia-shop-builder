@@ -612,39 +612,39 @@ const Admin = () => {
       <ImagePreviewModal />
       <DeleteModal />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-card rounded-2xl border border-border p-5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Package className="h-5 w-5 text-primary" />
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
+          <div className="bg-card rounded-xl sm:rounded-2xl border border-border p-3 sm:p-5">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <Package className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{stats.total}</p>
-                <p className="text-xs text-muted-foreground">სულ პროდუქტი</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-card rounded-2xl border border-border p-5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{stats.inStock}</p>
-                <p className="text-xs text-muted-foreground">მარაგშია</p>
+              <div className="min-w-0">
+                <p className="text-lg sm:text-2xl font-bold text-foreground">{stats.total}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">სულ</p>
               </div>
             </div>
           </div>
-          <div className="bg-card rounded-2xl border border-border p-5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-destructive/10 flex items-center justify-center">
-                <XCircle className="h-5 w-5 text-destructive" />
+          <div className="bg-card rounded-xl sm:rounded-2xl border border-border p-3 sm:p-5">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{stats.outOfStock}</p>
-                <p className="text-xs text-muted-foreground">ამოწურულია</p>
+              <div className="min-w-0">
+                <p className="text-lg sm:text-2xl font-bold text-foreground">{stats.inStock}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">მარაგშია</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-card rounded-xl sm:rounded-2xl border border-border p-3 sm:p-5">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
+                <XCircle className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-lg sm:text-2xl font-bold text-foreground">{stats.outOfStock}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">ამოწურულია</p>
               </div>
             </div>
           </div>
@@ -652,9 +652,9 @@ const Admin = () => {
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">📦 პროდუქტების მართვა</h1>
-            <p className="text-muted-foreground text-sm mt-1">დაამატეთ, შეცვალეთ ან წაშალეთ პროდუქტები</p>
+          <div className="w-full sm:w-auto">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">📦 პროდუქტების მართვა</h1>
+            <p className="text-muted-foreground text-xs sm:text-sm mt-1">დაამატეთ, შეცვალეთ ან წაშალეთ პროდუქტები</p>
           </div>
           <button
             onClick={() => {
@@ -664,7 +664,7 @@ const Admin = () => {
               setPersonalizationOpen(false);
               setPersonalizationNote("");
             }}
-            className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-primary/25 w-full sm:w-auto"
           >
             <Plus className="h-5 w-5" />
             ახალი პროდუქტი
@@ -672,7 +672,7 @@ const Admin = () => {
         </div>
 
         {/* Search & Filters */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
@@ -682,11 +682,11 @@ const Admin = () => {
               className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
             />
           </div>
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-none">
             <select
               value={filterCategory}
               onChange={e => setFilterCategory(e.target.value)}
-              className="rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none pr-10 min-w-[160px]"
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none pr-10 sm:min-w-[160px]"
             >
               <option value="">ყველა კატეგორია</option>
               {categories.map(c => (
@@ -695,7 +695,7 @@ const Admin = () => {
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           </div>
-          <div className="flex rounded-xl border border-border overflow-hidden">
+          <div className="hidden sm:flex rounded-xl border border-border overflow-hidden">
             <button
               onClick={() => setViewMode("list")}
               className={`p-3 transition-colors ${viewMode === "list" ? "bg-primary text-primary-foreground" : "hover:bg-secondary"}`}
