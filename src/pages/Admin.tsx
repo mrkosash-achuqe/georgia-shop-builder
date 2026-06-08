@@ -8,7 +8,8 @@ import Footer from "@/components/Footer";
 import {
   Plus, Pencil, Trash2, Upload, X, Save, ArrowLeft,
   Image as ImageIcon, Package, Search, Filter, Eye, ChevronDown,
-  LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle, Minus, Users as UsersIcon
+  LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle, Minus, Users as UsersIcon,
+  ShoppingBag, Truck
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -620,6 +621,12 @@ const Admin = () => {
           </span>
           <Link to="/admin/users" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
             <UsersIcon className="h-4 w-4" /> მომხმარებლები
+          </Link>
+          <Link to="/admin/orders" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
+            <ShoppingBag className="h-4 w-4" /> შეკვეთები
+          </Link>
+          <Link to="/admin/shipping" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
+            <Truck className="h-4 w-4" /> მიწოდება
           </Link>
         </div>
 

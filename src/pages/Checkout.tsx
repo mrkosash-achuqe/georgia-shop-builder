@@ -1,17 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 
 type PaymentMethod = "card" | "cash" | "transfer";
 
+type Zone = {
+  id: string;
+  name_ka: string;
+  name_en: string;
+  fee: number;
+  free_threshold: number | null;
+};
+
 const Checkout = () => {
   const { lang, t } = useLanguage();
   const { items, totalPrice, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const ct = t.checkout;
 
@@ -19,8 +31,24 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", city: "", address: "", note: "" });
+  const [zones, setZones] = useState<Zone[]>([]);
+  const [zoneId, setZoneId] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+  const [confirmedNumber, setConfirmedNumber] = useState<string>("");
 
-  const deliveryFee = totalPrice >= 100 ? 0 : 10;
+  useEffect(() => {
+    supabase.from("shipping_zones").select("*").eq("is_active", true).order("sort_order")
+      .then(({ data }) => {
+        const list = (data || []) as Zone[];
+        setZones(list);
+        if (list.length && !zoneId) setZoneId(list[0].id);
+      });
+  }, []);
+
+  const selectedZone = zones.find((z) => z.id === zoneId);
+  const deliveryFee = selectedZone
+    ? (selectedZone.free_threshold !== null && totalPrice >= Number(selectedZone.free_threshold) ? 0 : Number(selectedZone.fee))
+    : 0;
   const grandTotal = totalPrice + deliveryFee;
 
   const updateField = (field: string, value: string) => {
@@ -41,7 +69,49 @@ const Checkout = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); if (validate()) { setStep("confirmed"); clearCart(); } };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+    if (items.length === 0) return;
+    setSubmitting(true);
+    try {
+      const { data: order, error } = await supabase.from("orders").insert({
+        user_id: user?.id ?? null,
+        first_name: form.firstName.trim(),
+        last_name: form.lastName.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        city: form.city.trim(),
+        address: form.address.trim(),
+        note: form.note.trim(),
+        subtotal: totalPrice,
+        shipping_fee: deliveryFee,
+        total: grandTotal,
+        payment_method: paymentMethod,
+        status: "pending",
+      }).select("id, order_number").single();
+      if (error || !order) throw error || new Error("no order");
+
+      const itemsPayload = items.map((it) => ({
+        order_id: order.id,
+        product_id: it.product.id,
+        product_name: lang === "ka" ? it.product.nameKa : it.product.nameEn,
+        product_image: it.product.img || "",
+        quantity: it.quantity,
+        unit_price: it.product.price,
+      }));
+      const { error: itemsErr } = await supabase.from("order_items").insert(itemsPayload);
+      if (itemsErr) throw itemsErr;
+
+      setConfirmedNumber(order.order_number);
+      setStep("confirmed");
+      clearCart();
+    } catch (err: any) {
+      toast.error("შეკვეთის გაგზავნა ვერ მოხერხდა: " + (err?.message || "შეცდომა"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (items.length === 0 && step !== "confirmed") {
     return (
@@ -68,7 +138,7 @@ const Checkout = () => {
               <CheckCircle2 className="h-8 w-8 text-primary" />
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-3">{ct.orderConfirmed}</h1>
-            <p className="text-muted-foreground mb-2">{ct.orderNumber}: #ACH-{Date.now().toString().slice(-6)}</p>
+            <p className="text-muted-foreground mb-2">{ct.orderNumber}: #{confirmedNumber || `ACH-${Date.now().toString().slice(-6)}`}</p>
             <p className="text-muted-foreground mb-8">{ct.confirmationMessage}</p>
             <button onClick={() => navigate("/")} className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">{ct.backToShop}</button>
           </div>
@@ -107,6 +177,23 @@ const Checkout = () => {
                   <InputField label={ct.email} field="email" type="email" placeholder="email@example.com" />
                   <InputField label={ct.city} field="city" />
                   <InputField label={ct.address} field="address" colSpan />
+                  {zones.length > 0 && (
+                    <div className="sm:col-span-2">
+                      <label className="block text-sm font-medium text-foreground mb-1.5">{ct.delivery}</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {zones.map((z) => {
+                          const isFree = z.free_threshold !== null && totalPrice >= Number(z.free_threshold);
+                          return (
+                            <button key={z.id} type="button" onClick={() => setZoneId(z.id)}
+                              className={`text-left p-3 rounded-lg border-2 text-sm transition-all ${zoneId === z.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}>
+                              <div className="font-medium text-foreground">{lang === "ka" ? z.name_ka : (z.name_en || z.name_ka)}</div>
+                              <div className="text-xs text-muted-foreground">{isFree ? ct.free : `${Number(z.fee).toFixed(0)} ${t.products.currency}`}{z.free_threshold && !isFree ? ` · უფასო ${Number(z.free_threshold).toFixed(0)}+` : ""}</div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-foreground mb-1.5">{ct.note}</label>
                     <textarea value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={3} placeholder={ct.notePlaceholder}
@@ -153,7 +240,7 @@ const Checkout = () => {
                   <div className="flex justify-between text-muted-foreground"><span>{ct.delivery}</span><span>{deliveryFee === 0 ? ct.free : `${deliveryFee} ${t.products.currency}`}</span></div>
                   <div className="flex justify-between text-foreground font-bold text-lg pt-2 border-t border-border"><span>{ct.total}</span><span className="text-primary">{grandTotal} {t.products.currency}</span></div>
                 </div>
-                <button type="submit" className="w-full mt-6 bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold text-base hover:opacity-90 transition-opacity">{ct.placeOrder}</button>
+                <button type="submit" disabled={submitting} className="w-full mt-6 bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold text-base hover:opacity-90 transition-opacity disabled:opacity-60">{submitting ? "..." : ct.placeOrder}</button>
                 <p className="text-xs text-muted-foreground text-center mt-3 flex items-center justify-center gap-1"><ShieldCheck className="h-3.5 w-3.5" />{ct.securePayment}</p>
               </div>
             </div>
