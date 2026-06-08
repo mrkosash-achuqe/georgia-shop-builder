@@ -1,17 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 
 type PaymentMethod = "card" | "cash" | "transfer";
 
+type Zone = {
+  id: string;
+  name_ka: string;
+  name_en: string;
+  fee: number;
+  free_threshold: number | null;
+};
+
 const Checkout = () => {
   const { lang, t } = useLanguage();
   const { items, totalPrice, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const ct = t.checkout;
 
@@ -19,8 +31,24 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", city: "", address: "", note: "" });
+  const [zones, setZones] = useState<Zone[]>([]);
+  const [zoneId, setZoneId] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+  const [confirmedNumber, setConfirmedNumber] = useState<string>("");
 
-  const deliveryFee = totalPrice >= 100 ? 0 : 10;
+  useEffect(() => {
+    supabase.from("shipping_zones").select("*").eq("is_active", true).order("sort_order")
+      .then(({ data }) => {
+        const list = (data || []) as Zone[];
+        setZones(list);
+        if (list.length && !zoneId) setZoneId(list[0].id);
+      });
+  }, []);
+
+  const selectedZone = zones.find((z) => z.id === zoneId);
+  const deliveryFee = selectedZone
+    ? (selectedZone.free_threshold !== null && totalPrice >= Number(selectedZone.free_threshold) ? 0 : Number(selectedZone.fee))
+    : 0;
   const grandTotal = totalPrice + deliveryFee;
 
   const updateField = (field: string, value: string) => {
@@ -41,7 +69,49 @@ const Checkout = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); if (validate()) { setStep("confirmed"); clearCart(); } };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+    if (items.length === 0) return;
+    setSubmitting(true);
+    try {
+      const { data: order, error } = await supabase.from("orders").insert({
+        user_id: user?.id ?? null,
+        first_name: form.firstName.trim(),
+        last_name: form.lastName.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        city: form.city.trim(),
+        address: form.address.trim(),
+        note: form.note.trim(),
+        subtotal: totalPrice,
+        shipping_fee: deliveryFee,
+        total: grandTotal,
+        payment_method: paymentMethod,
+        status: "pending",
+      }).select("id, order_number").single();
+      if (error || !order) throw error || new Error("no order");
+
+      const itemsPayload = items.map((it) => ({
+        order_id: order.id,
+        product_id: it.product.id,
+        product_name: lang === "ka" ? it.product.nameKa : it.product.nameEn,
+        product_image: it.product.img || "",
+        quantity: it.quantity,
+        unit_price: it.product.price,
+      }));
+      const { error: itemsErr } = await supabase.from("order_items").insert(itemsPayload);
+      if (itemsErr) throw itemsErr;
+
+      setConfirmedNumber(order.order_number);
+      setStep("confirmed");
+      clearCart();
+    } catch (err: any) {
+      toast.error("შეკვეთის გაგზავნა ვერ მოხერხდა: " + (err?.message || "შეცდომა"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (items.length === 0 && step !== "confirmed") {
     return (
@@ -69,6 +139,7 @@ const Checkout = () => {
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-3">{ct.orderConfirmed}</h1>
             <p className="text-muted-foreground mb-2">{ct.orderNumber}: #ACH-{Date.now().toString().slice(-6)}</p>
+            {confirmedNumber && <p className="text-xs text-muted-foreground mb-2">#{confirmedNumber}</p>}
             <p className="text-muted-foreground mb-8">{ct.confirmationMessage}</p>
             <button onClick={() => navigate("/")} className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">{ct.backToShop}</button>
           </div>
