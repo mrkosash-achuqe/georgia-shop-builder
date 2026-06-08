@@ -240,7 +240,7 @@ const Checkout = () => {
                   <div className="flex justify-between text-muted-foreground"><span>{ct.delivery}</span><span>{deliveryFee === 0 ? ct.free : `${deliveryFee} ${t.products.currency}`}</span></div>
                   <div className="flex justify-between text-foreground font-bold text-lg pt-2 border-t border-border"><span>{ct.total}</span><span className="text-primary">{grandTotal} {t.products.currency}</span></div>
                 </div>
-                <button type="submit" className="w-full mt-6 bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold text-base hover:opacity-90 transition-opacity">{ct.placeOrder}</button>
+                <button type="submit" disabled={submitting} className="w-full mt-6 bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold text-base hover:opacity-90 transition-opacity disabled:opacity-60">{submitting ? "..." : ct.placeOrder}</button>
                 <p className="text-xs text-muted-foreground text-center mt-3 flex items-center justify-center gap-1"><ShieldCheck className="h-3.5 w-3.5" />{ct.securePayment}</p>
               </div>
             </div>
