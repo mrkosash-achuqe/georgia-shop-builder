@@ -178,6 +178,23 @@ const Checkout = () => {
                   <InputField label={ct.email} field="email" type="email" placeholder="email@example.com" />
                   <InputField label={ct.city} field="city" />
                   <InputField label={ct.address} field="address" colSpan />
+                  {zones.length > 0 && (
+                    <div className="sm:col-span-2">
+                      <label className="block text-sm font-medium text-foreground mb-1.5">{ct.delivery}</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {zones.map((z) => {
+                          const isFree = z.free_threshold !== null && totalPrice >= Number(z.free_threshold);
+                          return (
+                            <button key={z.id} type="button" onClick={() => setZoneId(z.id)}
+                              className={`text-left p-3 rounded-lg border-2 text-sm transition-all ${zoneId === z.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}>
+                              <div className="font-medium text-foreground">{lang === "ka" ? z.name_ka : (z.name_en || z.name_ka)}</div>
+                              <div className="text-xs text-muted-foreground">{isFree ? ct.free : `${Number(z.fee).toFixed(0)} ${t.products.currency}`}{z.free_threshold && !isFree ? ` · უფასო ${Number(z.free_threshold).toFixed(0)}+` : ""}</div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-foreground mb-1.5">{ct.note}</label>
                     <textarea value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={3} placeholder={ct.notePlaceholder}
