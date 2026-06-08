@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string | null
+          product_image: string | null
+          product_name: string
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id?: string | null
+          product_image?: string | null
+          product_name: string
+          quantity?: number
+          unit_price?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          product_image?: string | null
+          product_name?: string
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          note: string | null
+          order_number: string
+          payment_method: string
+          phone: string
+          shipping_fee: number
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          note?: string | null
+          order_number?: string
+          payment_method?: string
+          phone: string
+          shipping_fee?: number
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          note?: string | null
+          order_number?: string
+          payment_method?: string
+          phone?: string
+          shipping_fee?: number
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
@@ -27,11 +135,16 @@ export type Database = {
           material: string
           name_en: string
           name_ka: string
+          og_image: string | null
           personalization_enabled: boolean
           personalization_note: string
           price: number
           rating: number
           reviews_count: number
+          seo_description: string | null
+          seo_title: string | null
+          sku: string | null
+          stock_quantity: number
           updated_at: string
         }
         Insert: {
@@ -46,11 +159,16 @@ export type Database = {
           material?: string
           name_en?: string
           name_ka: string
+          og_image?: string | null
           personalization_enabled?: boolean
           personalization_note?: string
           price?: number
           rating?: number
           reviews_count?: number
+          seo_description?: string | null
+          seo_title?: string | null
+          sku?: string | null
+          stock_quantity?: number
           updated_at?: string
         }
         Update: {
@@ -65,11 +183,16 @@ export type Database = {
           material?: string
           name_en?: string
           name_ka?: string
+          og_image?: string | null
           personalization_enabled?: boolean
           personalization_note?: string
           price?: number
           rating?: number
           reviews_count?: number
+          seo_description?: string | null
+          seo_title?: string | null
+          sku?: string | null
+          stock_quantity?: number
           updated_at?: string
         }
         Relationships: []
@@ -97,6 +220,42 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      shipping_zones: {
+        Row: {
+          created_at: string
+          fee: number
+          free_threshold: number | null
+          id: string
+          is_active: boolean
+          name_en: string
+          name_ka: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fee?: number
+          free_threshold?: number | null
+          id?: string
+          is_active?: boolean
+          name_en?: string
+          name_ka: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fee?: number
+          free_threshold?: number | null
+          id?: string
+          is_active?: boolean
+          name_en?: string
+          name_ka?: string
+          sort_order?: number
           updated_at?: string
         }
         Relationships: []
