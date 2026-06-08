@@ -138,8 +138,7 @@ const Checkout = () => {
               <CheckCircle2 className="h-8 w-8 text-primary" />
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-3">{ct.orderConfirmed}</h1>
-            <p className="text-muted-foreground mb-2">{ct.orderNumber}: #ACH-{Date.now().toString().slice(-6)}</p>
-            {confirmedNumber && <p className="text-xs text-muted-foreground mb-2">#{confirmedNumber}</p>}
+            <p className="text-muted-foreground mb-2">{ct.orderNumber}: #{confirmedNumber || `ACH-${Date.now().toString().slice(-6)}`}</p>
             <p className="text-muted-foreground mb-8">{ct.confirmationMessage}</p>
             <button onClick={() => navigate("/")} className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">{ct.backToShop}</button>
           </div>
