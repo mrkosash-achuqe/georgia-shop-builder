@@ -9,7 +9,7 @@ import {
   Plus, Pencil, Trash2, Upload, X, Save, ArrowLeft,
   Image as ImageIcon, Package, Search, Filter, Eye, ChevronDown,
   LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle, Minus, Users as UsersIcon,
-  ShoppingBag, Truck
+  ShoppingBag, Truck, Tag, Search as SearchIcon
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -30,6 +30,11 @@ type DBProduct = {
   created_at: string;
   personalization_enabled?: boolean;
   personalization_note?: string;
+  stock_quantity?: number;
+  sku?: string | null;
+  seo_title?: string | null;
+  seo_description?: string | null;
+  og_image?: string | null;
 };
 
 const emptyProduct = {
@@ -43,6 +48,11 @@ const emptyProduct = {
   dimensions: "",
   images: [] as string[],
   in_stock: true,
+  stock_quantity: 0,
+  sku: "",
+  seo_title: "",
+  seo_description: "",
+  og_image: "",
 };
 
 const categoryLabels: Record<string, { ka: string; en: string }> = {
@@ -167,6 +177,11 @@ const Admin = () => {
       in_stock: editingProduct.in_stock ?? true,
       personalization_enabled: personalizationEnabled,
       personalization_note: personalizationEnabled ? personalizationNote : "",
+      stock_quantity: Number(editingProduct.stock_quantity || 0),
+      sku: editingProduct.sku || null,
+      seo_title: editingProduct.seo_title || null,
+      seo_description: editingProduct.seo_description || null,
+      og_image: editingProduct.og_image || null,
     };
 
     if (isNew) {
@@ -536,6 +551,80 @@ const Admin = () => {
               </div>
             </div>
 
+            {/* Inventory & SKU */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <h2 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Package className="h-5 w-5 text-primary" />
+                მარაგი და SKU
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">მარაგის რაოდენობა</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={editingProduct.stock_quantity ?? 0}
+                    onChange={e => setEditingProduct({ ...editingProduct, stock_quantity: Number(e.target.value) })}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="0"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">0 = ამოწურულია</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">SKU (კოდი)</label>
+                  <input
+                    value={editingProduct.sku || ""}
+                    onChange={e => setEditingProduct({ ...editingProduct, sku: e.target.value })}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="მაგ: ACH-CLK-001"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* SEO */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <h2 className="text-base font-semibold text-foreground mb-1 flex items-center gap-2">
+                <SearchIcon className="h-5 w-5 text-primary" />
+                SEO პარამეტრები
+              </h2>
+              <p className="text-xs text-muted-foreground mb-4">გავლენას ახდენს ძიების შედეგებზე და სოციალურ ქსელებში გაზიარებაზე</p>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Meta Title</label>
+                  <input
+                    value={editingProduct.seo_title || ""}
+                    onChange={e => setEditingProduct({ ...editingProduct, seo_title: e.target.value })}
+                    maxLength={70}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="რეკომენდირებული: 50-60 სიმბოლო"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">{(editingProduct.seo_title || "").length}/70</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Meta Description</label>
+                  <textarea
+                    value={editingProduct.seo_description || ""}
+                    onChange={e => setEditingProduct({ ...editingProduct, seo_description: e.target.value })}
+                    maxLength={170}
+                    rows={3}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                    placeholder="რეკომენდირებული: 150-160 სიმბოლო"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">{(editingProduct.seo_description || "").length}/170</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Open Graph Image URL</label>
+                  <input
+                    value={editingProduct.og_image || ""}
+                    onChange={e => setEditingProduct({ ...editingProduct, og_image: e.target.value })}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="https://... (Facebook/Twitter share-ისთვის)"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Personalization (optional) */}
             <div className="bg-card rounded-xl border border-border overflow-hidden">
               <label className="flex items-center gap-3 p-4 cursor-pointer select-none">
@@ -627,6 +716,9 @@ const Admin = () => {
           </Link>
           <Link to="/admin/shipping" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
             <Truck className="h-4 w-4" /> მიწოდება
+          </Link>
+          <Link to="/admin/promo" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
+            <Tag className="h-4 w-4" /> პრომო კოდები
           </Link>
         </div>
 

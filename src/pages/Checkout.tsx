@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck } from "lucide-react";
+import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck, Tag, X } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -20,6 +20,13 @@ type Zone = {
   free_threshold: number | null;
 };
 
+type AppliedPromo = {
+  id: string;
+  code: string;
+  discount_type: "percent" | "fixed";
+  discount_value: number;
+};
+
 const Checkout = () => {
   const { lang, t } = useLanguage();
   const { items, totalPrice, clearCart } = useCart();
@@ -35,6 +42,10 @@ const Checkout = () => {
   const [zoneId, setZoneId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [confirmedNumber, setConfirmedNumber] = useState<string>("");
+  const [promoInput, setPromoInput] = useState("");
+  const [applyingPromo, setApplyingPromo] = useState(false);
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
+  const [promoError, setPromoError] = useState("");
 
   useEffect(() => {
     supabase.from("shipping_zones").select("*").eq("is_active", true).order("sort_order")
@@ -49,7 +60,40 @@ const Checkout = () => {
   const deliveryFee = selectedZone
     ? (selectedZone.free_threshold !== null && totalPrice >= Number(selectedZone.free_threshold) ? 0 : Number(selectedZone.fee))
     : 0;
-  const grandTotal = totalPrice + deliveryFee;
+  const discount = promo
+    ? (promo.discount_type === "percent"
+        ? Math.min(totalPrice, Math.round((totalPrice * promo.discount_value) / 100 * 100) / 100)
+        : Math.min(totalPrice, Number(promo.discount_value)))
+    : 0;
+  const grandTotal = Math.max(0, totalPrice - discount + deliveryFee);
+
+  const applyPromo = async () => {
+    const code = promoInput.trim().toUpperCase();
+    if (!code) return;
+    setApplyingPromo(true);
+    setPromoError("");
+    const { data, error } = await supabase
+      .from("promo_codes")
+      .select("*")
+      .eq("code", code)
+      .eq("is_active", true)
+      .maybeSingle();
+    if (error || !data) {
+      setPromoError("კოდი ვერ მოიძებნა");
+      setApplyingPromo(false);
+      return;
+    }
+    const now = new Date();
+    if (data.starts_at && new Date(data.starts_at) > now) { setPromoError("კოდი ჯერ არ არის აქტიური"); setApplyingPromo(false); return; }
+    if (data.expires_at && new Date(data.expires_at) < now) { setPromoError("კოდი ვადაგასულია"); setApplyingPromo(false); return; }
+    if (data.max_uses !== null && data.used_count >= data.max_uses) { setPromoError("კოდი ამოწურულია"); setApplyingPromo(false); return; }
+    if (Number(data.min_order_amount) > totalPrice) { setPromoError(`მინ. შეკვეთა: ${data.min_order_amount}₾`); setApplyingPromo(false); return; }
+    setPromo({ id: data.id, code: data.code, discount_type: data.discount_type as "percent" | "fixed", discount_value: Number(data.discount_value) });
+    toast.success(`✅ კოდი გააქტიურდა: ${data.code}`);
+    setApplyingPromo(false);
+  };
+
+  const removePromo = () => { setPromo(null); setPromoInput(""); setPromoError(""); };
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -86,6 +130,8 @@ const Checkout = () => {
         note: form.note.trim(),
         subtotal: totalPrice,
         shipping_fee: deliveryFee,
+        discount: discount,
+        promo_code: promo?.code ?? null,
         total: grandTotal,
         payment_method: paymentMethod,
         status: "pending",
@@ -102,6 +148,11 @@ const Checkout = () => {
       }));
       const { error: itemsErr } = await supabase.from("order_items").insert(itemsPayload);
       if (itemsErr) throw itemsErr;
+
+      if (promo) {
+        const { data: cur } = await supabase.from("promo_codes").select("used_count").eq("id", promo.id).single();
+        await supabase.from("promo_codes").update({ used_count: (cur?.used_count ?? 0) + 1 }).eq("id", promo.id);
+      }
 
       setConfirmedNumber(order.order_number);
       setStep("confirmed");
@@ -237,8 +288,43 @@ const Checkout = () => {
                 </div>
                 <div className="border-t border-border pt-4 space-y-2 text-sm">
                   <div className="flex justify-between text-muted-foreground"><span>{ct.subtotal}</span><span>{totalPrice} {t.products.currency}</span></div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-green-600 font-medium"><span>ფასდაკლება ({promo?.code})</span><span>-{discount.toFixed(2)} {t.products.currency}</span></div>
+                  )}
                   <div className="flex justify-between text-muted-foreground"><span>{ct.delivery}</span><span>{deliveryFee === 0 ? ct.free : `${deliveryFee} ${t.products.currency}`}</span></div>
                   <div className="flex justify-between text-foreground font-bold text-lg pt-2 border-t border-border"><span>{ct.total}</span><span className="text-primary">{grandTotal} {t.products.currency}</span></div>
+                </div>
+                {/* Promo code */}
+                <div className="mt-4 pt-4 border-t border-border">
+                  {promo ? (
+                    <div className="flex items-center justify-between bg-green-500/10 border border-green-500/30 rounded-lg px-3 py-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Tag className="h-4 w-4 text-green-600" />
+                        <span className="font-mono font-semibold text-green-700">{promo.code}</span>
+                      </div>
+                      <button type="button" onClick={removePromo} className="text-muted-foreground hover:text-destructive">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <label className="block text-xs font-medium text-muted-foreground mb-1.5">პრომო კოდი</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={promoInput}
+                          onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError(""); }}
+                          placeholder="SUMMER2026"
+                          className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <button type="button" onClick={applyPromo} disabled={applyingPromo || !promoInput.trim()}
+                          className="px-4 py-2 rounded-lg bg-secondary text-foreground text-sm font-medium hover:bg-secondary/70 disabled:opacity-50">
+                          {applyingPromo ? "..." : "გამოყენება"}
+                        </button>
+                      </div>
+                      {promoError && <p className="text-xs text-destructive mt-1.5">{promoError}</p>}
+                    </>
+                  )}
                 </div>
                 <button type="submit" disabled={submitting} className="w-full mt-6 bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold text-base hover:opacity-90 transition-opacity disabled:opacity-60">{submitting ? "..." : ct.placeOrder}</button>
                 <p className="text-xs text-muted-foreground text-center mt-3 flex items-center justify-center gap-1"><ShieldCheck className="h-3.5 w-3.5" />{ct.securePayment}</p>
