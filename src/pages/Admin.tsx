@@ -551,11 +551,6 @@ const Admin = () => {
               </div>
             </div>
 
-            {/* Personalization (optional) */}
-            <div className="bg-card rounded-xl border border-border overflow-hidden">
-              {/* moved below — placeholder anchor */}
-            </div>
-
             {/* Inventory & SKU */}
             <div className="bg-card rounded-2xl border border-border p-6">
               <h2 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
