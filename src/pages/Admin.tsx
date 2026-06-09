@@ -717,6 +717,9 @@ const Admin = () => {
           <Link to="/admin/shipping" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
             <Truck className="h-4 w-4" /> მიწოდება
           </Link>
+          <Link to="/admin/promo" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
+            <Tag className="h-4 w-4" /> პრომო კოდები
+          </Link>
         </div>
 
         {/* Stats */}
