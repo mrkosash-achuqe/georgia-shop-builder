@@ -88,7 +88,7 @@ const Checkout = () => {
     if (data.expires_at && new Date(data.expires_at) < now) { setPromoError("კოდი ვადაგასულია"); setApplyingPromo(false); return; }
     if (data.max_uses !== null && data.used_count >= data.max_uses) { setPromoError("კოდი ამოწურულია"); setApplyingPromo(false); return; }
     if (Number(data.min_order_amount) > totalPrice) { setPromoError(`მინ. შეკვეთა: ${data.min_order_amount}₾`); setApplyingPromo(false); return; }
-    setPromo({ id: data.id, code: data.code, discount_type: data.discount_type, discount_value: Number(data.discount_value) });
+    setPromo({ id: data.id, code: data.code, discount_type: data.discount_type as "percent" | "fixed", discount_value: Number(data.discount_value) });
     toast.success(`✅ კოდი გააქტიურდა: ${data.code}`);
     setApplyingPromo(false);
   };
@@ -150,9 +150,8 @@ const Checkout = () => {
       if (itemsErr) throw itemsErr;
 
       if (promo) {
-        // best-effort increment of used_count
-        await supabase.rpc as any;
-        await supabase.from("promo_codes").update({ used_count: (await supabase.from("promo_codes").select("used_count").eq("id", promo.id).single()).data?.used_count + 1 || 1 }).eq("id", promo.id);
+        const { data: cur } = await supabase.from("promo_codes").select("used_count").eq("id", promo.id).single();
+        await supabase.from("promo_codes").update({ used_count: (cur?.used_count ?? 0) + 1 }).eq("id", promo.id);
       }
 
       setConfirmedNumber(order.order_number);
