@@ -9,7 +9,7 @@ import {
   Plus, Pencil, Trash2, Upload, X, Save, ArrowLeft,
   Image as ImageIcon, Package, Search, Filter, Eye, ChevronDown,
   LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle, Minus, Users as UsersIcon,
-  ShoppingBag, Truck
+  ShoppingBag, Truck, Tag, Search as SearchIcon
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -30,6 +30,11 @@ type DBProduct = {
   created_at: string;
   personalization_enabled?: boolean;
   personalization_note?: string;
+  stock_quantity?: number;
+  sku?: string | null;
+  seo_title?: string | null;
+  seo_description?: string | null;
+  og_image?: string | null;
 };
 
 const emptyProduct = {
@@ -43,6 +48,11 @@ const emptyProduct = {
   dimensions: "",
   images: [] as string[],
   in_stock: true,
+  stock_quantity: 0,
+  sku: "",
+  seo_title: "",
+  seo_description: "",
+  og_image: "",
 };
 
 const categoryLabels: Record<string, { ka: string; en: string }> = {
