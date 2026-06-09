@@ -177,6 +177,11 @@ const Admin = () => {
       in_stock: editingProduct.in_stock ?? true,
       personalization_enabled: personalizationEnabled,
       personalization_note: personalizationEnabled ? personalizationNote : "",
+      stock_quantity: Number(editingProduct.stock_quantity || 0),
+      sku: editingProduct.sku || null,
+      seo_title: editingProduct.seo_title || null,
+      seo_description: editingProduct.seo_description || null,
+      og_image: editingProduct.og_image || null,
     };
 
     if (isNew) {
