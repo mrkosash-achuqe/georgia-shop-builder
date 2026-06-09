@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck } from "lucide-react";
+import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck, Tag, X } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -20,6 +20,13 @@ type Zone = {
   free_threshold: number | null;
 };
 
+type AppliedPromo = {
+  id: string;
+  code: string;
+  discount_type: "percent" | "fixed";
+  discount_value: number;
+};
+
 const Checkout = () => {
   const { lang, t } = useLanguage();
   const { items, totalPrice, clearCart } = useCart();
@@ -35,6 +42,10 @@ const Checkout = () => {
   const [zoneId, setZoneId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [confirmedNumber, setConfirmedNumber] = useState<string>("");
+  const [promoInput, setPromoInput] = useState("");
+  const [applyingPromo, setApplyingPromo] = useState(false);
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
+  const [promoError, setPromoError] = useState("");
 
   useEffect(() => {
     supabase.from("shipping_zones").select("*").eq("is_active", true).order("sort_order")
@@ -49,7 +60,40 @@ const Checkout = () => {
   const deliveryFee = selectedZone
     ? (selectedZone.free_threshold !== null && totalPrice >= Number(selectedZone.free_threshold) ? 0 : Number(selectedZone.fee))
     : 0;
-  const grandTotal = totalPrice + deliveryFee;
+  const discount = promo
+    ? (promo.discount_type === "percent"
+        ? Math.min(totalPrice, Math.round((totalPrice * promo.discount_value) / 100 * 100) / 100)
+        : Math.min(totalPrice, Number(promo.discount_value)))
+    : 0;
+  const grandTotal = Math.max(0, totalPrice - discount + deliveryFee);
+
+  const applyPromo = async () => {
+    const code = promoInput.trim().toUpperCase();
+    if (!code) return;
+    setApplyingPromo(true);
+    setPromoError("");
+    const { data, error } = await supabase
+      .from("promo_codes")
+      .select("*")
+      .eq("code", code)
+      .eq("is_active", true)
+      .maybeSingle();
+    if (error || !data) {
+      setPromoError("კოდი ვერ მოიძებნა");
+      setApplyingPromo(false);
+      return;
+    }
+    const now = new Date();
+    if (data.starts_at && new Date(data.starts_at) > now) { setPromoError("კოდი ჯერ არ არის აქტიური"); setApplyingPromo(false); return; }
+    if (data.expires_at && new Date(data.expires_at) < now) { setPromoError("კოდი ვადაგასულია"); setApplyingPromo(false); return; }
+    if (data.max_uses !== null && data.used_count >= data.max_uses) { setPromoError("კოდი ამოწურულია"); setApplyingPromo(false); return; }
+    if (Number(data.min_order_amount) > totalPrice) { setPromoError(`მინ. შეკვეთა: ${data.min_order_amount}₾`); setApplyingPromo(false); return; }
+    setPromo({ id: data.id, code: data.code, discount_type: data.discount_type, discount_value: Number(data.discount_value) });
+    toast.success(`✅ კოდი გააქტიურდა: ${data.code}`);
+    setApplyingPromo(false);
+  };
+
+  const removePromo = () => { setPromo(null); setPromoInput(""); setPromoError(""); };
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -86,6 +130,8 @@ const Checkout = () => {
         note: form.note.trim(),
         subtotal: totalPrice,
         shipping_fee: deliveryFee,
+        discount: discount,
+        promo_code: promo?.code ?? null,
         total: grandTotal,
         payment_method: paymentMethod,
         status: "pending",
@@ -102,6 +148,12 @@ const Checkout = () => {
       }));
       const { error: itemsErr } = await supabase.from("order_items").insert(itemsPayload);
       if (itemsErr) throw itemsErr;
+
+      if (promo) {
+        // best-effort increment of used_count
+        await supabase.rpc as any;
+        await supabase.from("promo_codes").update({ used_count: (await supabase.from("promo_codes").select("used_count").eq("id", promo.id).single()).data?.used_count + 1 || 1 }).eq("id", promo.id);
+      }
 
       setConfirmedNumber(order.order_number);
       setStep("confirmed");
