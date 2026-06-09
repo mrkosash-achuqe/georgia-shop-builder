@@ -553,6 +553,85 @@ const Admin = () => {
 
             {/* Personalization (optional) */}
             <div className="bg-card rounded-xl border border-border overflow-hidden">
+              {/* moved below — placeholder anchor */}
+            </div>
+
+            {/* Inventory & SKU */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <h2 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Package className="h-5 w-5 text-primary" />
+                მარაგი და SKU
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">მარაგის რაოდენობა</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={editingProduct.stock_quantity ?? 0}
+                    onChange={e => setEditingProduct({ ...editingProduct, stock_quantity: Number(e.target.value) })}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="0"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">0 = ამოწურულია</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">SKU (კოდი)</label>
+                  <input
+                    value={editingProduct.sku || ""}
+                    onChange={e => setEditingProduct({ ...editingProduct, sku: e.target.value })}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="მაგ: ACH-CLK-001"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* SEO */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <h2 className="text-base font-semibold text-foreground mb-1 flex items-center gap-2">
+                <SearchIcon className="h-5 w-5 text-primary" />
+                SEO პარამეტრები
+              </h2>
+              <p className="text-xs text-muted-foreground mb-4">გავლენას ახდენს ძიების შედეგებზე და სოციალურ ქსელებში გაზიარებაზე</p>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Meta Title</label>
+                  <input
+                    value={editingProduct.seo_title || ""}
+                    onChange={e => setEditingProduct({ ...editingProduct, seo_title: e.target.value })}
+                    maxLength={70}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="რეკომენდირებული: 50-60 სიმბოლო"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">{(editingProduct.seo_title || "").length}/70</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Meta Description</label>
+                  <textarea
+                    value={editingProduct.seo_description || ""}
+                    onChange={e => setEditingProduct({ ...editingProduct, seo_description: e.target.value })}
+                    maxLength={170}
+                    rows={3}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                    placeholder="რეკომენდირებული: 150-160 სიმბოლო"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">{(editingProduct.seo_description || "").length}/170</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Open Graph Image URL</label>
+                  <input
+                    value={editingProduct.og_image || ""}
+                    onChange={e => setEditingProduct({ ...editingProduct, og_image: e.target.value })}
+                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="https://... (Facebook/Twitter share-ისთვის)"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Personalization (optional) */}
+            <div className="bg-card rounded-xl border border-border overflow-hidden">
               <label className="flex items-center gap-3 p-4 cursor-pointer select-none">
                 <input
                   type="checkbox"
