@@ -13,6 +13,9 @@ const HeroSection = () => {
           className="w-full h-full object-cover"
           width={1024}
           height={512}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 to-transparent" />
         <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-12">

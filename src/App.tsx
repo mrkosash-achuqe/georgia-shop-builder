@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,22 +11,38 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import AuthModal from "@/components/AuthModal";
 import Index from "./pages/Index.tsx";
-import ProductDetail from "./pages/ProductDetail.tsx";
-import Checkout from "./pages/Checkout.tsx";
-import About from "./pages/About.tsx";
-import Contact from "./pages/Contact.tsx";
-import Delivery from "./pages/Delivery.tsx";
-import Returns from "./pages/Returns.tsx";
-import Blog from "./pages/Blog.tsx";
-import Wishlist from "./pages/Wishlist.tsx";
-import Admin from "./pages/Admin.tsx";
-import AdminUsers from "./pages/AdminUsers.tsx";
-import AdminOrders from "./pages/AdminOrders.tsx";
-import AdminShipping from "./pages/AdminShipping.tsx";
-import AdminPromoCodes from "./pages/AdminPromoCodes.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
-const queryClient = new QueryClient();
+const ProductDetail = lazy(() => import("./pages/ProductDetail.tsx"));
+const Checkout = lazy(() => import("./pages/Checkout.tsx"));
+const About = lazy(() => import("./pages/About.tsx"));
+const Contact = lazy(() => import("./pages/Contact.tsx"));
+const Delivery = lazy(() => import("./pages/Delivery.tsx"));
+const Returns = lazy(() => import("./pages/Returns.tsx"));
+const Blog = lazy(() => import("./pages/Blog.tsx"));
+const Wishlist = lazy(() => import("./pages/Wishlist.tsx"));
+const Admin = lazy(() => import("./pages/Admin.tsx"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
+const AdminOrders = lazy(() => import("./pages/AdminOrders.tsx"));
+const AdminShipping = lazy(() => import("./pages/AdminShipping.tsx"));
+const AdminPromoCodes = lazy(() => import("./pages/AdminPromoCodes.tsx"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
+const PageFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -37,6 +55,7 @@ const App = () => (
           <CartProvider>
             <WishlistProvider>
               <AuthModal />
+              <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
@@ -55,6 +74,7 @@ const App = () => (
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </Suspense>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>
