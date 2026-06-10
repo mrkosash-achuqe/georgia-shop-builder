@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn, Plus, Minus } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
@@ -40,6 +41,12 @@ const mapDbProduct = (row: any): Product => ({
   personalizationNote: row.personalization_note || "",
 });
 
+type ProductSeo = {
+  seo_title?: string | null;
+  seo_description?: string | null;
+  og_image?: string | null;
+};
+
 const ProductDetailContent = () => {
   const { id } = useParams<{ id: string }>();
   const { lang, t } = useLanguage();
@@ -63,7 +70,12 @@ const ProductDetailContent = () => {
         .eq("id", id!)
         .maybeSingle();
       if (error) throw error;
-      return data ? mapDbProduct(data) : null;
+      if (!data) return null;
+      const mapped = mapDbProduct(data) as Product & ProductSeo;
+      mapped.seo_title = (data as any).seo_title;
+      mapped.seo_description = (data as any).seo_description;
+      mapped.og_image = (data as any).og_image;
+      return mapped;
     },
     enabled: !!id,
   });
@@ -116,9 +128,46 @@ const ProductDetailContent = () => {
   const name = lang === "ka" ? product.nameKa : product.nameEn;
   const desc = lang === "ka" ? product.descKa : product.descEn;
   const tp = t.productDetail;
+  const seo = product as Product & ProductSeo;
+  const pageTitle = (seo.seo_title || `${name} — აჩუქე`).slice(0, 60);
+  const pageDesc = (seo.seo_description || desc || "").slice(0, 160);
+  const ogImg = seo.og_image || product.images?.[0];
+  const canonical = `https://georgia-shop-builder.lovable.app/product/${product.id}`;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="product" />
+        {ogImg && <meta property="og:image" content={ogImg} />}
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name,
+          description: desc,
+          image: product.images,
+          sku: generateSku(product.id),
+          offers: {
+            "@type": "Offer",
+            price: product.price,
+            priceCurrency: "GEL",
+            availability: product.inStock
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+            url: canonical,
+          },
+          aggregateRating: product.reviews > 0 ? {
+            "@type": "AggregateRating",
+            ratingValue: product.rating,
+            reviewCount: product.reviews,
+          } : undefined,
+        })}</script>
+      </Helmet>
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
