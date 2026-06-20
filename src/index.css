@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 35 33% 95%;
+    --foreground: 25 20% 15%;
+
+    --card: 35 30% 98%;
+    --card-foreground: 25 20% 15%;
+
+    --popover: 35 30% 98%;
+    --popover-foreground: 25 20% 15%;
+
+    --primary: 24 85% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 35 25% 90%;
+    --secondary-foreground: 25 20% 15%;
+
+    --muted: 35 20% 92%;
+    --muted-foreground: 25 10% 45%;
+
+    --accent: 24 85% 52%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 30 20% 85%;
+    --input: 30 20% 85%;
+    --ring: 24 85% 52%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 35 30% 96%;
+    --sidebar-foreground: 25 20% 20%;
+    --sidebar-primary: 24 85% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 35 25% 92%;
+    --sidebar-accent-foreground: 25 20% 15%;
+    --sidebar-border: 30 20% 88%;
+    --sidebar-ring: 24 85% 52%;
+
+    --star: 45 93% 47%;
+    --footer-bg: 25 20% 15%;
+    --footer-foreground: 35 20% 85%;
+    --hero-overlay: 24 70% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Noto Sans Georgian', sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-star {
+    color: hsl(var(--star));
+  }
+  .bg-footer {
+    background-color: hsl(var(--footer-bg));
+  }
+  .text-footer {
+    color: hsl(var(--footer-foreground));
+  }
+}
