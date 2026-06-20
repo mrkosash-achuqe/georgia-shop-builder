@@ -18,7 +18,6 @@ const categoryKeys = [
   "cutting-boards",
   "corporate",
   "other",
-  "test-123",
 ];
 
 const CategoriesSidebar = ({ selectedCategory, onSelectCategory }: CategoriesSidebarProps) => {
