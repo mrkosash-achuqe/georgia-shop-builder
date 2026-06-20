@@ -119,52 +119,40 @@ const Checkout = () => {
     if (items.length === 0) return;
     setSubmitting(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-order", {
-        body: {
-          order: {
-            user_id: user?.id ?? null,
-            first_name: form.firstName.trim(),
-            last_name: form.lastName.trim(),
-            phone: form.phone.trim(),
-            email: form.email.trim(),
-            city: form.city.trim(),
-            address: form.address.trim(),
-            note: form.note.trim(),
-            subtotal: totalPrice,
-            shipping_fee: deliveryFee,
-            discount: discount,
-            promo_code: promo?.code ?? null,
-            total: grandTotal,
-            payment_method: paymentMethod,
-            status: "pending",
-          },
-          items: items.map((it) => ({
-            product_id: it.product.id,
-            product_name: lang === "ka" ? it.product.nameKa : it.product.nameEn,
-            product_image: it.product.img || "",
-            quantity: it.quantity,
-            unit_price: it.product.price,
-          })),
-          promoId: promo?.id ?? null,
-        },
-      });
-      if (error || data?.error) throw new Error(data?.error || error?.message);
-      const order = { id: data.id as string, order_number: data.order_number as string };
+      const { data: order, error } = await supabase.from("orders").insert({
+        user_id: user?.id ?? null,
+        first_name: form.firstName.trim(),
+        last_name: form.lastName.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        city: form.city.trim(),
+        address: form.address.trim(),
+        note: form.note.trim(),
+        subtotal: totalPrice,
+        shipping_fee: deliveryFee,
+        discount: discount,
+        promo_code: promo?.code ?? null,
+        total: grandTotal,
+        payment_method: paymentMethod,
+        status: "pending",
+      }).select("id, order_number").single();
+      if (error || !order) throw error || new Error("no order");
 
-      // პირდაპირი იმეილის გაგზავნა
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer YOUR_RESEND_API_KEY'
-        },
-        body: JSON.stringify({
-          from: 'onboarding@resend.dev',
-          to: form.email,
-          subject: 'თქვენი შეკვეთა მიღებულია!',
-          html: `<p>გამარჯობა ${form.firstName}, თქვენი შეკვეთა #${order.order_number} წარმატებით განთავსდა. მადლობა!</p>`
-        })
-      });
+      const itemsPayload = items.map((it) => ({
+        order_id: order.id,
+        product_id: it.product.id,
+        product_name: lang === "ka" ? it.product.nameKa : it.product.nameEn,
+        product_image: it.product.img || "",
+        quantity: it.quantity,
+        unit_price: it.product.price,
+      }));
+      const { error: itemsErr } = await supabase.from("order_items").insert(itemsPayload);
+      if (itemsErr) throw itemsErr;
+
+      if (promo) {
+        const { data: cur } = await supabase.from("promo_codes").select("used_count").eq("id", promo.id).single();
+        await supabase.from("promo_codes").update({ used_count: (cur?.used_count ?? 0) + 1 }).eq("id", promo.id);
+      }
 
       setConfirmedNumber(order.order_number);
       setStep("confirmed");
