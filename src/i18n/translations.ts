@@ -32,6 +32,7 @@ export const translations = {
         "შამფურები",
         "კორპორატიული",
         "სხვადასხვა",
+        "123",
       ],
     },
     products: {
@@ -242,6 +243,7 @@ export const translations = {
         "Cutting Boards",
         "Corporate",
         "Other",
+        "123",
       ],
     },
     products: {
