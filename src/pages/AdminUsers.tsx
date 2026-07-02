@@ -8,8 +8,7 @@ import { toast } from "sonner";
 import {
   ArrowLeft, Shield, ShieldOff, Ban, CheckCircle2, Trash2, Search,
   Users as UsersIcon, AlertTriangle, XCircle, Package, MoreVertical,
-  ShoppingBag, Truck,
-} from "lucide-react";
+  ShoppingBag, Truck,, BarChart3 } from "lucide-react";
 
 type AdminUser = {
   id: string;
@@ -142,7 +141,8 @@ const AdminUsers = () => {
       <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b border-border overflow-x-auto">
-          <Link to="/admin" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
+          <Link to="/admin/dashboard" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><BarChart3 className="h-4 w-4" /> დაშბორდი</Link>
+                    <Link to="/admin" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
             <Package className="h-4 w-4" /> პროდუქტები
           </Link>
           <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px">
