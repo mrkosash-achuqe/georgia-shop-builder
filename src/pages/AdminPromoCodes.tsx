@@ -7,8 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
   Plus, Pencil, Trash2, Save, ArrowLeft, Tag, Percent, X,
-  Package, Users as UsersIcon, ShoppingBag, Truck, CheckCircle2, XCircle, AlertTriangle,
-} from "lucide-react";
+  Package, Users as UsersIcon, ShoppingBag, Truck, CheckCircle2, XCircle, AlertTriangle,, BarChart3 } from "lucide-react";
 
 type PromoCode = {
   id: string;

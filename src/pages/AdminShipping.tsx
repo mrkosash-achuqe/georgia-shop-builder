@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Package, Users as UsersIcon, Truck, ShoppingBag, Plus, Trash2, Save, ArrowLeft, XCircle } from "lucide-react";
+import { Package, Users as UsersIcon, Truck, ShoppingBag, Plus, Trash2, Save, ArrowLeft, XCircle, BarChart3 } from "lucide-react";
 
 type Zone = {
   id: string;
