@@ -26,6 +26,7 @@ const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
 const AdminOrders = lazy(() => import("./pages/AdminOrders.tsx"));
 const AdminShipping = lazy(() => import("./pages/AdminShipping.tsx"));
 const AdminPromoCodes = lazy(() => import("./pages/AdminPromoCodes.tsx"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +68,7 @@ const App = () => (
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
                 <Route path="/admin/orders" element={<AdminOrders />} />
                 <Route path="/admin/shipping" element={<AdminShipping />} />
