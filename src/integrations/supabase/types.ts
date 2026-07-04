@@ -128,6 +128,56 @@ export type Database = {
         }
         Relationships: []
       }
+      product_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          is_approved: boolean
+          is_verified_purchase: boolean
+          photo_urls: string[]
+          product_id: string
+          rating: number
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          is_verified_purchase?: boolean
+          photo_urls?: string[]
+          product_id: string
+          rating: number
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          is_verified_purchase?: boolean
+          photo_urls?: string[]
+          product_id?: string
+          rating?: number
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           category: string
