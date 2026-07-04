@@ -13,6 +13,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ProductReviews from "@/components/ProductReviews";
 
 const generateSku = (id: string): string => {
   let hash = 0;
@@ -321,6 +322,8 @@ const ProductDetailContent = () => {
             </div>
           </section>
         )}
+
+        <ProductReviews productId={product.id} />
       </main>
       <div className="mt-auto"><Footer /></div>
       <CartDrawer />

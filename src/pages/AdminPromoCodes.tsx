@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
   Plus, Pencil, Trash2, Save, ArrowLeft, Tag, Percent, X,
-  Package, Users as UsersIcon, ShoppingBag, Truck, CheckCircle2, XCircle, AlertTriangle,, BarChart3 } from "lucide-react";
+  Package, Users as UsersIcon, ShoppingBag, Truck, CheckCircle2, XCircle, AlertTriangle, BarChart3 , MessageSquare } from "lucide-react";
 
 type PromoCode = {
   id: string;
@@ -259,6 +259,7 @@ const AdminPromoCodes = () => {
           <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px">
             <Tag className="h-4 w-4" /> პრომო კოდები
           </span>
+          <Link to="/admin/reviews" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><MessageSquare className="h-4 w-4" /> მიმოხილვები</Link>
         </div>
 
         {/* Stats */}
