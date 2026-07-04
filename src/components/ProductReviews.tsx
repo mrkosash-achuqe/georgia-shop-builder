@@ -24,27 +24,30 @@ type Props = { productId: string };
 const StarRow = ({
   value,
   onChange,
-  size = 5,
+  size = "md",
   interactive = false,
-}: { value: number; onChange?: (v: number) => void; size?: number; interactive?: boolean }) => (
-  <div className="flex items-center gap-0.5">
-    {Array.from({ length: 5 }).map((_, i) => {
-      const filled = i < value;
-      return (
-        <button
-          key={i}
-          type="button"
-          disabled={!interactive}
-          onClick={() => interactive && onChange?.(i + 1)}
-          className={interactive ? "hover:scale-110 transition-transform" : "cursor-default"}
-          aria-label={`${i + 1} stars`}
-        >
-          <Star className={`h-${size} w-${size} ${filled ? "fill-star text-star" : "text-border"}`} />
-        </button>
-      );
-    })}
-  </div>
-);
+}: { value: number; onChange?: (v: number) => void; size?: "sm" | "md" | "lg"; interactive?: boolean }) => {
+  const cls = size === "lg" ? "h-6 w-6" : size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4";
+  return (
+    <div className="flex items-center gap-0.5">
+      {Array.from({ length: 5 }).map((_, i) => {
+        const filled = i < value;
+        return (
+          <button
+            key={i}
+            type="button"
+            disabled={!interactive}
+            onClick={() => interactive && onChange?.(i + 1)}
+            className={interactive ? "hover:scale-110 transition-transform" : "cursor-default"}
+            aria-label={`${i + 1} stars`}
+          >
+            <Star className={`${cls} ${filled ? "fill-star text-star" : "text-border"}`} />
+          </button>
+        );
+      })}
+    </div>
+  );
+};
 
 const ProductReviews = ({ productId }: Props) => {
   const { lang } = useLanguage();
@@ -195,7 +198,7 @@ const ProductReviews = ({ productId }: Props) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-card rounded-2xl border border-border p-5 mb-6">
         <div className="flex flex-col items-center justify-center text-center">
           <div className="text-5xl font-bold text-foreground">{avg.toFixed(1)}</div>
-          <StarRow value={Math.round(avg)} />
+          <StarRow value={Math.round(avg)} size="lg" />
           <p className="text-xs text-muted-foreground mt-1">
             {approved.length} {T.reviews}
           </p>
@@ -328,7 +331,7 @@ const ProductReviews = ({ productId }: Props) => {
                     )}
                   </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <StarRow value={r.rating} size={4} />
+                    <StarRow value={r.rating} size="sm" />
                     <span className="text-xs text-muted-foreground">
                       {new Date(r.created_at).toLocaleDateString(lang === "ka" ? "ka-GE" : "en-US")}
                     </span>
