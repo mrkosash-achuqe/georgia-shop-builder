@@ -259,6 +259,7 @@ const AdminPromoCodes = () => {
           <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px">
             <Tag className="h-4 w-4" /> პრომო კოდები
           </span>
+          <Link to="/admin/reviews" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><MessageSquare className="h-4 w-4" /> მიმოხილვები</Link>
         </div>
 
         {/* Stats */}
