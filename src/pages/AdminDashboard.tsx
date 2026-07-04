@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import {
   Package, Users as UsersIcon, ShoppingBag, Truck, Tag,
   BarChart3, TrendingUp, DollarSign, AlertTriangle, Loader2
-} from "lucide-react";
+, MessageSquare } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,

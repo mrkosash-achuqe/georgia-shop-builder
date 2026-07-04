@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
   Package, Users as UsersIcon, Truck, ShoppingBag, ArrowLeft,
-  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 } from "lucide-react";
+  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare } from "lucide-react";
 
 type Order = {
   id: string;

@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import {
   ArrowLeft, Shield, ShieldOff, Ban, CheckCircle2, Trash2, Search,
   Users as UsersIcon, AlertTriangle, XCircle, Package, MoreVertical,
-  ShoppingBag, Truck, BarChart3 } from "lucide-react";
+  ShoppingBag, Truck, BarChart3 , MessageSquare } from "lucide-react";
 
 type AdminUser = {
   id: string;
