@@ -60,7 +60,7 @@ const blogPosts = [
   },
 ];
 
-type Post = (typeof blogPosts)[number];
+type Post = Omit<(typeof blogPosts)[number], "id"> & { id: number | string };
 
 const Blog = () => {
   const { lang, t } = useLanguage();
