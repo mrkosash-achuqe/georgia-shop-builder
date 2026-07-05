@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Star, CheckCircle2, XCircle, Trash2, Package, Users as UsersIcon,
-  ShoppingBag, Truck, MessageSquare, AlertTriangle, BarChart3, Tag, Loader2,, FileText } from "lucide-react";
+  ShoppingBag, Truck, MessageSquare, AlertTriangle, BarChart3, Tag, Loader2, FileText } from "lucide-react";
 
 type ReviewRow = {
   id: string;
