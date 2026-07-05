@@ -28,6 +28,7 @@ const AdminShipping = lazy(() => import("./pages/AdminShipping.tsx"));
 const AdminPromoCodes = lazy(() => import("./pages/AdminPromoCodes.tsx"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard.tsx"));
 const AdminReviews = lazy(() => import("./pages/AdminReviews.tsx"));
+const AdminBlog = lazy(() => import("./pages/AdminBlog.tsx"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -75,6 +76,7 @@ const App = () => (
                 <Route path="/admin/shipping" element={<AdminShipping />} />
                 <Route path="/admin/promo" element={<AdminPromoCodes />} />
                 <Route path="/admin/reviews" element={<AdminReviews />} />
+                <Route path="/admin/blog" element={<AdminBlog />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
