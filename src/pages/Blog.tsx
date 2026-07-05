@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, BookOpen, Clock, User, Calendar } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
@@ -65,6 +66,37 @@ const Blog = () => {
   const { lang, t } = useLanguage();
   const bt = t.blog;
   const [openPost, setOpenPost] = useState<Post | null>(null);
+  const [dbPosts, setDbPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("blog_posts")
+        .select("*")
+        .eq("is_published", true)
+        .order("published_at", { ascending: false });
+      if (!data) return;
+      const mapped: Post[] = data.map((p: any) => ({
+        id: p.id,
+        img: p.cover_image || "/placeholder.svg",
+        titleKa: p.title_ka,
+        titleEn: p.title_en || p.title_ka,
+        excerptKa: p.excerpt_ka || "",
+        excerptEn: p.excerpt_en || p.excerpt_ka || "",
+        contentKa: p.content_ka || "",
+        contentEn: p.content_en || p.content_ka || "",
+        authorKa: "აჩუქე",
+        authorEn: "Achuqe",
+        readTime: Math.max(1, Math.round((p.content_ka || "").length / 800)),
+        categoryKa: p.category || "ბლოგი",
+        categoryEn: p.category || "Blog",
+        date: (p.published_at || p.created_at || "").slice(0, 10),
+      }));
+      setDbPosts(mapped);
+    })();
+  }, []);
+
+  const posts: Post[] = dbPosts.length > 0 ? dbPosts : blogPosts;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -76,10 +108,10 @@ const Blog = () => {
         <h1 className="text-3xl font-bold text-foreground mb-2">{bt.title}</h1>
         <p className="text-muted-foreground mb-8">{bt.subtitle}</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogPosts.map((post) => (
+          {posts.map((post) => (
             <article key={post.id} className="bg-card rounded-xl border border-border overflow-hidden group flex flex-col">
               <div className="aspect-video overflow-hidden relative bg-secondary flex items-center justify-center">
-                <img src={post.img} alt={lang === "ka" ? post.titleKa : post.titleEn} className="max-w-[60%] max-h-[60%] object-contain opacity-30" />
+                <img src={post.img} alt={lang === "ka" ? post.titleKa : post.titleEn} className={post.img && post.img !== "/placeholder.svg" ? "w-full h-full object-cover" : "max-w-[60%] max-h-[60%] object-contain opacity-30"} />
                 <Badge className="absolute top-3 left-3" variant="secondary">
                   {lang === "ka" ? post.categoryKa : post.categoryEn}
                 </Badge>
