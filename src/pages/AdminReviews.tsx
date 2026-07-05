@@ -5,10 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import {
-  Star, CheckCircle2, XCircle, Trash2, Package, Users as UsersIcon,
-  ShoppingBag, Truck, MessageSquare, AlertTriangle, BarChart3, Tag, Loader2,
-} from "lucide-react";
+import { Star, CheckCircle2, XCircle, Trash2, Package, Users as UsersIcon,
+  ShoppingBag, Truck, MessageSquare, AlertTriangle, BarChart3, Tag, Loader2,, FileText } from "lucide-react";
 
 type ReviewRow = {
   id: string;
@@ -137,6 +135,7 @@ const AdminReviews = () => {
           <Link to="/admin/shipping" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><Truck className="h-4 w-4" /> მიწოდება</Link>
           <Link to="/admin/promo" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><Tag className="h-4 w-4" /> პრომო</Link>
           <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px"><MessageSquare className="h-4 w-4" /> მიმოხილვები</span>
+          <Link to="/admin/blog" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><FileText className="h-4 w-4" /> ბლოგი</Link>
         </div>
 
         {/* Stats */}
