@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          category: string
+          content_en: string
+          content_ka: string
+          cover_image: string | null
+          created_at: string
+          excerpt_en: string
+          excerpt_ka: string
+          id: string
+          is_published: boolean
+          published_at: string | null
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          tags: string[]
+          title_en: string
+          title_ka: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          category?: string
+          content_en?: string
+          content_ka?: string
+          cover_image?: string | null
+          created_at?: string
+          excerpt_en?: string
+          excerpt_ka?: string
+          id?: string
+          is_published?: boolean
+          published_at?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          tags?: string[]
+          title_en?: string
+          title_ka: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          content_en?: string
+          content_ka?: string
+          cover_image?: string | null
+          created_at?: string
+          excerpt_en?: string
+          excerpt_ka?: string
+          id?: string
+          is_published?: boolean
+          published_at?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          tags?: string[]
+          title_en?: string
+          title_ka?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
