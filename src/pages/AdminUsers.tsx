@@ -5,10 +5,9 @@ import { useAuth } from "@/context/AuthContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
-import {
-  ArrowLeft, Shield, ShieldOff, Ban, CheckCircle2, Trash2, Search,
+import { ArrowLeft, Shield, ShieldOff, Ban, CheckCircle2, Trash2, Search,
   Users as UsersIcon, AlertTriangle, XCircle, Package, MoreVertical,
-  ShoppingBag, Truck, BarChart3 , MessageSquare } from "lucide-react";
+  ShoppingBag, Truck, BarChart3 , MessageSquare, FileText } from "lucide-react";
 
 type AdminUser = {
   id: string;
@@ -155,6 +154,7 @@ const AdminUsers = () => {
             <Truck className="h-4 w-4" /> მიწოდება
           </Link>
           <Link to="/admin/reviews" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><MessageSquare className="h-4 w-4" /> მიმოხილვები</Link>
+          <Link to="/admin/blog" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><FileText className="h-4 w-4" /> ბლოგი</Link>
         </div>
 
         {/* Stats */}
