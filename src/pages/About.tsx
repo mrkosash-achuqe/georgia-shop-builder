@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import SEO from "@/components/SEO";
 
 const About = () => {
   const { t } = useLanguage();
@@ -18,6 +19,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO title={at.title + " — achuqe"} description={at.heroDesc.slice(0, 160)} />
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">

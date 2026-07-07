@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://achuqe.com/</loc>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://achuqe.com/?lang=ka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://achuqe.com/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://achuqe.com/"/>
+  </url>
+  <url>
+    <loc>https://achuqe.com/about</loc>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://achuqe.com/about?lang=ka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://achuqe.com/about?lang=en"/>
+  </url>
+  <url>
+    <loc>https://achuqe.com/contact</loc>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://achuqe.com/contact?lang=ka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://achuqe.com/contact?lang=en"/>
+  </url>
+  <url>
+    <loc>https://achuqe.com/delivery</loc>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://achuqe.com/delivery?lang=ka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://achuqe.com/delivery?lang=en"/>
+  </url>
+  <url>
+    <loc>https://achuqe.com/returns</loc>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://achuqe.com/returns?lang=ka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://achuqe.com/returns?lang=en"/>
+  </url>
+  <url>
+    <loc>https://achuqe.com/blog</loc>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://achuqe.com/blog?lang=ka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://achuqe.com/blog?lang=en"/>
+  </url>
+  <url>
+    <loc>https://achuqe.com/wishlist</loc>
+  </url>
+</urlset>
