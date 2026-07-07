@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import SEO from "@/components/SEO";
 
 const Returns = () => {
   const { t } = useLanguage();
@@ -17,6 +18,7 @@ const Returns = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO title={rt.title + " — achuqe"} description={rt.subtitle} />
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">

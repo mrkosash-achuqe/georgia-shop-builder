@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import SEO from "@/components/SEO";
 
 const blogPosts = [
   {
@@ -100,6 +101,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO title={bt.title + " — achuqe"} description={bt.subtitle} />
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">

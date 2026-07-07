@@ -1,6 +1,5 @@
 import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn, Plus, Minus } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
@@ -14,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ProductReviews from "@/components/ProductReviews";
+import SEO from "@/components/SEO";
 
 const generateSku = (id: string): string => {
   let hash = 0;
@@ -133,20 +133,16 @@ const ProductDetailContent = () => {
   const pageTitle = (seo.seo_title || `${name} — აჩუქე`).slice(0, 60);
   const pageDesc = (seo.seo_description || desc || "").slice(0, 160);
   const ogImg = seo.og_image || product.images?.[0];
-  const canonical = `https://georgia-shop-builder.lovable.app/product/${product.id}`;
+  const canonical = `https://achuqe.com/product/${product.id}`;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Helmet>
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDesc} />
-        <link rel="canonical" href={canonical} />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDesc} />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:type" content="product" />
-        {ogImg && <meta property="og:image" content={ogImg} />}
-        <script type="application/ld+json">{JSON.stringify({
+      <SEO
+        title={pageTitle}
+        description={pageDesc}
+        image={ogImg}
+        type="product"
+        jsonLd={{
           "@context": "https://schema.org",
           "@type": "Product",
           name,
@@ -162,13 +158,15 @@ const ProductDetailContent = () => {
               : "https://schema.org/OutOfStock",
             url: canonical,
           },
-          aggregateRating: product.reviews > 0 ? {
-            "@type": "AggregateRating",
-            ratingValue: product.rating,
-            reviewCount: product.reviews,
-          } : undefined,
-        })}</script>
-      </Helmet>
+          ...(product.reviews > 0 && {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: product.rating,
+              reviewCount: product.reviews,
+            },
+          }),
+        }}
+      />
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
