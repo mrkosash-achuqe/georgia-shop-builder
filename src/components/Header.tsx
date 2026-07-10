@@ -95,11 +95,13 @@ const Header = () => {
 
             {user ? (
               <div className="hidden sm:flex items-center gap-2">
-                <Avatar className="h-7 w-7">
-                  <AvatarImage src={profile?.avatar_url || ""} />
-                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">{userInitial}</AvatarFallback>
-                </Avatar>
-                <span className="text-sm text-foreground max-w-[100px] truncate">{profile?.full_name || t.auth.myAccount}</span>
+                <Link to="/account" className="flex items-center gap-2 hover:opacity-80 transition-opacity" title={t.auth.myAccount}>
+                  <Avatar className="h-7 w-7">
+                    <AvatarImage src={profile?.avatar_url || ""} />
+                    <AvatarFallback className="text-xs bg-primary text-primary-foreground">{userInitial}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm text-foreground max-w-[100px] truncate">{profile?.full_name || t.auth.myAccount}</span>
+                </Link>
                 {isAdmin && (
                   <Link to="/admin" className="text-primary hover:text-primary/80 transition-colors" title="ადმინ პანელი">
                     <Shield className="h-4 w-4" />
@@ -183,7 +185,11 @@ const Header = () => {
             <div className="p-4 border-b border-border">
               {user ? (
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3">
+                  <Link
+                    to="/account"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                  >
                     <Avatar className="h-9 w-9">
                       <AvatarImage src={profile?.avatar_url || ""} />
                       <AvatarFallback className="text-sm bg-primary text-primary-foreground">{userInitial}</AvatarFallback>
@@ -192,7 +198,15 @@ const Header = () => {
                       <p className="text-sm font-medium text-foreground truncate">{profile?.full_name || t.auth.myAccount}</p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
-                  </div>
+                  </Link>
+                  <Link
+                    to="/account/orders?tab=orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm text-foreground hover:bg-secondary transition-colors"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    {t.account.tabOrders}
+                  </Link>
                   <button
                     onClick={() => { signOut(); setMobileMenuOpen(false); }}
                     className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
