@@ -56,6 +56,25 @@ const Checkout = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("full_name, phone, city, address").eq("id", user.id).maybeSingle()
+      .then(({ data }) => {
+        if (!data) return;
+        const [firstName = "", ...rest] = (data.full_name || "").trim().split(" ");
+        const lastName = rest.join(" ");
+        setForm((prev) => ({
+          ...prev,
+          firstName: prev.firstName || firstName,
+          lastName: prev.lastName || lastName,
+          phone: prev.phone || (data.phone || ""),
+          email: prev.email || (user.email || ""),
+          city: prev.city || ((data as any).city || ""),
+          address: prev.address || ((data as any).address || ""),
+        }));
+      });
+  }, [user]);
+
   const selectedZone = zones.find((z) => z.id === zoneId);
   const deliveryFee = selectedZone
     ? (selectedZone.free_threshold !== null && totalPrice >= Number(selectedZone.free_threshold) ? 0 : Number(selectedZone.fee))
