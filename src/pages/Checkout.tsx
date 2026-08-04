@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck, Tag, X } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import { trackBeginCheckout, trackPurchase } from "@/lib/analytics";
 
 type PaymentMethod = "card" | "cash" | "transfer";
 
