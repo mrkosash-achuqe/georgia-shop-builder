@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from "react";
 import { Product } from "@/data/products";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { trackAddToCart, trackRemoveFromCart } from "@/lib/analytics";
 
 export interface CartItem {
   product: Product;
@@ -23,6 +25,7 @@ const CartContext = createContext<CartContextType | null>(null);
 const STORAGE_KEY = "achuqe_cart_v1";
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { lang } = useLanguage();
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return [];
     try {
