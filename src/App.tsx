@@ -60,6 +60,7 @@ const App = () => (
           <CartProvider>
             <WishlistProvider>
               <AuthModal />
+              <AnalyticsTracker />
               <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
