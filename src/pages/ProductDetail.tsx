@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn, Plus, Minus } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ProductReviews from "@/components/ProductReviews";
 import SEO from "@/components/SEO";
+import { trackViewItem } from "@/lib/analytics";
 
 const generateSku = (id: string): string => {
   let hash = 0;
