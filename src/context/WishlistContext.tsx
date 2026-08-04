@@ -122,6 +122,12 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         return [...prev, product];
       });
 
+      if (removed) {
+        trackRemoveFromWishlist(product, lang);
+      } else {
+        trackAddToWishlist(product, lang);
+      }
+
       if (user && isDbProduct(product.id)) {
         if (removed) {
           void supabase
@@ -139,7 +145,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     },
-    [user]
+    [user, lang]
   );
 
   const isInWishlist = useCallback(
