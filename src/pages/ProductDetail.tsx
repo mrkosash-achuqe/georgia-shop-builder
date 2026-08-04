@@ -96,6 +96,12 @@ const ProductDetailContent = () => {
     enabled: !!id,
   });
 
+  useEffect(() => {
+    if (product) {
+      trackViewItem(product, lang);
+    }
+  }, [product, lang]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
