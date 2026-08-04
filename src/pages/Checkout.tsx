@@ -47,6 +47,7 @@ const Checkout = () => {
   const [applyingPromo, setApplyingPromo] = useState(false);
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const [promoError, setPromoError] = useState("");
+  const beginCheckoutTracked = useRef(false);
 
   useEffect(() => {
     supabase.from("shipping_zones").select("*").eq("is_active", true).order("sort_order")
