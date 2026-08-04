@@ -184,7 +184,7 @@ const Checkout = () => {
 
       setConfirmedNumber(order.order_number);
       setStep("confirmed");
-      trackPurchase(items, order.order_number, order.id, grandTotal, deliveryFee, discount, lang);
+      trackPurchase(order.order_number, items, lang, grandTotal, deliveryFee, discount);
       clearCart();
     } catch (err: any) {
       toast.error("შეკვეთის გაგზავნა ვერ მოხერხდა: " + (err?.message || "შეცდომა"));
