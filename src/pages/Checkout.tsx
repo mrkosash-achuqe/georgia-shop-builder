@@ -77,6 +77,13 @@ const Checkout = () => {
       });
   }, [user]);
 
+  useEffect(() => {
+    if (!beginCheckoutTracked.current && items.length > 0) {
+      trackBeginCheckout(items, lang, totalPrice);
+      beginCheckoutTracked.current = true;
+    }
+  }, [items, lang, totalPrice]);
+
   const selectedZone = zones.find((z) => z.id === zoneId);
   const deliveryFee = selectedZone
     ? (selectedZone.free_threshold !== null && totalPrice >= Number(selectedZone.free_threshold) ? 0 : Number(selectedZone.fee))
