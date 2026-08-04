@@ -58,7 +58,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return [...prev, { product, quantity }];
     });
     setIsOpen(true);
-  }, []);
+    trackAddToCart(product, lang, quantity);
+  }, [lang]);
 
   const removeFromCart = useCallback((productId: string) => {
     setItems((prev) => prev.filter((item) => item.product.id !== productId));
