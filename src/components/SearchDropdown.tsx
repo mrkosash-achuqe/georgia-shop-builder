@@ -104,6 +104,16 @@ const SearchDropdown = () => {
     return () => clearTimeout(timeout);
   }, [query, mode]);
 
+  const trackedQueryRef = useRef("");
+  useEffect(() => {
+    if (mode !== "text") return;
+    const q = query.trim().toLowerCase();
+    if (q.length >= 2 && results.length > 0 && trackedQueryRef.current !== q) {
+      trackedQueryRef.current = q;
+      trackSearch(q);
+    }
+  }, [mode, query, results]);
+
   const switchMode = (m: Mode) => {
     setMode(m);
     setQuery("");
