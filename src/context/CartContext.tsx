@@ -62,11 +62,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [lang]);
 
   const removeFromCart = useCallback((productId: string) => {
+    const item = items.find((i) => i.product.id === productId);
+    if (item) trackRemoveFromCart(item.product, lang, item.quantity);
     setItems((prev) => prev.filter((item) => item.product.id !== productId));
-  }, []);
+  }, [items, lang]);
 
   const updateQuantity = useCallback((productId: string, quantity: number) => {
     if (quantity <= 0) {
+      const item = items.find((i) => i.product.id === productId);
+      if (item) trackRemoveFromCart(item.product, lang, item.quantity);
       setItems((prev) => prev.filter((item) => item.product.id !== productId));
       return;
     }
@@ -75,7 +79,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         item.product.id === productId ? { ...item, quantity } : item
       )
     );
-  }, []);
+  }, [items, lang]);
 
   const clearCart = useCallback(() => setItems([]), []);
 
