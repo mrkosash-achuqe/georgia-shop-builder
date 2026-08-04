@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Search, Loader2, Type, Hash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { trackSearch } from "@/lib/analytics";
 
 interface SearchResult {
   id: string;
@@ -102,6 +103,16 @@ const SearchDropdown = () => {
     }, 250);
     return () => clearTimeout(timeout);
   }, [query, mode]);
+
+  const trackedQueryRef = useRef("");
+  useEffect(() => {
+    if (mode !== "text") return;
+    const q = query.trim().toLowerCase();
+    if (q.length >= 2 && results.length > 0 && trackedQueryRef.current !== q) {
+      trackedQueryRef.current = q;
+      trackSearch(q);
+    }
+  }, [mode, query, results]);
 
   const switchMode = (m: Mode) => {
     setMode(m);

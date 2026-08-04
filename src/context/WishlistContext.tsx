@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useCallback, useEffect, useRef, Re
 import { Product } from "@/data/products";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { trackAddToWishlist, trackRemoveFromWishlist } from "@/lib/analytics";
 
 interface WishlistContextType {
   items: Product[];
@@ -39,6 +41,7 @@ const mapDbProduct = (row: any): Product => ({
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
+  const { lang } = useLanguage();
   const [syncing, setSyncing] = useState(false);
   const syncedFor = useRef<string | null>(null);
   const [items, setItems] = useState<Product[]>(() => {
@@ -119,6 +122,12 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         return [...prev, product];
       });
 
+      if (removed) {
+        trackRemoveFromWishlist(product, lang);
+      } else {
+        trackAddToWishlist(product, lang);
+      }
+
       if (user && isDbProduct(product.id)) {
         if (removed) {
           void supabase
@@ -136,7 +145,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     },
-    [user]
+    [user, lang]
   );
 
   const isInWishlist = useCallback(

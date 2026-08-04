@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from "react";
 import { Product } from "@/data/products";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { trackAddToCart, trackRemoveFromCart } from "@/lib/analytics";
 
 export interface CartItem {
   product: Product;
@@ -23,6 +25,7 @@ const CartContext = createContext<CartContextType | null>(null);
 const STORAGE_KEY = "achuqe_cart_v1";
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { lang } = useLanguage();
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -55,14 +58,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return [...prev, { product, quantity }];
     });
     setIsOpen(true);
-  }, []);
+    trackAddToCart(product, lang, quantity);
+  }, [lang]);
 
   const removeFromCart = useCallback((productId: string) => {
+    const item = items.find((i) => i.product.id === productId);
+    if (item) trackRemoveFromCart(item.product, lang, item.quantity);
     setItems((prev) => prev.filter((item) => item.product.id !== productId));
-  }, []);
+  }, [items, lang]);
 
   const updateQuantity = useCallback((productId: string, quantity: number) => {
     if (quantity <= 0) {
+      const item = items.find((i) => i.product.id === productId);
+      if (item) trackRemoveFromCart(item.product, lang, item.quantity);
       setItems((prev) => prev.filter((item) => item.product.id !== productId));
       return;
     }
@@ -71,7 +79,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         item.product.id === productId ? { ...item, quantity } : item
       )
     );
-  }, []);
+  }, [items, lang]);
 
   const clearCart = useCallback(() => setItems([]), []);
 

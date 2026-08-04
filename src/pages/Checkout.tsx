@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck, Tag, X } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import { trackBeginCheckout, trackPurchase } from "@/lib/analytics";
 
 type PaymentMethod = "card" | "cash" | "transfer";
 
@@ -46,6 +47,7 @@ const Checkout = () => {
   const [applyingPromo, setApplyingPromo] = useState(false);
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const [promoError, setPromoError] = useState("");
+  const beginCheckoutTracked = useRef(false);
 
   useEffect(() => {
     supabase.from("shipping_zones").select("*").eq("is_active", true).order("sort_order")
@@ -74,6 +76,13 @@ const Checkout = () => {
         }));
       });
   }, [user]);
+
+  useEffect(() => {
+    if (!beginCheckoutTracked.current && items.length > 0) {
+      trackBeginCheckout(items, lang, totalPrice);
+      beginCheckoutTracked.current = true;
+    }
+  }, [items, lang, totalPrice]);
 
   const selectedZone = zones.find((z) => z.id === zoneId);
   const deliveryFee = selectedZone
@@ -175,6 +184,7 @@ const Checkout = () => {
 
       setConfirmedNumber(order.order_number);
       setStep("confirmed");
+      trackPurchase(order.order_number, items, lang, grandTotal, deliveryFee, discount);
       clearCart();
     } catch (err: any) {
       toast.error("შეკვეთის გაგზავნა ვერ მოხერხდა: " + (err?.message || "შეცდომა"));

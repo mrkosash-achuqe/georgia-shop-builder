@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { trackSignIn, trackSignUp } from "@/lib/analytics";
 import type { User, Session } from "@supabase/supabase-js";
 
 type Profile = {
@@ -69,6 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signInWithGoogle = async () => {
+    trackSignIn("google");
     await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
@@ -77,6 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signInWithEmail = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { error: error.message };
+    trackSignIn("email");
     return { error: null };
   };
 
@@ -90,6 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       },
     });
     if (error) return { error: error.message };
+    trackSignUp("email");
     return { error: null };
   };
 
