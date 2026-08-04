@@ -10,6 +10,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import AuthModal from "@/components/AuthModal";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
