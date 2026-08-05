@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ChevronLeft, User, Package, MapPin, Loader2 } from "lucide-react";
+import { ChevronLeft, User, Package, MapPin, Loader2, Gift } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLoyalty, POINTS_PER_GEL } from "@/hooks/useLoyalty";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -30,8 +31,9 @@ const Account = () => {
   const { lang, t } = useLanguage();
   const { user, profile, loading: authLoading, setAuthModalOpen } = useAuth();
   const [params, setParams] = useSearchParams();
-  const tab = (params.get("tab") as "profile" | "orders" | "address") || "profile";
+  const tab = (params.get("tab") as "profile" | "orders" | "address" | "loyalty") || "profile";
   const at = t.account;
+  const { balance, history, loading: loyaltyLoading } = useLoyalty();
 
   const [form, setForm] = useState({ full_name: "", phone: "", city: "", address: "" });
   const [saving, setSaving] = useState(false);
@@ -78,10 +80,11 @@ const Account = () => {
     else toast.success("✅ " + at.saved);
   };
 
-  const tabs: Array<{ id: "profile" | "orders" | "address"; label: string; icon: typeof User }> = [
+  const tabs: Array<{ id: "profile" | "orders" | "address" | "loyalty"; label: string; icon: typeof User }> = [
     { id: "profile", label: at.tabProfile, icon: User },
     { id: "orders", label: at.tabOrders, icon: Package },
     { id: "address", label: at.tabAddress, icon: MapPin },
+    { id: "loyalty", label: lang === "ka" ? "ბონუს ქულები" : "Loyalty points", icon: Gift },
   ];
 
   if (authLoading || !user) {

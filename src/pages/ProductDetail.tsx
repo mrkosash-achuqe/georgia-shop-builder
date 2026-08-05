@@ -329,6 +329,8 @@ const ProductDetailContent = () => {
           </section>
         )}
 
+        <AiRecommendations productId={product.id} />
+
         <ProductReviews productId={product.id} />
       </main>
       <div className="mt-auto"><Footer /></div>
