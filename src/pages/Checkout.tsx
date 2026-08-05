@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck, Tag, X } from "lucide-react";
+import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck, Tag, X, Gift } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -10,6 +10,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import { trackBeginCheckout, trackPurchase } from "@/lib/analytics";
+import { useLoyalty, POINTS_PER_GEL } from "@/hooks/useLoyalty";
+import { markCartRecovered } from "@/hooks/useAbandonedCart";
 
 type PaymentMethod = "card" | "cash" | "transfer";
 
@@ -47,6 +49,8 @@ const Checkout = () => {
   const [applyingPromo, setApplyingPromo] = useState(false);
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const [promoError, setPromoError] = useState("");
+  const { balance: loyaltyBalance, refresh: refreshLoyalty } = useLoyalty();
+  const [usePoints, setUsePoints] = useState(false);
   const beginCheckoutTracked = useRef(false);
 
   useEffect(() => {
@@ -93,7 +97,11 @@ const Checkout = () => {
         ? Math.min(totalPrice, Math.round((totalPrice * promo.discount_value) / 100 * 100) / 100)
         : Math.min(totalPrice, Number(promo.discount_value)))
     : 0;
-  const grandTotal = Math.max(0, totalPrice - discount + deliveryFee);
+  const afterPromo = Math.max(0, totalPrice - discount + deliveryFee);
+  const maxRedeemablePoints = Math.min(loyaltyBalance, Math.floor(afterPromo * POINTS_PER_GEL));
+  const pointsUsed = usePoints ? maxRedeemablePoints : 0;
+  const pointsDiscount = Math.round((pointsUsed / POINTS_PER_GEL) * 100) / 100;
+  const grandTotal = Math.max(0, Math.round((afterPromo - pointsDiscount) * 100) / 100);
 
   const applyPromo = async () => {
     const code = promoInput.trim().toUpperCase();
@@ -183,6 +191,17 @@ const Checkout = () => {
       }
 
       setConfirmedNumber(order.order_number);
+
+      if (user && pointsUsed > 0) {
+        const { error: redeemErr } = await supabase.rpc("redeem_loyalty_points", {
+          _order_id: order.id,
+          _points: pointsUsed,
+        });
+        if (redeemErr) console.error("loyalty redeem failed", redeemErr);
+        refreshLoyalty();
+      }
+      if (user) markCartRecovered(user.id);
+
       setStep("confirmed");
       trackPurchase(order.order_number, items, lang, grandTotal, deliveryFee, discount);
       clearCart();
