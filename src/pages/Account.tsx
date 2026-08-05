@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ChevronLeft, User, Package, MapPin, Loader2 } from "lucide-react";
+import { ChevronLeft, User, Package, MapPin, Loader2, Gift } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLoyalty, POINTS_PER_GEL } from "@/hooks/useLoyalty";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -30,8 +31,9 @@ const Account = () => {
   const { lang, t } = useLanguage();
   const { user, profile, loading: authLoading, setAuthModalOpen } = useAuth();
   const [params, setParams] = useSearchParams();
-  const tab = (params.get("tab") as "profile" | "orders" | "address") || "profile";
+  const tab = (params.get("tab") as "profile" | "orders" | "address" | "loyalty") || "profile";
   const at = t.account;
+  const { balance, history, loading: loyaltyLoading } = useLoyalty();
 
   const [form, setForm] = useState({ full_name: "", phone: "", city: "", address: "" });
   const [saving, setSaving] = useState(false);
@@ -78,10 +80,11 @@ const Account = () => {
     else toast.success("✅ " + at.saved);
   };
 
-  const tabs: Array<{ id: "profile" | "orders" | "address"; label: string; icon: typeof User }> = [
+  const tabs: Array<{ id: "profile" | "orders" | "address" | "loyalty"; label: string; icon: typeof User }> = [
     { id: "profile", label: at.tabProfile, icon: User },
     { id: "orders", label: at.tabOrders, icon: Package },
     { id: "address", label: at.tabAddress, icon: MapPin },
+    { id: "loyalty", label: lang === "ka" ? "ბონუს ქულები" : "Loyalty points", icon: Gift },
   ];
 
   if (authLoading || !user) {
@@ -167,6 +170,62 @@ const Account = () => {
               className="mt-5 bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity">
               {saving ? "..." : at.save}
             </button>
+          </div>
+        )}
+
+        {tab === "loyalty" && (
+          <div className="max-w-2xl space-y-4">
+            <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/20 p-6">
+              <p className="text-sm text-muted-foreground mb-1">
+                {lang === "ka" ? "თქვენი ბალანსი" : "Your balance"}
+              </p>
+              <p className="text-4xl font-bold text-primary">
+                {balance} <span className="text-lg font-medium text-muted-foreground">{lang === "ka" ? "ქულა" : "pts"}</span>
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                ≈ {(balance / POINTS_PER_GEL).toFixed(2)} {t.products.currency}{" "}
+                · {lang === "ka"
+                  ? `${POINTS_PER_GEL} ქულა = 1 ${t.products.currency}`
+                  : `${POINTS_PER_GEL} points = 1 ${t.products.currency}`}
+              </p>
+              <p className="text-xs text-muted-foreground mt-3">
+                {lang === "ka"
+                  ? "ყოველ 1 ₾-ზე იღებთ 1 ქულას. ქულები ჩაირიცხება შეკვეთის დადასტურების შემდეგ და შეგიძლიათ გამოიყენოთ შემდეგ შეკვეთაზე."
+                  : "You earn 1 point per 1 GEL spent. Points are credited once the order is confirmed and can be spent on your next order."}
+              </p>
+            </div>
+
+            {loyaltyLoading ? (
+              <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+            ) : history.length === 0 ? (
+              <div className="text-center py-12 bg-card rounded-xl border border-border">
+                <Gift className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-muted-foreground">{lang === "ka" ? "ჯერ ქულები არ გაქვთ" : "No points yet"}</p>
+              </div>
+            ) : (
+              <div className="bg-card rounded-xl border border-border divide-y divide-border">
+                {history.map((tx) => (
+                  <div key={tx.id} className="flex items-center justify-between gap-4 p-4">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {tx.type === "redeem"
+                          ? (lang === "ka" ? "ქულების გამოყენება" : "Points redeemed")
+                          : (lang === "ka" ? "ქულების დარიცხვა" : "Points earned")}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">{tx.description}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className={`font-bold ${tx.points >= 0 ? "text-green-600" : "text-destructive"}`}>
+                        {tx.points >= 0 ? "+" : ""}{tx.points}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(tx.created_at).toLocaleDateString(lang === "ka" ? "ka-GE" : "en-US")}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

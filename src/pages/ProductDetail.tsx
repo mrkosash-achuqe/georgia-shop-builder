@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ProductReviews from "@/components/ProductReviews";
+import AiRecommendations from "@/components/AiRecommendations";
 import SEO from "@/components/SEO";
 import { trackViewItem } from "@/lib/analytics";
 
@@ -327,6 +328,8 @@ const ProductDetailContent = () => {
             </div>
           </section>
         )}
+
+        <AiRecommendations productId={product.id} />
 
         <ProductReviews productId={product.id} />
       </main>
