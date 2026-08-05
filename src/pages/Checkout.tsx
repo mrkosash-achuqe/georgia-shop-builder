@@ -340,8 +340,28 @@ const Checkout = () => {
                     <div className="flex justify-between text-green-600 font-medium"><span>ფასდაკლება ({promo?.code})</span><span>-{discount.toFixed(2)} {t.products.currency}</span></div>
                   )}
                   <div className="flex justify-between text-muted-foreground"><span>{ct.delivery}</span><span>{deliveryFee === 0 ? ct.free : `${deliveryFee} ${t.products.currency}`}</span></div>
+                  {pointsDiscount > 0 && (
+                    <div className="flex justify-between text-green-600 font-medium"><span>ბონუს ქულები ({pointsUsed})</span><span>-{pointsDiscount.toFixed(2)} {t.products.currency}</span></div>
+                  )}
                   <div className="flex justify-between text-foreground font-bold text-lg pt-2 border-t border-border"><span>{ct.total}</span><span className="text-primary">{grandTotal} {t.products.currency}</span></div>
                 </div>
+                {user && loyaltyBalance > 0 && (
+                  <label className="mt-4 flex items-start gap-3 rounded-lg border border-border bg-secondary/30 p-3 cursor-pointer">
+                    <input type="checkbox" checked={usePoints} onChange={(e) => setUsePoints(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-primary" />
+                    <span className="text-sm">
+                      <span className="flex items-center gap-1.5 font-medium text-foreground">
+                        <Gift className="h-4 w-4 text-primary" />
+                        {lang === "ka" ? "ბონუს ქულების გამოყენება" : "Use loyalty points"}
+                      </span>
+                      <span className="block text-xs text-muted-foreground mt-0.5">
+                        {lang === "ka"
+                          ? `ბალანსი: ${loyaltyBalance} ქულა · გამოიყენება ${maxRedeemablePoints} (-${(maxRedeemablePoints / POINTS_PER_GEL).toFixed(2)} ${t.products.currency})`
+                          : `Balance: ${loyaltyBalance} pts · applies ${maxRedeemablePoints} (-${(maxRedeemablePoints / POINTS_PER_GEL).toFixed(2)} ${t.products.currency})`}
+                      </span>
+                    </span>
+                  </label>
+                )}
                 {/* Promo code */}
                 <div className="mt-4 pt-4 border-t border-border">
                   {promo ? (
