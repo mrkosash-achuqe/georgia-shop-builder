@@ -571,6 +571,10 @@ export type Database = {
         Args: { p_product_id: string }
         Returns: undefined
       }
+      redeem_loyalty_points: {
+        Args: { _order_id: string; _points: number }
+        Returns: number
+      }
     }
     Enums: {
       app_role: "admin" | "user"
