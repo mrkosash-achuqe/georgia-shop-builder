@@ -11,6 +11,7 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import AuthModal from "@/components/AuthModal";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { useAbandonedCart } from "@/hooks/useAbandonedCart";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -49,6 +50,11 @@ const PageFallback = () => (
   </div>
 );
 
+const CartPersistence = () => {
+  useAbandonedCart();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -61,6 +67,7 @@ const App = () => (
             <WishlistProvider>
               <AuthModal />
               <AnalyticsTracker />
+              <CartPersistence />
               <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
