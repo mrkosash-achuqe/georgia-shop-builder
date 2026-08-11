@@ -11,6 +11,7 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import AuthModal from "@/components/AuthModal";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import ConsentBanner from "@/components/ConsentBanner";
 import { useAbandonedCart } from "@/hooks/useAbandonedCart";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -68,6 +69,7 @@ const App = () => (
               <AuthModal />
               <AnalyticsTracker />
               <CartPersistence />
+              <ConsentBanner consentKey="cookies" learnMoreHref="/returns" />
               <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
