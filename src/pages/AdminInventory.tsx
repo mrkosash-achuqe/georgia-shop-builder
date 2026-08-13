@@ -13,7 +13,7 @@ type Row = {
   name_ka: string;
   name_en: string | null;
   sku: string | null;
-  image_url: string | null;
+  images: string[] | null;
   in_stock: boolean;
   stock_quantity: number | null;
 };
@@ -48,7 +48,7 @@ const AdminInventory = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from("products")
-        .select("id, name_ka, name_en, sku, image_url, in_stock, stock_quantity")
+        .select("id, name_ka, name_en, sku, images, in_stock, stock_quantity")
         .order("stock_quantity", { ascending: true });
       if (error) toast.error("პროდუქტების ჩატვირთვა ვერ მოხერხდა");
       else setRows((data as Row[]) || []);
@@ -164,8 +164,8 @@ const AdminInventory = () => {
               const level = qty(r) <= 0 ? "bg-destructive/10 text-destructive" : qty(r) <= threshold ? "bg-yellow-500/10 text-yellow-700" : "bg-green-500/10 text-green-700";
               return (
                 <div key={r.id} className="p-3 sm:p-4 flex items-center gap-3">
-                  {r.image_url ? (
-                    <img src={r.image_url} alt={r.name_ka} loading="lazy" className="w-12 h-12 rounded-lg object-cover shrink-0" />
+                  {r.images?.[0] ? (
+                    <img src={r.images![0]} alt={r.name_ka} loading="lazy" className="w-12 h-12 rounded-lg object-cover shrink-0" />
                   ) : (
                     <div className="w-12 h-12 rounded-lg bg-secondary shrink-0" />
                   )}
