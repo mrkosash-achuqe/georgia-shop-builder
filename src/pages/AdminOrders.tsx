@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Package, Users as UsersIcon, Truck, ShoppingBag, ArrowLeft,
-  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText } from "lucide-react";
+  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText , Boxes } from "lucide-react";
 
 type Order = {
   id: string;
