@@ -259,7 +259,10 @@ const ProductDetailContent = () => {
                 <><X className="h-4 w-4 text-destructive" /><span className="text-sm text-destructive font-medium">{tp.outOfStock}</span></>
               )}
             </div>
-            <p className="text-muted-foreground leading-relaxed mb-6">{desc}</p>
+            <p className="text-muted-foreground leading-relaxed mb-4">{desc}</p>
+            <div className="mb-6">
+              <ShareButtons url={canonical} title={name} />
+            </div>
             {product.personalizationEnabled && (
             <div className="bg-card rounded-xl border border-border mb-6 overflow-hidden">
               <button
