@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { printInvoice } from "@/lib/invoice";
 import { Package, Users as UsersIcon, Truck, ShoppingBag, ArrowLeft,
   ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText , Boxes } from "lucide-react";
 
@@ -217,7 +218,15 @@ const AdminOrders = () => {
                 <h3 className="font-bold text-foreground">#{selected.order_number}</h3>
                 <p className="text-xs text-muted-foreground">{new Date(selected.created_at).toLocaleString("ka-GE")}</p>
               </div>
-              <button onClick={() => setSelected(null)} className="p-2 hover:bg-secondary rounded-lg"><X className="h-4 w-4" /></button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => { if (!printInvoice(selected, items)) toast.error("ბრაუზერმა დაბლოკა ფანჯარა"); }}
+                  className="flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-lg bg-primary text-primary-foreground"
+                >
+                  <Printer className="h-4 w-4" /> ინვოისი
+                </button>
+                <button onClick={() => setSelected(null)} className="p-2 hover:bg-secondary rounded-lg"><X className="h-4 w-4" /></button>
+              </div>
             </div>
             <div className="p-4 space-y-4">
               {/* Status */}
