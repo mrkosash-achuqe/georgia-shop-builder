@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import {
   FileText, Package, Users as UsersIcon, ShoppingBag, Truck, MessageSquare,
   BarChart3, Tag, Loader2, Plus, Pencil, Trash2, Eye, EyeOff, XCircle, Upload, X,
-, Boxes } from "lucide-react";
+  Boxes } from "lucide-react";
 
 type Post = {
   id: string;
