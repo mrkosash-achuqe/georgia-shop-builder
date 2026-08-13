@@ -15,6 +15,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ProductReviews from "@/components/ProductReviews";
 import AiRecommendations from "@/components/AiRecommendations";
 import SEO from "@/components/SEO";
+import ShareButtons from "@/components/ShareButtons";
 import { trackViewItem } from "@/lib/analytics";
 
 const generateSku = (id: string): string => {
@@ -150,37 +151,69 @@ const ProductDetailContent = () => {
         description={pageDesc}
         image={ogImg}
         type="product"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Product",
-          name,
-          description: desc,
-          image: product.images,
-          sku: generateSku(product.id),
-          offers: {
-            "@type": "Offer",
-            price: product.price,
-            priceCurrency: "GEL",
-            availability: product.inStock
-              ? "https://schema.org/InStock"
-              : "https://schema.org/OutOfStock",
-            url: canonical,
-          },
-          ...(product.reviews > 0 && {
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: product.rating,
-              reviewCount: product.reviews,
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name,
+            description: desc,
+            image: product.images,
+            sku: generateSku(product.id),
+            brand: { "@type": "Brand", name: "achuqe" },
+            material: product.material,
+            offers: {
+              "@type": "Offer",
+              price: product.price,
+              priceCurrency: "GEL",
+              availability: product.inStock
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+              url: canonical,
             },
-          }),
-        }}
+            ...(product.reviews > 0 && {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: product.rating,
+                reviewCount: product.reviews,
+              },
+            }),
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: lang === "ka" ? "მთავარი" : "Home", item: "https://achuqe.com/" },
+              ...(product.category
+                ? [{ "@type": "ListItem", position: 2, name: product.category, item: `https://achuqe.com/?category=${encodeURIComponent(product.category)}` }]
+                : []),
+              { "@type": "ListItem", position: product.category ? 3 : 2, name, item: canonical },
+            ],
+          },
+        ]}
       />
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-3">
           <ChevronLeft className="h-4 w-4" />
           {tp.backToHome}
         </Link>
+        <nav aria-label="Breadcrumb" className="mb-6">
+          <ol className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
+            <li><Link to="/" className="hover:text-primary">{lang === "ka" ? "მთავარი" : "Home"}</Link></li>
+            {product.category && (
+              <>
+                <li aria-hidden="true">/</li>
+                <li>
+                  <Link to={`/?category=${encodeURIComponent(product.category)}#products`} className="hover:text-primary">
+                    {product.category}
+                  </Link>
+                </li>
+              </>
+            )}
+            <li aria-hidden="true">/</li>
+            <li className="text-foreground font-medium truncate max-w-[60vw]">{name}</li>
+          </ol>
+        </nav>
 
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           {/* Gallery */}
