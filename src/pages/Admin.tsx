@@ -721,6 +721,7 @@ const Admin = () => {
           </Link>
           <Link to="/admin/reviews" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><MessageSquare className="h-4 w-4" /> მიმოხილვები</Link>
           <Link to="/admin/blog" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><FileText className="h-4 w-4" /> ბლოგი</Link>
+          <Link to="/admin/inventory" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Boxes className="h-4 w-4" /> მარაგი</Link>
         </div>
 
         {/* Stats */}
