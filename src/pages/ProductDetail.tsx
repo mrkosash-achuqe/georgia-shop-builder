@@ -17,6 +17,8 @@ import AiRecommendations from "@/components/AiRecommendations";
 import SEO from "@/components/SEO";
 import ShareButtons from "@/components/ShareButtons";
 import { trackViewItem } from "@/lib/analytics";
+import RecentlyViewed from "@/components/RecentlyViewed";
+import { pushRecentlyViewed } from "@/hooks/useRecentlyViewed";
 
 const generateSku = (id: string): string => {
   let hash = 0;
@@ -101,6 +103,7 @@ const ProductDetailContent = () => {
   useEffect(() => {
     if (product) {
       trackViewItem(product, lang);
+      pushRecentlyViewed(product.id);
     }
   }, [product, lang]);
 
@@ -368,6 +371,8 @@ const ProductDetailContent = () => {
         <AiRecommendations productId={product.id} />
 
         <ProductReviews productId={product.id} />
+
+        <RecentlyViewed excludeId={product.id} />
       </main>
       <div className="mt-auto"><Footer /></div>
       <CartDrawer />
