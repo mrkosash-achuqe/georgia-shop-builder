@@ -12,6 +12,7 @@ import { WishlistProvider } from "@/context/WishlistContext";
 import AuthModal from "@/components/AuthModal";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ConsentBanner from "@/components/ConsentBanner";
+import SupportChat from "@/components/SupportChat";
 import { useAbandonedCart } from "@/hooks/useAbandonedCart";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";

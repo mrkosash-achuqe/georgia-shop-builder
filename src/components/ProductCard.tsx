@@ -1,7 +1,9 @@
-import { Heart, Star } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Heart, Star, Zap } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Product } from "@/data/products";
 import { useWishlist } from "@/context/WishlistContext";
+import { useCart } from "@/context/CartContext";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ProductCardProps {
   product: Product;
