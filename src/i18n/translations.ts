@@ -228,6 +228,20 @@ export const translations = {
       confirmAction: "დიახ, გასუფთავება",
       cancel: "გაუქმება",
     },
+    chat: {
+      title: "AI დახმარება",
+      subtitle: "ონლაინ კონსულტანტი",
+      open: "დახმარება",
+      placeholder: "დაწერეთ შეკითხვა...",
+      send: "გაგზავნა",
+      greeting: "გამარჯობა! მე ვარ Achuqe-ს კონსულტანტი. დაგეხმარებით პროდუქტის შერჩევაში, მიწოდებასა და შეკვეთის საკითხებში.",
+      error: "დროებით ვერ ვუპასუხე. სცადეთ ხელახლა.",
+      clear: "ჩატის გასუფთავება",
+    },
+    quickBuy: {
+      add: "კალათაში",
+      buyNow: "სწრაფი ყიდვა",
+    },
   },
   en: {
     nav: {
@@ -455,6 +469,20 @@ export const translations = {
       confirmDesc: "Are you sure you want to clear your entire wishlist? This action cannot be undone.",
       confirmAction: "Yes, clear",
       cancel: "Cancel",
+    },
+    chat: {
+      title: "AI Support",
+      subtitle: "Online assistant",
+      open: "Support",
+      placeholder: "Type your question...",
+      send: "Send",
+      greeting: "Hi! I'm the Achuqe assistant. I can help with product choice, delivery and order questions.",
+      error: "I couldn't answer right now. Please try again.",
+      clear: "Clear chat",
+    },
+    quickBuy: {
+      add: "Add to cart",
+      buyNow: "Buy now",
     },
   },
 } as const;
