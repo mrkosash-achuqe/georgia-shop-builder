@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   return (
     <footer>
@@ -42,6 +42,7 @@ const Footer = () => {
                 {[
                   { label: t.nav.delivery, to: "/delivery" },
                   { label: t.nav.returns, to: "/returns" },
+                  { label: lang === "ka" ? "შეკვეთის მიდევნება" : "Track your order", to: "/track" },
                 ].map((link) => (
                   <li key={link.to}>
                     <Link to={link.to} className="text-muted-foreground hover:text-primary hover:translate-x-1 inline-block transition-all duration-200">
