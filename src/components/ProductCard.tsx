@@ -14,6 +14,9 @@ interface ProductCardProps {
 const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
   const name = lang === "ka" ? product.nameKa : product.nameEn;
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart();
+  const { t } = useLanguage();
+  const navigate = useNavigate();
   const wishlisted = isInWishlist(product.id);
 
   return (
@@ -65,6 +68,19 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
         <p className="text-base font-bold text-foreground">
           {product.price} {currency}
         </p>
+        {product.inStock && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addToCart(product, 1);
+              navigate("/checkout");
+            }}
+            className="mt-2 w-full flex items-center justify-center gap-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium py-2 hover:opacity-90 transition-opacity"
+          >
+            <Zap className="h-3.5 w-3.5" /> {t.quickBuy.buyNow}
+          </button>
+        )}
       </div>
     </Link>
   );

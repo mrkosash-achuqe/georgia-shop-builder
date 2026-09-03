@@ -73,6 +73,7 @@ const App = () => (
               <AnalyticsTracker />
               <CartPersistence />
               <ConsentBanner consentKey="cookies" learnMoreHref="/returns" />
+              <SupportChat />
               <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
