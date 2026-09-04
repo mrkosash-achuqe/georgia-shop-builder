@@ -166,6 +166,27 @@ const AdminDashboard = () => {
 
   const recentOrders = [...orders].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 6);
 
+  const exportCsv = () => {
+    const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const rows = [
+      ["order_number", "date", "customer", "status", "total"].join(","),
+      ...orders.map((o) => [
+        o.order_number,
+        o.created_at.slice(0, 10),
+        `${o.first_name} ${o.last_name}`,
+        o.status,
+        Number(o.total).toFixed(2),
+      ].map(esc).join(",")),
+    ];
+    const blob = new Blob(["﻿" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `orders-${range}d.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const statCards = [
     { label: "შემოსავალი", value: `${revenue.toFixed(0)} ₾`, icon: DollarSign, cls: "bg-emerald-500/10 text-emerald-600" },
     { label: "შეკვეთები", value: orders.length, icon: ShoppingBag, cls: "bg-primary/10 text-primary" },
@@ -195,7 +216,13 @@ const AdminDashboard = () => {
 
         {/* Range selector */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-          <h1 className="text-2xl font-bold">ანალიტიკა</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">ანალიტიკა</h1>
+            <button onClick={exportCsv} disabled={orders.length === 0}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-secondary disabled:opacity-50 transition-colors">
+              <Download className="h-4 w-4" /> CSV
+            </button>
+          </div>
           <div className="flex gap-1 bg-muted rounded-lg p-1">
             {RANGES.map((r) => (
               <button
