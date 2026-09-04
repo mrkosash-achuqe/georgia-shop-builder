@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import { Plus, Pencil, Trash2, Upload, X, Save, ArrowLeft,
   Image as ImageIcon, Package, Search, Filter, Eye, ChevronDown,
   LayoutGrid, List, AlertTriangle, CheckCircle2, XCircle, Minus, Users as UsersIcon,
-  ShoppingBag, Truck, Tag, Search as SearchIcon, BarChart3 , MessageSquare, FileText , Boxes } from "lucide-react";
+  ShoppingBag, Truck, Tag, Search as SearchIcon, BarChart3 , MessageSquare, FileText , Boxes, RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
 
 type DBProduct = {

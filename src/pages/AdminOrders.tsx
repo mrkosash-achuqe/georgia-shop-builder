@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { printInvoice } from "@/lib/invoice";
 import { Package, Users as UsersIcon, Truck, ShoppingBag, ArrowLeft,
-  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText, Boxes, Printer } from "lucide-react";
+  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText, Boxes, Printer, RotateCcw } from "lucide-react";
 
 type Order = {
   id: string;
