@@ -713,6 +713,7 @@ const Admin = () => {
           <Link to="/admin/orders" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
             <ShoppingBag className="h-4 w-4" /> შეკვეთები
           </Link>
+          <Link to="/admin/requests" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><RotateCcw className="h-4 w-4" /> მოთხოვნები</Link>
           <Link to="/admin/shipping" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap">
             <Truck className="h-4 w-4" /> მიწოდება
           </Link>
