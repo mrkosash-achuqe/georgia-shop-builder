@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ChevronLeft, User, Package, MapPin, Loader2, Gift } from "lucide-react";
+import { ChevronLeft, User, Package, MapPin, Loader2, Gift, XCircle, RotateCcw } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useLoyalty, POINTS_PER_GEL } from "@/hooks/useLoyalty";
@@ -16,6 +16,21 @@ type Order = {
   status: string;
   total: number;
   created_at: string;
+};
+
+type OrderRequest = {
+  id: string;
+  order_id: string;
+  type: "cancel" | "return";
+  reason: string;
+  status: "pending" | "approved" | "rejected";
+  admin_note: string | null;
+};
+
+const reqStatusCls: Record<string, string> = {
+  pending: "bg-yellow-500/10 text-yellow-700 border-yellow-500/30",
+  approved: "bg-green-500/10 text-green-700 border-green-500/30",
+  rejected: "bg-red-500/10 text-red-700 border-red-500/30",
 };
 
 const statusColors: Record<string, string> = {
@@ -39,6 +54,10 @@ const Account = () => {
   const [saving, setSaving] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
+  const [requests, setRequests] = useState<Record<string, OrderRequest[]>>({});
+  const [reqForm, setReqForm] = useState<{ orderId: string; type: "cancel" | "return" } | null>(null);
+  const [reqReason, setReqReason] = useState("");
+  const [reqSaving, setReqSaving] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) setAuthModalOpen(true);
@@ -64,7 +83,38 @@ const Account = () => {
     supabase.from("orders").select("id, order_number, status, total, created_at")
       .eq("user_id", user.id).order("created_at", { ascending: false })
       .then(({ data }) => { setOrders((data as Order[]) || []); setOrdersLoading(false); });
+    (supabase as any).from("order_requests").select("id, order_id, type, reason, status, admin_note")
+      .eq("user_id", user.id).order("created_at", { ascending: false })
+      .then(({ data }: { data: OrderRequest[] | null }) => {
+        const map: Record<string, OrderRequest[]> = {};
+        (data || []).forEach((r) => { (map[r.order_id] ||= []).push(r); });
+        setRequests(map);
+      });
   }, [user, tab]);
+
+  const submitRequest = async () => {
+    if (!user || !reqForm || !reqReason.trim()) return;
+    setReqSaving(true);
+    const { error } = await (supabase as any).from("order_requests").insert({
+      order_id: reqForm.orderId,
+      user_id: user.id,
+      email: user.email,
+      type: reqForm.type,
+      reason: reqReason.trim(),
+    });
+    setReqSaving(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success(lang === "ka" ? "მოთხოვნა გაიგზავნა ✅" : "Request sent ✅");
+    setRequests((prev) => ({
+      ...prev,
+      [reqForm.orderId]: [...(prev[reqForm.orderId] || []), {
+        id: crypto.randomUUID(), order_id: reqForm.orderId, type: reqForm.type,
+        reason: reqReason.trim(), status: "pending", admin_note: null,
+      }],
+    }));
+    setReqForm(null);
+    setReqReason("");
+  };
 
   const save = async () => {
     if (!user) return;
@@ -260,6 +310,63 @@ const Account = () => {
                       <p className="text-xs text-muted-foreground">{at.orderTotal}</p>
                       <p className="font-bold text-primary">{Number(o.total).toFixed(2)} {t.products.currency}</p>
                     </div>
+                    {["pending", "paid", "shipped", "delivered", "completed"].includes(o.status) && (
+                      <div className="w-full">
+                        <div className="flex gap-2 flex-wrap">
+                          {o.status !== "delivered" && o.status !== "completed" && (
+                            <button
+                              onClick={() => setReqForm(reqForm?.orderId === o.id && reqForm.type === "cancel" ? null : { orderId: o.id, type: "cancel" })}
+                              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive hover:bg-destructive/10 transition-colors">
+                              <XCircle className="h-3.5 w-3.5" />
+                              {lang === "ka" ? "გაუქმების მოთხოვნა" : "Request cancellation"}
+                            </button>
+                          )}
+                          {(o.status === "delivered" || o.status === "completed") && (
+                            <button
+                              onClick={() => setReqForm(reqForm?.orderId === o.id && reqForm.type === "return" ? null : { orderId: o.id, type: "return" })}
+                              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-primary/40 text-primary hover:bg-primary/10 transition-colors">
+                              <RotateCcw className="h-3.5 w-3.5" />
+                              {lang === "ka" ? "დაბრუნების მოთხოვნა" : "Request return"}
+                            </button>
+                          )}
+                        </div>
+                        {reqForm?.orderId === o.id && (
+                          <div className="mt-3 bg-secondary/40 rounded-xl p-3 space-y-2">
+                            <textarea
+                              value={reqReason}
+                              onChange={(e) => setReqReason(e.target.value)}
+                              rows={2}
+                              placeholder={lang === "ka" ? "მიზეზი..." : "Reason..."}
+                              className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <div className="flex gap-2">
+                              <button onClick={submitRequest} disabled={reqSaving || !reqReason.trim()}
+                                className="px-4 py-1.5 text-sm rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 disabled:opacity-50">
+                                {reqSaving ? "..." : (lang === "ka" ? "გაგზავნა" : "Send")}
+                              </button>
+                              <button onClick={() => { setReqForm(null); setReqReason(""); }}
+                                className="px-4 py-1.5 text-sm rounded-lg border border-border text-muted-foreground hover:text-foreground">
+                                {lang === "ka" ? "დახურვა" : "Close"}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        {(requests[o.id] || []).map((r) => (
+                          <div key={r.id} className="mt-2 text-xs flex flex-wrap items-center gap-2">
+                            <span className={`px-2 py-0.5 rounded-full border ${reqStatusCls[r.status]}`}>
+                              {r.type === "cancel"
+                                ? (lang === "ka" ? "გაუქმება" : "Cancellation")
+                                : (lang === "ka" ? "დაბრუნება" : "Return")}
+                              {" · "}
+                              {r.status === "pending" ? (lang === "ka" ? "მოლოდინში" : "Pending")
+                                : r.status === "approved" ? (lang === "ka" ? "დამტკიცებული" : "Approved")
+                                : (lang === "ka" ? "უარყოფილი" : "Rejected")}
+                            </span>
+                            {r.admin_note && <span className="text-muted-foreground">{r.admin_note}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
