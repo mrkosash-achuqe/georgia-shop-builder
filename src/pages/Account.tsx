@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ChevronLeft, User, Package, MapPin, Loader2, Gift } from "lucide-react";
+import { ChevronLeft, User, Package, MapPin, Loader2, Gift, XCircle, RotateCcw } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useLoyalty, POINTS_PER_GEL } from "@/hooks/useLoyalty";
@@ -16,6 +16,21 @@ type Order = {
   status: string;
   total: number;
   created_at: string;
+};
+
+type OrderRequest = {
+  id: string;
+  order_id: string;
+  type: "cancel" | "return";
+  reason: string;
+  status: "pending" | "approved" | "rejected";
+  admin_note: string | null;
+};
+
+const reqStatusCls: Record<string, string> = {
+  pending: "bg-yellow-500/10 text-yellow-700 border-yellow-500/30",
+  approved: "bg-green-500/10 text-green-700 border-green-500/30",
+  rejected: "bg-red-500/10 text-red-700 border-red-500/30",
 };
 
 const statusColors: Record<string, string> = {
@@ -39,6 +54,10 @@ const Account = () => {
   const [saving, setSaving] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
+  const [requests, setRequests] = useState<Record<string, OrderRequest[]>>({});
+  const [reqForm, setReqForm] = useState<{ orderId: string; type: "cancel" | "return" } | null>(null);
+  const [reqReason, setReqReason] = useState("");
+  const [reqSaving, setReqSaving] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) setAuthModalOpen(true);
@@ -64,7 +83,38 @@ const Account = () => {
     supabase.from("orders").select("id, order_number, status, total, created_at")
       .eq("user_id", user.id).order("created_at", { ascending: false })
       .then(({ data }) => { setOrders((data as Order[]) || []); setOrdersLoading(false); });
+    (supabase as any).from("order_requests").select("id, order_id, type, reason, status, admin_note")
+      .eq("user_id", user.id).order("created_at", { ascending: false })
+      .then(({ data }: { data: OrderRequest[] | null }) => {
+        const map: Record<string, OrderRequest[]> = {};
+        (data || []).forEach((r) => { (map[r.order_id] ||= []).push(r); });
+        setRequests(map);
+      });
   }, [user, tab]);
+
+  const submitRequest = async () => {
+    if (!user || !reqForm || !reqReason.trim()) return;
+    setReqSaving(true);
+    const { error } = await (supabase as any).from("order_requests").insert({
+      order_id: reqForm.orderId,
+      user_id: user.id,
+      email: user.email,
+      type: reqForm.type,
+      reason: reqReason.trim(),
+    });
+    setReqSaving(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success(lang === "ka" ? "მოთხოვნა გაიგზავნა ✅" : "Request sent ✅");
+    setRequests((prev) => ({
+      ...prev,
+      [reqForm.orderId]: [...(prev[reqForm.orderId] || []), {
+        id: crypto.randomUUID(), order_id: reqForm.orderId, type: reqForm.type,
+        reason: reqReason.trim(), status: "pending", admin_note: null,
+      }],
+    }));
+    setReqForm(null);
+    setReqReason("");
+  };
 
   const save = async () => {
     if (!user) return;
