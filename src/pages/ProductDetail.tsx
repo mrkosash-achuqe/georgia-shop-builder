@@ -20,14 +20,7 @@ import ShareButtons from "@/components/ShareButtons";
 import { trackViewItem } from "@/lib/analytics";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { pushRecentlyViewed } from "@/hooks/useRecentlyViewed";
-
-const generateSku = (id: string): string => {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-  }
-  return String(hash % 900000 + 100000);
-};
+import { productSku } from "@/lib/sku";
 
 const mapDbProduct = (row: any): Product => ({
   id: row.id,
@@ -46,6 +39,7 @@ const mapDbProduct = (row: any): Product => ({
   inStock: row.in_stock,
   personalizationEnabled: !!row.personalization_enabled,
   personalizationNote: row.personalization_note || "",
+  sku: row.sku || null,
 });
 
 type ProductSeo = {
@@ -163,7 +157,7 @@ const ProductDetailContent = () => {
             name,
             description: desc,
             image: product.images,
-            sku: generateSku(product.id),
+            sku: productSku(product),
             brand: { "@type": "Brand", name: "achuqe" },
             material: product.material,
             offers: {
@@ -317,7 +311,7 @@ const ProductDetailContent = () => {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between py-1.5 border-b border-border">
                   <span className="text-muted-foreground">{tp.sku}</span>
-                  <span className="text-foreground font-mono font-medium">#{generateSku(product.id)}</span>
+                  <span className="text-foreground font-mono font-medium">#{productSku(product)}</span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-border">
                   <span className="text-muted-foreground">{tp.material}</span>
