@@ -9,6 +9,7 @@ import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
+import { CompareProvider } from "@/context/CompareContext";
 import AuthModal from "@/components/AuthModal";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ConsentBanner from "@/components/ConsentBanner";
@@ -25,6 +26,7 @@ const Delivery = lazy(() => import("./pages/Delivery.tsx"));
 const Returns = lazy(() => import("./pages/Returns.tsx"));
 const Blog = lazy(() => import("./pages/Blog.tsx"));
 const Wishlist = lazy(() => import("./pages/Wishlist.tsx"));
+const Compare = lazy(() => import("./pages/Compare.tsx"));
 const Admin = lazy(() => import("./pages/Admin.tsx"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers.tsx"));
 const AdminOrders = lazy(() => import("./pages/AdminOrders.tsx"));
@@ -70,6 +72,7 @@ const App = () => (
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
+              <CompareProvider>
               <AuthModal />
               <AnalyticsTracker />
               <CartPersistence />
@@ -86,6 +89,7 @@ const App = () => (
                 <Route path="/returns" element={<Returns />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/compare" element={<Compare />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/account/orders" element={<Account />} />
                 <Route path="/track" element={<TrackOrder />} />
@@ -103,6 +107,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>
+              </CompareProvider>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>

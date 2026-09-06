@@ -1,8 +1,9 @@
-import { Heart, Star, Zap } from "lucide-react";
+import { Heart, Star, Zap, Scale } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Product } from "@/data/products";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
+import { useCompare } from "@/context/CompareContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ProductCardProps {
@@ -15,6 +16,7 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
   const name = lang === "ka" ? product.nameKa : product.nameEn;
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { addToCart } = useCart();
+  const { toggleCompare, isInCompare, isFull } = useCompare();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const wishlisted = isInWishlist(product.id);
@@ -45,6 +47,16 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
           }`}
         >
           <Heart className={`h-4 w-4 ${wishlisted ? "fill-primary" : ""}`} />
+        </button>
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
+          disabled={!isInCompare(product.id) && isFull}
+          aria-label={lang === "ka" ? "შედარება" : "Compare"}
+          className={`absolute bottom-3 right-12 bg-card/80 backdrop-blur-sm rounded-full p-2 transition-colors disabled:opacity-40 ${
+            isInCompare(product.id) ? "text-primary" : "text-muted-foreground hover:text-primary"
+          }`}
+        >
+          <Scale className="h-4 w-4" />
         </button>
         {!product.inStock && (
           <div className="absolute top-3 left-3 bg-destructive text-destructive-foreground text-xs font-medium px-2 py-1 rounded-md">
