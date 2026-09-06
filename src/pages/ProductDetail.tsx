@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn, Plus, Minus } from "lucide-react";
+import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn, Plus, Minus, Scale } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import Header from "@/components/Header";
@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/data/products";
+import { useCompare } from "@/context/CompareContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -58,6 +59,7 @@ const ProductDetailContent = () => {
   const { lang, t } = useLanguage();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { toggleCompare, isInCompare, isFull } = useCompare();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [zoomOpen, setZoomOpen] = useState(false);
@@ -345,6 +347,18 @@ const ProductDetailContent = () => {
                 }`}
               >
                 <Heart className={`h-5 w-5 ${product && isInWishlist(product.id) ? "fill-primary" : ""}`} />
+              </button>
+              <button
+                onClick={() => product && toggleCompare(product)}
+                disabled={!!product && !isInCompare(product.id) && isFull}
+                className={`p-3 rounded-lg border transition-colors disabled:opacity-40 ${
+                  product && isInCompare(product.id)
+                    ? "border-primary text-primary"
+                    : "border-border text-muted-foreground hover:text-primary hover:border-primary"
+                }`}
+                aria-label="Compare"
+              >
+                <Scale className="h-5 w-5" />
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
