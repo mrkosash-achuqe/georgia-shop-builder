@@ -1,0 +1,14 @@
+REVOKE EXECUTE ON FUNCTION public.award_order_loyalty() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.decrement_product_stock() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.mark_verified_purchase() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.recalc_loyalty_balance(uuid) FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.recalc_product_rating(uuid) FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.restore_stock_on_cancel() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.trg_loyalty_balance() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.trg_reviews_recalc() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.update_updated_at_column() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.redeem_loyalty_points(uuid, integer) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) FROM anon;
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.redeem_loyalty_points(uuid, integer) TO authenticated;
