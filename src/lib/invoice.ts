@@ -11,6 +11,8 @@ type InvoiceOrder = {
   payment_method: string;
   subtotal: number;
   shipping_fee: number;
+  discount?: number;
+  promo_code?: string | null;
   total: number;
 };
 
@@ -85,10 +87,11 @@ export const printInvoice = (order: InvoiceOrder, items: InvoiceItem[]) => {
   <div class="totals">
     <div><span>ქვეჯამი</span><span>${Number(order.subtotal).toFixed(2)} ₾</span></div>
     <div><span>მიწოდება</span><span>${Number(order.shipping_fee).toFixed(2)} ₾</span></div>
+    ${Number(order.discount || 0) > 0 ? `<div><span>ფასდაკლება${order.promo_code ? ` (${esc(order.promo_code)})` : ""}</span><span>−${Number(order.discount).toFixed(2)} ₾</span></div>` : ""}
     <div class="sum"><span>სულ</span><span>${Number(order.total).toFixed(2)} ₾</span></div>
   </div>
   <footer>გმადლობთ შენაძენისთვის! · achuqe.com</footer>
-  <script>window.onload = () => { window.print(); };<\/script>
+  <script>window.onload = () => { window.print(); };<\u002fscript>
 </body></html>`;
 
   const w = window.open("", "_blank", "width=900,height=1000");
