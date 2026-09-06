@@ -24,6 +24,8 @@ export interface Product {
   inStock: boolean;
   personalizationEnabled?: boolean;
   personalizationNote?: string;
+  sku?: string | null;
+
 }
 
 export const products: Product[] = [

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { trackSearch } from "@/lib/analytics";
+import { productSku } from "@/lib/sku";
 
 interface SearchResult {
   id: string;
@@ -11,18 +12,11 @@ interface SearchResult {
   name_en: string;
   price: number;
   images: string[];
+  sku?: string | null;
   category?: string;
 }
 
 type Mode = "text" | "code";
-
-const generateSku = (id: string): string => {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-  }
-  return String((hash % 900000) + 100000);
-};
 
 const SearchDropdown = () => {
   const { lang, t } = useLanguage();
@@ -73,11 +67,11 @@ const SearchDropdown = () => {
     if (query.trim().length < 2) { setResults([]); return; }
     const timeout = setTimeout(async () => {
       setLoading(true);
-      const searchCol = lang === "ka" ? "name_ka" : "name_en";
+      const q = query.trim().replace(/[%,]/g, "");
       const { data } = await supabase
         .from("products")
-        .select("id, name_ka, name_en, price, images")
-        .ilike(searchCol, `%${query.trim()}%`)
+        .select("id, name_ka, name_en, price, images, sku")
+        .or(`name_ka.ilike.%${q}%,name_en.ilike.%${q}%,category.ilike.%${q}%`)
         .limit(6);
       setResults(data || []);
       setOpen(true);
@@ -95,8 +89,11 @@ const SearchDropdown = () => {
       setLoading(true);
       const { data } = await supabase
         .from("products")
-        .select("id, name_ka, name_en, price, images");
-      const matches = (data || []).filter((p) => generateSku(p.id).includes(trimmed)).slice(0, 6);
+        .select("id, name_ka, name_en, price, images, sku");
+      const needle = trimmed.replace(/^#/, "").toLowerCase();
+      const matches = (data || [])
+        .filter((p) => productSku(p).toLowerCase().includes(needle))
+        .slice(0, 6);
       setResults(matches);
       setOpen(true);
       setLoading(false);
@@ -187,7 +184,7 @@ const SearchDropdown = () => {
                   <div className="flex items-center gap-2">
                     <p className="text-xs font-semibold text-primary">{r.price} {t.products.currency}</p>
                     {mode === "code" && (
-                      <span className="text-[10px] font-mono text-muted-foreground">#{generateSku(r.id)}</span>
+                      <span className="text-[10px] font-mono text-muted-foreground">#{productSku(r)}</span>
                     )}
                   </div>
                 </div>
