@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Scale, X, ShoppingCart, Star, ChevronLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { useCompare } from "@/context/CompareContext";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/i18n/LanguageContext";

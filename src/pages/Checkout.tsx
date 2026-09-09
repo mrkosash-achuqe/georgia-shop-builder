@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import SEO from "@/components/SEO";
 import { trackBeginCheckout, trackPurchase } from "@/lib/analytics";
 import { useLoyalty, POINTS_PER_GEL } from "@/hooks/useLoyalty";
 import { markCartRecovered } from "@/hooks/useAbandonedCart";

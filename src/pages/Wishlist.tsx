@@ -5,6 +5,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import SEO from "@/components/SEO";
 import {
   AlertDialog,
   AlertDialogAction,
