@@ -23,6 +23,13 @@ const Wishlist = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        noindex
+        title={lang === "ka" ? "სასურველები — აჩუქე" : "Wishlist — achuqe"}
+        description={lang === "ka"
+          ? "თქვენი შენახული ხელნაკეთი ხის ნაკეთობები აჩუქეს სასურველების სიაში."
+          : "Your saved handcrafted wooden products in the achuqe wishlist."}
+      />
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
