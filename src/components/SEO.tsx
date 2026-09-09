@@ -18,7 +18,7 @@ type SEOProps = {
  * (ka / en / x-default) and OpenGraph tags. Canonical strips any `lang`
  * query param; alternates re-add `?lang=ka` / `?lang=en`.
  */
-const SEO = ({ title, description, image, type = "website", jsonLd }: SEOProps) => {
+const SEO = ({ title, description, image, type = "website", noindex = false, jsonLd }: SEOProps) => {
   const { lang } = useLanguage();
   const { pathname, search } = useLocation();
 
