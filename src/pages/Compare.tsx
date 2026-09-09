@@ -63,6 +63,13 @@ const Compare = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        noindex
+        title={ka ? "პროდუქტების შედარება — აჩუქე" : "Compare Products — achuqe"}
+        description={ka
+          ? "შეადარეთ ხელნაკეთი ხის ნაკეთობები ფასის, მასალის და მახასიათებლების მიხედვით."
+          : "Compare handcrafted wooden products by price, material and specifications."}
+      />
       <Header />
       <div className="container mx-auto px-4 py-6 sm:py-8">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
