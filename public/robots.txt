@@ -12,11 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
-
-Sitemap: https://achuqe.com/sitemap.xml
-
 Disallow: /account
 Disallow: /checkout
 Disallow: /wishlist
 Disallow: /compare
 Disallow: /admin
+
+Sitemap: https://achuqe.com/sitemap.xml

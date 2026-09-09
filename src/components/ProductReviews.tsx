@@ -100,7 +100,7 @@ const ProductReviews = ({ productId }: Props) => {
     const rows: Review[] = data || [];
     // fetch profiles
     const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
-    let profiles: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
+    const profiles: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
     if (userIds.length) {
       const { data: pdata } = await supabase
         .from("profiles")
@@ -126,7 +126,7 @@ const ProductReviews = ({ productId }: Props) => {
     setLoading(false);
   };
 
-  useEffect(() => { fetchReviews(); /* eslint-disable-next-line */ }, [productId, user?.id]);
+  useEffect(() => { fetchReviews();   }, [productId, user?.id]);
 
   const visibleReviews = reviews.filter((r) => r.is_approved || r.user_id === user?.id);
   const approved = reviews.filter((r) => r.is_approved);
