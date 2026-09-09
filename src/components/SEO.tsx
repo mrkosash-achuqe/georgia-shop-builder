@@ -39,6 +39,7 @@ const SEO = ({ title, description, image, type = "website", noindex = false, jso
       <html lang={lang} />
       <title>{title}</title>
       <meta name="description" content={description} />
+      {noindex && <meta name="robots" content="noindex, follow" />}
       <link rel="canonical" href={canonical} />
       <link rel="alternate" hrefLang="ka" href={kaHref} />
       <link rel="alternate" hrefLang="en" href={enHref} />
