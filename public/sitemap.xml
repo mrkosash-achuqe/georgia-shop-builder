@@ -33,6 +33,8 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://achuqe.com/blog?lang=en"/>
   </url>
   <url>
-    <loc>https://achuqe.com/wishlist</loc>
+    <loc>https://achuqe.com/track</loc>
+    <xhtml:link rel="alternate" hreflang="ka" href="https://achuqe.com/track?lang=ka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://achuqe.com/track?lang=en"/>
   </url>
 </urlset>
