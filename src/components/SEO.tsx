@@ -9,6 +9,7 @@ type SEOProps = {
   description: string;
   image?: string;
   type?: "website" | "article" | "product";
+  noindex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 };
 
