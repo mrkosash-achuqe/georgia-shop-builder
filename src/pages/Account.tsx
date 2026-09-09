@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import SEO from "@/components/SEO";
 
 type Order = {
   id: string;
@@ -152,6 +153,13 @@ const Account = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        noindex
+        title={lang === "ka" ? "ჩემი ანგარიში — აჩუქე" : "My Account — achuqe"}
+        description={lang === "ka"
+          ? "თქვენი შეკვეთები, ლოიალობის ქულები და პროფილის მონაცემები."
+          : "Your orders, loyalty points and profile details."}
+      />
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
