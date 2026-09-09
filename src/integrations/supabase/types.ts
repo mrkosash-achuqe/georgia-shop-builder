@@ -312,6 +312,45 @@ export type Database = {
         }
         Relationships: []
       }
+      product_questions: {
+        Row: {
+          answer: string | null
+          answered_at: string | null
+          author_name: string | null
+          created_at: string
+          id: string
+          is_published: boolean
+          product_id: string
+          question: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          answer?: string | null
+          answered_at?: string | null
+          author_name?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          product_id: string
+          question: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          answer?: string | null
+          answered_at?: string | null
+          author_name?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          product_id?: string
+          question?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       product_reviews: {
         Row: {
           comment: string | null
