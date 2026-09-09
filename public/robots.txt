@@ -12,5 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /account
+Disallow: /checkout
+Disallow: /wishlist
+Disallow: /compare
+Disallow: /admin
 
 Sitemap: https://achuqe.com/sitemap.xml
