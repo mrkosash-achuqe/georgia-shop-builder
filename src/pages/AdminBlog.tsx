@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import {
   FileText, Package, Users as UsersIcon, ShoppingBag, Truck, MessageSquare,
   BarChart3, Tag, Loader2, Plus, Pencil, Trash2, Eye, EyeOff, XCircle, Upload, X,
-  Boxes } from "lucide-react";
+  Boxes, HelpCircle } from "lucide-react";
 
 type Post = {
   id: string;
@@ -174,6 +174,7 @@ const AdminBlog = () => {
           <Link to="/admin/reviews" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><MessageSquare className="h-4 w-4" /> მიმოხილვები</Link>
           <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px"><FileText className="h-4 w-4" /> ბლოგი</span>
           <Link to="/admin/inventory" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Boxes className="h-4 w-4" /> მარაგი</Link>
+          <Link to="/admin/questions" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><HelpCircle className="h-4 w-4" /> კითხვები</Link>
         </div>
 
         <div className="flex items-center justify-between mb-6">
