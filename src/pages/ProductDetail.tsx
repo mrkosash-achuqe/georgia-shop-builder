@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ProductReviews from "@/components/ProductReviews";
+import ProductQuestions from "@/components/ProductQuestions";
 import AiRecommendations from "@/components/AiRecommendations";
 import SEO from "@/components/SEO";
 import ShareButtons from "@/components/ShareButtons";
@@ -379,6 +380,8 @@ const ProductDetailContent = () => {
         <AiRecommendations productId={product.id} />
 
         <ProductReviews productId={product.id} />
+
+        <ProductQuestions productId={product.id} />
 
         <RecentlyViewed excludeId={product.id} />
       </main>
