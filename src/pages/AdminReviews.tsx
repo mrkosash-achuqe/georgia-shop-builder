@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Star, CheckCircle2, XCircle, Trash2, Package, Users as UsersIcon,
-  ShoppingBag, Truck, MessageSquare, AlertTriangle, BarChart3, Tag, Loader2, FileText , Boxes } from "lucide-react";
+  ShoppingBag, Truck, MessageSquare, AlertTriangle, BarChart3, Tag, Loader2, FileText , Boxes, HelpCircle } from "lucide-react";
 
 type ReviewRow = {
   id: string;
@@ -137,6 +137,7 @@ const AdminReviews = () => {
           <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px"><MessageSquare className="h-4 w-4" /> მიმოხილვები</span>
           <Link to="/admin/blog" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><FileText className="h-4 w-4" /> ბლოგი</Link>
           <Link to="/admin/inventory" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Boxes className="h-4 w-4" /> მარაგი</Link>
+          <Link to="/admin/questions" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><HelpCircle className="h-4 w-4" /> კითხვები</Link>
         </div>
 
         {/* Stats */}
