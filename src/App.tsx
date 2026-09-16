@@ -37,6 +37,7 @@ const AdminReviews = lazy(() => import("./pages/AdminReviews.tsx"));
 const AdminBlog = lazy(() => import("./pages/AdminBlog.tsx"));
 const AdminInventory = lazy(() => import("./pages/AdminInventory.tsx"));
 const AdminRequests = lazy(() => import("./pages/AdminRequests.tsx"));
+const AdminQuestions = lazy(() => import("./pages/AdminQuestions.tsx"));
 const Account = lazy(() => import("./pages/Account.tsx"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder.tsx"));
 
@@ -103,6 +104,7 @@ const App = () => (
                 <Route path="/admin/blog" element={<AdminBlog />} />
 <Route path="/admin/inventory" element={<AdminInventory />} />
                 <Route path="/admin/requests" element={<AdminRequests />} />
+                <Route path="/admin/questions" element={<AdminQuestions />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

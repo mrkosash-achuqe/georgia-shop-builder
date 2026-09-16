@@ -134,8 +134,12 @@ const AdminQuestions = () => {
         <nav className="mb-6 flex gap-2 overflow-x-auto border-b border-border" aria-label="ადმინის ნავიგაცია">
           <Link to="/admin/dashboard" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">დაშბორდი</Link>
           <Link to="/admin" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">პროდუქტები</Link>
+          <Link to="/admin/users" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">მომხმარებლები</Link>
           <Link to="/admin/orders" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">შეკვეთები</Link>
+          <Link to="/admin/requests" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">მოთხოვნები</Link>
           <Link to="/admin/reviews" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">მიმოხილვები</Link>
+          <Link to="/admin/blog" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">ბლოგი</Link>
+          <Link to="/admin/inventory" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">მარაგი</Link>
           <span className="-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 border-primary px-4 py-2.5 text-sm font-semibold text-primary"><HelpCircle className="h-4 w-4" /> კითხვები</span>
         </nav>
 
