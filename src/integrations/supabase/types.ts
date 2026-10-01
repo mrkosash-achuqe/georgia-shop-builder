@@ -113,6 +113,42 @@ export type Database = {
         }
         Relationships: []
       }
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name_en: string
+          name_ka: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name_en: string
+          name_ka: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name_en?: string
+          name_ka?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       loyalty_transactions: {
         Row: {
           created_at: string
@@ -425,6 +461,7 @@ export type Database = {
           sku: string | null
           stock_quantity: number
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           category?: string
@@ -449,6 +486,7 @@ export type Database = {
           sku?: string | null
           stock_quantity?: number
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           category?: string
@@ -473,6 +511,7 @@ export type Database = {
           sku?: string | null
           stock_quantity?: number
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -589,6 +628,24 @@ export type Database = {
           name_en?: string
           name_ka?: string
           sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          data: Json
+          id: number
+          updated_at: string
+        }
+        Insert: {
+          data?: Json
+          id?: number
+          updated_at?: string
+        }
+        Update: {
+          data?: Json
+          id?: number
           updated_at?: string
         }
         Relationships: []
