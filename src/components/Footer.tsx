@@ -1,9 +1,14 @@
 import { Phone, Mail, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
 
 const Footer = () => {
   const { t, lang } = useLanguage();
+  const { settings } = useSiteSettings();
+  const c = settings.contact || {};
+  const storeName = (lang === "ka" ? settings.storeNameKa : settings.storeNameEn) || "აჩუქე";
+  const socials = (["facebook", "instagram", "tiktok", "youtube"] as const).filter((k) => !settings.contact || c[k]);
 
   return (
     <footer>
@@ -13,7 +18,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {/* About */}
             <div className="text-center sm:text-left">
-              <h3 className="text-xl font-bold text-foreground mb-3 tracking-tight">აჩუქე</h3>
+              <h3 className="text-xl font-bold text-foreground mb-3 tracking-tight">{storeName}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{t.footer.aboutDesc}</p>
             </div>
 
@@ -57,17 +62,19 @@ const Footer = () => {
             <div className="text-center sm:text-left">
               <h3 className="text-base font-semibold text-foreground mb-4">{t.footer.contact}</h3>
               <div className="space-y-3 text-sm text-muted-foreground">
-                <p className="flex items-center gap-2 justify-center sm:justify-start"><Phone className="h-4 w-4 text-primary shrink-0" />{t.footer.phone}</p>
-                <p className="flex items-center gap-2 justify-center sm:justify-start"><Mail className="h-4 w-4 text-primary shrink-0" />{t.footer.email}</p>
-                <p className="flex items-center gap-2 justify-center sm:justify-start"><MapPin className="h-4 w-4 text-primary shrink-0" />{t.contact.addressValue}</p>
+                <p className="flex items-center gap-2 justify-center sm:justify-start"><Phone className="h-4 w-4 text-primary shrink-0" />{c.phone || t.footer.phone}</p>
+                <p className="flex items-center gap-2 justify-center sm:justify-start"><Mail className="h-4 w-4 text-primary shrink-0" />{c.email || t.footer.email}</p>
+                <p className="flex items-center gap-2 justify-center sm:justify-start"><MapPin className="h-4 w-4 text-primary shrink-0" />{(lang === "ka" ? c.addressKa : c.addressEn) || t.contact.addressValue}</p>
               </div>
 
               {/* Social */}
               <div className="flex items-center gap-3 mt-5 justify-center sm:justify-start">
-                {["facebook", "instagram", "tiktok", "youtube"].map((social) => (
+                {socials.map((social) => (
                   <a
                     key={social}
-                    href="#"
+                    href={c[social] || "#"}
+                    target={c[social] ? "_blank" : undefined}
+                    rel="noopener noreferrer"
                     className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:scale-110 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
                     aria-label={social}
                   >

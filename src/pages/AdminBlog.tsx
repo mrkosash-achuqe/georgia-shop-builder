@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import {
   FileText, Package, Users as UsersIcon, ShoppingBag, Truck, MessageSquare,
   BarChart3, Tag, Loader2, Plus, Pencil, Trash2, Eye, EyeOff, XCircle, Upload, X,
-  Boxes, HelpCircle } from "lucide-react";
+  Boxes, HelpCircle, Tags, Palette } from "lucide-react";
 
 type Post = {
   id: string;
@@ -175,6 +175,8 @@ const AdminBlog = () => {
           <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px"><FileText className="h-4 w-4" /> ბლოგი</span>
           <Link to="/admin/inventory" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Boxes className="h-4 w-4" /> მარაგი</Link>
           <Link to="/admin/questions" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><HelpCircle className="h-4 w-4" /> კითხვები</Link>
+          <Link to="/admin/categories" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Tags className="h-4 w-4" /> კატეგორიები</Link>
+          <Link to="/admin/settings" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Palette className="h-4 w-4" /> დიზაინი</Link>
         </div>
 
         <div className="flex items-center justify-between mb-6">

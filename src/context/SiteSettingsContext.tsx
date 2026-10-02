@@ -41,8 +41,7 @@ export type Category = {
 export const FONT_PRESETS: Record<string, { label: string; family: string; url: string }> = {
   "noto-georgian": { label: "Noto Sans Georgian", family: "'Noto Sans Georgian', sans-serif", url: "https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" },
   "noto-serif-georgian": { label: "Noto Serif Georgian", family: "'Noto Serif Georgian', serif", url: "https://fonts.googleapis.com/css2?family=Noto+Serif+Georgian:wght@400;500;600;700&display=swap" },
-  "firago": { label: "FiraGO", family: "'FiraGO', 'Noto Sans Georgian', sans-serif", url: "https://cdn.jsdelivr.net/npm/firago@1.0.0/css/firago.min.css" },
-  "bpg-arial": { label: "BPG Arial", family: "'BPG Arial', 'Noto Sans Georgian', sans-serif", url: "https://cdn.web-fonts.ge/fonts/bpg-arial/css/bpg-arial.min.css" },
+  "system": { label: "System (Sylfaen / Arial)", family: "Sylfaen, Arial, sans-serif", url: "" },
 };
 
 export const DEFAULT_COLORS = { primary: "#ec6f1c", background: "#f6f2ec", foreground: "#2e261f", card: "#fbf9f6" };
@@ -108,13 +107,15 @@ export const SiteSettingsProvider = ({ children }: { children: ReactNode }) => {
     const font = settings.font && FONT_PRESETS[settings.font];
     if (font) {
       let link = document.getElementById("site-font") as HTMLLinkElement | null;
-      if (!link) {
-        link = document.createElement("link");
-        link.id = "site-font";
-        link.rel = "stylesheet";
-        document.head.appendChild(link);
-      }
-      link.href = font.url;
+      if (font.url) {
+        if (!link) {
+          link = document.createElement("link");
+          link.id = "site-font";
+          link.rel = "stylesheet";
+          document.head.appendChild(link);
+        }
+        link.href = font.url;
+      } else link?.remove();
       document.body.style.fontFamily = font.family;
     } else {
       document.body.style.removeProperty("font-family");
