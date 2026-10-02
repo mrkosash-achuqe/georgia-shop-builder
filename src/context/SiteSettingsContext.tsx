@@ -107,13 +107,15 @@ export const SiteSettingsProvider = ({ children }: { children: ReactNode }) => {
     const font = settings.font && FONT_PRESETS[settings.font];
     if (font) {
       let link = document.getElementById("site-font") as HTMLLinkElement | null;
-      if (!link) {
-        link = document.createElement("link");
-        link.id = "site-font";
-        link.rel = "stylesheet";
-        document.head.appendChild(link);
-      }
-      link.href = font.url;
+      if (font.url) {
+        if (!link) {
+          link = document.createElement("link");
+          link.id = "site-font";
+          link.rel = "stylesheet";
+          document.head.appendChild(link);
+        }
+        link.href = font.url;
+      } else link?.remove();
       document.body.style.fontFamily = font.family;
     } else {
       document.body.style.removeProperty("font-family");
