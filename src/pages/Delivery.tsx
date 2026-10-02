@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import SEO from "@/components/SEO";
+import CustomPageText from "@/components/CustomPageText";
 
 const Delivery = () => {
   const { t } = useLanguage();
@@ -24,6 +25,7 @@ const Delivery = () => {
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
           <ChevronLeft className="h-4 w-4" />{t.productDetail.backToHome}
         </Link>
+        <CustomPageText page="delivery" />
         <h1 className="text-3xl font-bold text-foreground mb-2">{dt.title}</h1>
         <p className="text-muted-foreground mb-8">{dt.subtitle}</p>
         <div className="space-y-4">

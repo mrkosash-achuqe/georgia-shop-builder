@@ -8,6 +8,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
+import { useSiteSettings, useActiveCategories } from "@/context/SiteSettingsContext";
 
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
@@ -16,6 +17,11 @@ const Header = () => {
   const { items: wishlistItems } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { settings } = useSiteSettings();
+  const activeCats = useActiveCategories();
+  const storeName = (lang === "ka" ? settings.storeNameKa : settings.storeNameEn) || "აჩუქე";
+  const ann = settings.announcement;
+  const annText = ann?.enabled ? (lang === "ka" ? ann.textKa : ann.textEn) : "";
 
   useEffect(() => {
     if (!user) { setIsAdmin(false); return; }
@@ -36,6 +42,11 @@ const Header = () => {
   return (
     <>
       <header className="bg-card border-b border-border sticky top-0 z-30">
+        {annText && (
+          <div className="bg-primary text-primary-foreground text-center text-xs sm:text-sm py-1.5 px-4">
+            {ann?.link ? <Link to={ann.link} className="hover:underline">{annText}</Link> : annText}
+          </div>
+        )}
         {/* Top bar */}
         <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
           {/* Hamburger (mobile) */}
@@ -49,8 +60,12 @@ const Header = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">აჩუქე</span>
-            <span className="text-xs text-muted-foreground hidden sm:inline">achuqe.com</span>
+            {settings.logoUrl ? (
+              <img src={settings.logoUrl} alt={storeName} className="h-8 sm:h-10 max-w-[160px] object-contain" />
+            ) : (
+              <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">{storeName}</span>
+            )}
+            <span className="text-xs text-muted-foreground hidden sm:inline">{settings.tagline || "achuqe.com"}</span>
           </Link>
 
           {/* Search (desktop) */}
@@ -172,7 +187,7 @@ const Header = () => {
           <div className="fixed top-0 left-0 h-full w-72 bg-card border-r border-border shadow-2xl z-50 flex flex-col animate-in slide-in-from-left duration-300">
             {/* Menu header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <span className="text-lg font-bold text-foreground">აჩუქე</span>
+              <span className="text-lg font-bold text-foreground">{storeName}</span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
@@ -282,16 +297,16 @@ const Header = () => {
                   {t.categories.title}
                 </h3>
                 <ul className="space-y-1">
-                  {t.categories.items.map((cat, i) => (
-                    <li key={i}>
-                      <a
-                        href="#"
+                  {activeCats.map((c) => (
+                    <li key={c.id}>
+                      <Link
+                        to={`/?category=${encodeURIComponent(c.slug)}#products`}
                         onClick={() => setMobileMenuOpen(false)}
                         className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-foreground hover:bg-secondary hover:text-primary transition-colors"
                       >
-                        {cat}
+                        {lang === "ka" ? c.name_ka : c.name_en}
                         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { printInvoice } from "@/lib/invoice";
 import { Package, Users as UsersIcon, Truck, ShoppingBag, ArrowLeft,
-  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText, Boxes, Printer, RotateCcw, HelpCircle } from "lucide-react";
+  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText, Boxes, Printer, RotateCcw, HelpCircle, Tags, Palette } from "lucide-react";
 
 type Order = {
   id: string;
@@ -144,6 +144,8 @@ const AdminOrders = () => {
           <Link to="/admin/blog" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><FileText className="h-4 w-4" /> ბლოგი</Link>
           <Link to="/admin/inventory" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Boxes className="h-4 w-4" /> მარაგი</Link>
           <Link to="/admin/questions" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><HelpCircle className="h-4 w-4" /> კითხვები</Link>
+          <Link to="/admin/categories" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Tags className="h-4 w-4" /> კატეგორიები</Link>
+          <Link to="/admin/settings" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 whitespace-nowrap"><Palette className="h-4 w-4" /> დიზაინი</Link>
         </div>
 
         {/* Stats */}

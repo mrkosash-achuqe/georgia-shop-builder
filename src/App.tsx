@@ -10,6 +10,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { CompareProvider } from "@/context/CompareContext";
+import { SiteSettingsProvider } from "@/context/SiteSettingsContext";
 import AuthModal from "@/components/AuthModal";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ConsentBanner from "@/components/ConsentBanner";
@@ -38,6 +39,8 @@ const AdminBlog = lazy(() => import("./pages/AdminBlog.tsx"));
 const AdminInventory = lazy(() => import("./pages/AdminInventory.tsx"));
 const AdminRequests = lazy(() => import("./pages/AdminRequests.tsx"));
 const AdminQuestions = lazy(() => import("./pages/AdminQuestions.tsx"));
+const AdminCategories = lazy(() => import("./pages/AdminCategories.tsx"));
+const AdminSettings = lazy(() => import("./pages/AdminSettings.tsx"));
 const Account = lazy(() => import("./pages/Account.tsx"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder.tsx"));
 
@@ -69,6 +72,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <LanguageProvider>
+      <SiteSettingsProvider>
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
@@ -105,6 +109,8 @@ const App = () => (
 <Route path="/admin/inventory" element={<AdminInventory />} />
                 <Route path="/admin/requests" element={<AdminRequests />} />
                 <Route path="/admin/questions" element={<AdminQuestions />} />
+                <Route path="/admin/categories" element={<AdminCategories />} />
+                <Route path="/admin/settings" element={<AdminSettings />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
@@ -114,6 +120,7 @@ const App = () => (
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
+      </SiteSettingsProvider>
       </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>

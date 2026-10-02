@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Package, Users as UsersIcon, ShoppingBag, Truck, BarChart3, MessageSquare,
-  FileText, Boxes, AlertTriangle, Loader2, Save, Search, HelpCircle } from "lucide-react";
+  FileText, Boxes, AlertTriangle, Loader2, Save, Search, HelpCircle, Tags, Palette } from "lucide-react";
 
 type Row = {
   id: string;
@@ -119,6 +119,8 @@ const AdminInventory = () => {
           <Link to="/admin/blog" className={tab}><FileText className="h-4 w-4" /> ბლოგი</Link>
           <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px"><Boxes className="h-4 w-4" /> მარაგი</span>
           <Link to="/admin/questions" className={tab}><HelpCircle className="h-4 w-4" /> კითხვები</Link>
+          <Link to="/admin/categories" className={tab}><Tags className="h-4 w-4" /> კატეგორიები</Link>
+          <Link to="/admin/settings" className={tab}><Palette className="h-4 w-4" /> დიზაინი</Link>
         </div>
 
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">

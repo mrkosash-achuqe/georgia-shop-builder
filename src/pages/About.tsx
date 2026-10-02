@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import SEO from "@/components/SEO";
+import CustomPageText from "@/components/CustomPageText";
 
 const About = () => {
   const { t } = useLanguage();
@@ -26,6 +27,7 @@ const About = () => {
           <ChevronLeft className="h-4 w-4" />
           {t.productDetail.backToHome}
         </Link>
+        <CustomPageText page="about" />
         <div className="bg-card rounded-2xl border border-border p-8 md:p-12 mb-8 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{at.heroTitle}</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed text-lg">{at.heroDesc}</p>
