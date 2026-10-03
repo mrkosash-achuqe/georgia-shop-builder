@@ -25,6 +25,7 @@ export interface Product {
   personalizationEnabled?: boolean;
   personalizationNote?: string;
   sku?: string | null;
+  videoUrl?: string | null;
 
 }
 

@@ -6,6 +6,7 @@ import SEO from "@/components/SEO";
 import { useCompare } from "@/context/CompareContext";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
 
 const CATEGORY_LABELS: Record<string, { ka: string; en: string }> = {
   clocks: { ka: "საათები", en: "Clocks" },
@@ -20,6 +21,7 @@ const Compare = () => {
   const { addToCart } = useCart();
   const { lang } = useLanguage();
   const ka = lang === "ka";
+  const cats = useSiteSettings().categories;
   const currency = ka ? "₾" : "GEL";
 
   const rows: { label: string; render: (p: (typeof items)[number]) => React.ReactNode; highlightDiff?: (p: (typeof items)[number]) => string | number }[] = [
@@ -39,7 +41,7 @@ const Compare = () => {
     },
     {
       label: ka ? "კატეგორია" : "Category",
-      render: (p) => CATEGORY_LABELS[p.category]?.[ka ? "ka" : "en"] || p.category,
+      render: (p) => { const c = cats.find((x) => x.slug === p.category); return c ? (ka ? c.name_ka : c.name_en) : CATEGORY_LABELS[p.category]?.[ka ? "ka" : "en"] || p.category; },
     },
     { label: ka ? "მასალა" : "Material", render: (p) => p.material },
     { label: ka ? "ზომები" : "Dimensions", render: (p) => p.dimensions },
