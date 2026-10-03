@@ -140,6 +140,8 @@ const AdminQuestions = () => {
           <Link to="/admin/reviews" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">მიმოხილვები</Link>
           <Link to="/admin/blog" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">ბლოგი</Link>
           <Link to="/admin/inventory" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">მარაგი</Link>
+          <Link to="/admin/categories" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">კატეგორიები</Link>
+          <Link to="/admin/settings" className="whitespace-nowrap px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground">დიზაინი</Link>
           <span className="-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 border-primary px-4 py-2.5 text-sm font-semibold text-primary"><HelpCircle className="h-4 w-4" /> კითხვები</span>
         </nav>
 

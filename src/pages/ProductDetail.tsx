@@ -22,6 +22,8 @@ import { trackViewItem } from "@/lib/analytics";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { pushRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import { productSku } from "@/lib/sku";
+import { youtubeId } from "@/context/SiteSettingsContext";
+import { PlayCircle } from "lucide-react";
 
 const mapDbProduct = (row: any): Product => ({
   id: row.id,
@@ -41,6 +43,7 @@ const mapDbProduct = (row: any): Product => ({
   personalizationEnabled: !!row.personalization_enabled,
   personalizationNote: row.personalization_note || "",
   sku: row.sku || null,
+  videoUrl: row.video_url || null,
 });
 
 type ProductSeo = {
@@ -136,6 +139,7 @@ const ProductDetailContent = () => {
   }
 
   const name = lang === "ka" ? product.nameKa : product.nameEn;
+  const videoId = youtubeId(product.videoUrl);
   const desc = lang === "ka" ? product.descKa : product.descEn;
   const tp = t.productDetail;
   const seo = product as Product & ProductSeo;
@@ -219,6 +223,17 @@ const ProductDetailContent = () => {
           {/* Gallery */}
           <div className="lg:w-1/2">
             <div className="bg-card rounded-2xl border border-border overflow-hidden mb-3">
+              {videoId && selectedImage === product.images.length ? (
+                <div className="aspect-square w-full bg-foreground">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
+                    title={name}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
               <button
                 type="button"
                 onClick={() => { setZoomLevel(1); setZoomPos({ x: 50, y: 50 }); setZoomOpen(true); }}
@@ -230,6 +245,7 @@ const ProductDetailContent = () => {
                   <ZoomIn className="h-3.5 w-3.5" /> {tp.zoomHint}
                 </span>
               </button>
+              )}
             </div>
             <div className="flex gap-3">
               {product.images.map((img, i) => (
@@ -237,6 +253,16 @@ const ProductDetailContent = () => {
                   <img src={img} alt={`${name} ${i + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
+              {videoId && (
+                <button
+                  onClick={() => setSelectedImage(product.images.length)}
+                  aria-label={lang === "ka" ? "ვიდეო" : "Video"}
+                  className={`relative w-20 h-20 rounded-xl border-2 overflow-hidden transition-all ${selectedImage === product.images.length ? "border-primary shadow-md" : "border-border hover:border-primary/50"}`}
+                >
+                  <img src={`https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`} alt="" className="w-full h-full object-cover" />
+                  <PlayCircle className="absolute inset-0 m-auto h-8 w-8 text-primary-foreground drop-shadow" />
+                </button>
+              )}
             </div>
           </div>
 

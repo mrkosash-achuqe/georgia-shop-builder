@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -33,6 +34,7 @@ type DBProduct = {
   seo_title?: string | null;
   seo_description?: string | null;
   og_image?: string | null;
+  video_url?: string | null;
 };
 
 const emptyProduct = {
@@ -51,23 +53,14 @@ const emptyProduct = {
   seo_title: "",
   seo_description: "",
   og_image: "",
+  video_url: "",
 };
 
-const categoryLabels: Record<string, { ka: string; en: string }> = {
-  "cutting-board-sets": { ka: "შამფურების ნაკრები", en: "Cutting Board Sets" },
-  clocks: { ka: "საათი", en: "Clocks" },
-  "candle-holders": { ka: "სანათი", en: "Candle Holders" },
-  "gift-boxes": { ka: "სასაჩუქრე ყუთი", en: "Gift Boxes" },
-  "photo-frames": { ka: "ფოტო ჩარჩო", en: "Photo Frames" },
-  kids: { ka: "საბავშვო", en: "Kids" },
-  "cutting-boards": { ka: "შამფურები", en: "Cutting Boards" },
-  corporate: { ka: "კორპორატიული", en: "Corporate" },
-  other: { ka: "სხვადასხვა", en: "Other" },
-};
-
-const categories = Object.keys(categoryLabels);
 
 const Admin = () => {
+  const { categories: catRows } = useSiteSettings();
+  const categories = catRows.map((c) => c.slug);
+  const categoryLabels: Record<string, { ka: string; en: string }> = Object.fromEntries(catRows.map((c) => [c.slug, { ka: c.name_ka, en: c.name_en }]));
   const { user, loading: authLoading } = useAuth();
   const { lang } = useLanguage();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -180,6 +173,7 @@ const Admin = () => {
       seo_title: editingProduct.seo_title || null,
       seo_description: editingProduct.seo_description || null,
       og_image: editingProduct.og_image || null,
+      video_url: editingProduct.video_url?.trim() || null,
     };
 
     if (isNew) {
@@ -621,6 +615,18 @@ const Admin = () => {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* YouTube video */}
+            <div className="bg-card rounded-xl border border-border p-4">
+              <label className="block text-sm font-medium text-foreground mb-2">YouTube ვიდეო (არასავალდებულო)</label>
+              <input
+                value={editingProduct.video_url || ""}
+                onChange={e => setEditingProduct({ ...editingProduct, video_url: e.target.value })}
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                placeholder="https://www.youtube.com/watch?v=..."
+              />
+              <p className="text-xs text-muted-foreground mt-1">ვიდეო გამოჩნდება პროდუქტის ფოტოების გალერეაში.</p>
             </div>
 
             {/* Personalization (optional) */}
