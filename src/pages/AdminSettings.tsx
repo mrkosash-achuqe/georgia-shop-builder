@@ -76,7 +76,7 @@ const AdminSettings = () => {
             <TabsTrigger value="pages">გვერდები</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="design" className="bg-card border border-border rounded-xl p-4 space-y-5">
+          <TabsContent value="design" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-5">
             <div className="grid sm:grid-cols-2 gap-3">
               {Field({ label: "მაღაზიის სახელი (ქართ.)", value: s.storeNameKa, onChange: (v) => set("storeNameKa", v), placeholder: "აჩუქე" })}
               {Field({ label: "Store name (English)", value: s.storeNameEn, onChange: (v) => set("storeNameEn", v), placeholder: "achuqe" })}
@@ -116,7 +116,7 @@ const AdminSettings = () => {
             <p className="text-xs text-muted-foreground">მინიშნება: ფერები და შრიფტი მთელ საიტზე „შენახვის“ შემდეგ შეიცვლება.</p>
           </TabsContent>
 
-          <TabsContent value="banner" className="bg-card border border-border rounded-xl p-4 space-y-4">
+          <TabsContent value="banner" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-4">
             <div className="flex items-center gap-3">
               {s.banner?.imageUrl && <img src={s.banner.imageUrl} alt="" className="h-20 w-36 object-cover rounded-md border border-border" />}
               <label className="inline-flex items-center gap-2 text-sm cursor-pointer rounded-md border border-border px-3 py-2 hover:bg-secondary">
@@ -137,7 +137,7 @@ const AdminSettings = () => {
             <p className="text-xs text-muted-foreground">ცარიელი ველები ძველ ტექსტს დატოვებს.</p>
           </TabsContent>
 
-          <TabsContent value="contact" className="bg-card border border-border rounded-xl p-4 grid sm:grid-cols-2 gap-3">
+          <TabsContent value="contact" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 grid sm:grid-cols-2 gap-3">
             {Field({ label: "ტელეფონი", value: s.contact?.phone, onChange: (v) => setIn("contact", "phone", v) })}
             {Field({ label: "ელ-ფოსტა", value: s.contact?.email, onChange: (v) => setIn("contact", "email", v) })}
             {Field({ label: "მისამართი (ქართ.)", value: s.contact?.addressKa, onChange: (v) => setIn("contact", "addressKa", v) })}
@@ -148,7 +148,7 @@ const AdminSettings = () => {
             {Field({ label: "YouTube ბმული", value: s.contact?.youtube, onChange: (v) => setIn("contact", "youtube", v) })}
           </TabsContent>
 
-          <TabsContent value="announce" className="bg-card border border-border rounded-xl p-4 space-y-3">
+          <TabsContent value="announce" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-3">
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={!!s.announcement?.enabled} onChange={(e) => setIn("announcement", "enabled", e.target.checked)} /> ზოლის ჩართვა საიტის თავში
             </label>
@@ -157,7 +157,7 @@ const AdminSettings = () => {
             {Field({ label: "ბმული (არასავალდებულო)", value: s.announcement?.link, onChange: (v) => setIn("announcement", "link", v), placeholder: "/?category=clocks#products" })}
           </TabsContent>
 
-          <TabsContent value="pages" className="bg-card border border-border rounded-xl p-4 space-y-3">
+          <TabsContent value="pages" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-3">
             <p className="text-xs text-muted-foreground">აქ დაწერილი ტექსტი გამოჩნდება შესაბამისი გვერდის თავში. ცარიელის შემთხვევაში დარჩება არსებული ტექსტი.</p>
             {Field({ label: "ჩვენ შესახებ (ქართ.)", value: s.pages?.aboutKa, onChange: (v) => setIn("pages", "aboutKa", v), area: true })}
             {Field({ label: "About us (EN)", value: s.pages?.aboutEn, onChange: (v) => setIn("pages", "aboutEn", v), area: true })}
