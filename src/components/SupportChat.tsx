@@ -2,12 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send, Loader2, Trash2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const SupportChat = () => {
   const { lang, t } = useLanguage();
   const c = t.chat;
+  const { settings } = useSiteSettings();
+  const ai = settings.aiChat;
+  const greeting = (lang === "en" ? ai?.greetingEn : ai?.greetingKa)?.trim() || c.greeting;
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -16,7 +20,7 @@ const SupportChat = () => {
 
   useEffect(() => {
     if (open && messages.length === 0) {
-      setMessages([{ role: "assistant", content: c.greeting }]);
+      setMessages([{ role: "assistant", content: greeting }]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -48,6 +52,8 @@ const SupportChat = () => {
     }
   };
 
+  if (ai?.enabled === false) return null;
+
   return (
     <>
       {/* Floating button */}
@@ -72,7 +78,7 @@ const SupportChat = () => {
               <div className="text-xs opacity-80">{c.subtitle}</div>
             </div>
             <button
-              onClick={() => setMessages([{ role: "assistant", content: c.greeting }])}
+              onClick={() => setMessages([{ role: "assistant", content: greeting }])}
               aria-label={c.clear}
               className="p-1.5 rounded-md hover:bg-primary-foreground/10"
             >
