@@ -3,6 +3,7 @@ import { ImagePlus, Loader2, RotateCcw, Save } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdminExtraNav from "@/components/AdminNav";
+import AdminAiSettings from "@/components/AdminAiSettings";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -19,16 +20,31 @@ const AdminSettings = () => {
   const [s, setS] = useState<SiteSettings>({});
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [botLoading, setBotLoading] = useState(true);
+  const [botError, setBotError] = useState("");
 
-  useEffect(() => setS(settings), [settings]);
+  useEffect(() => {
+    if (!isAdmin) return;
+    let active = true;
+    setBotLoading(true);
+    supabase.from("bot_settings").select("data").eq("id", 1).maybeSingle().then(({ data, error }) => {
+      if (!active) return;
+      setBotError(error?.message || "");
+      if (!error) setS({ ...settings, aiChat: { ...settings.aiChat, ...(data?.data as object || {}) } });
+      setBotLoading(false);
+    });
+    return () => { active = false; };
+  }, [isAdmin, settings]);
 
   const set = <K extends keyof SiteSettings>(k: K, v: SiteSettings[K]) => setS((p) => ({ ...p, [k]: v }));
   const setIn = <K extends "colors" | "banner" | "contact" | "announcement" | "pages" | "aiChat">(k: K, field: string, v: unknown) =>
     setS((p) => ({ ...p, [k]: { ...(p[k] as object || {}), [field]: v } }));
 
   const save = async () => {
+    if (botLoading || botError) return;
+    if (s.aiChat?.faqs?.some(f => !f.question.trim() || !f.answer.trim())) return toast.error("ყველა კითხვას დაუმატეთ პასუხი ან წაშალეთ ცარიელი ჩანაწერი");
     setSaving(true);
-    const { error } = await supabase.from("site_settings").upsert({ id: 1, data: s as never });
+    const { error } = await supabase.rpc("save_site_settings", { _data: s as never });
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success("ცვლილებები შენახულია და საიტზე გამოჩნდა");
@@ -64,7 +80,7 @@ const AdminSettings = () => {
         <AdminExtraNav />
         <div className="flex items-center justify-between gap-3 mb-4">
           <h1 className="text-2xl font-bold text-foreground">დიზაინი და პარამეტრები</h1>
-          <Button onClick={save} disabled={saving || uploading}>{saving ? <Loader2 className="animate-spin" /> : <Save />} შენახვა</Button>
+          <Button onClick={save} disabled={saving || uploading || botLoading || !!botError}>{saving ? <Loader2 className="animate-spin" /> : <Save />} შენახვა</Button>
         </div>
 
         <Tabs defaultValue="design">
@@ -168,14 +184,8 @@ const AdminSettings = () => {
             {Field({ label: "Returns (EN)", value: s.pages?.returnsEn, onChange: (v) => setIn("pages", "returnsEn", v), area: true })}
           </TabsContent>
 
-          <TabsContent value="ai" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-3">
-            <label className="flex items-center gap-2 text-sm font-medium">
-              <input type="checkbox" checked={s.aiChat?.enabled !== false} onChange={(e) => setIn("aiChat", "enabled", e.target.checked)} /> AI ასისტენტის ჩართვა საიტზე
-            </label>
-            {Field({ label: "მისალმება (ქართ.)", value: s.aiChat?.greetingKa, onChange: (v) => setIn("aiChat", "greetingKa", v), placeholder: "გამარჯობა! რით შემიძლია დაგეხმაროთ?" })}
-            {Field({ label: "Greeting (EN)", value: s.aiChat?.greetingEn, onChange: (v) => setIn("aiChat", "greetingEn", v), placeholder: "Hi! How can I help you?" })}
-            {Field({ label: "ინსტრუქცია ასისტენტისთვის (როგორ უპასუხოს მომხმარებლებს)", value: s.aiChat?.systemPrompt, onChange: (v) => setIn("aiChat", "systemPrompt", v), area: true, placeholder: "მაგ.: იყავი თბილი და მეგობრული, ყოველთვის შესთავაზე პერსონალიზაცია, ფასდაკლებებზე ნუ დაჰპირდები..." })}
-            <p className="text-xs text-muted-foreground">ცარიელი ველები ნიშნავს სტანდარტულ ტექსტს. მაღაზიის ძირითადი წესები და პროდუქტების სია ასისტენტს ავტომატურად ეცოდინება.</p>
+          <TabsContent value="ai" className="data-[state=inactive]:hidden">
+            {botError ? <p role="alert" className="text-destructive">{botError}</p> : botLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <AdminAiSettings value={s.aiChat || {}} onChange={v => set("aiChat", v)} />}
           </TabsContent>
         </Tabs>
       </main>

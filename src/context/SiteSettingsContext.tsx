@@ -2,6 +2,17 @@ import { createContext, ReactNode, useContext, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type AiChatSettings = {
+  enabled?: boolean; assistantName?: string; titleKa?: string; titleEn?: string;
+  greetingKa?: string; greetingEn?: string; systemPrompt?: string;
+  tone?: "friendly" | "formal" | "enthusiastic";
+  responseLength?: "short" | "balanced" | "detailed";
+  businessInfo?: string; restrictToStock?: boolean;
+  restrictionsEnabled?: boolean; restrictions?: string;
+  faqs?: { question: string; answer: string }[];
+  suggestions?: { ka: string; en: string }[];
+};
+
 export type SiteSettings = {
   storeNameKa?: string;
   storeNameEn?: string;
@@ -21,7 +32,7 @@ export type SiteSettings = {
     facebook?: string; instagram?: string; tiktok?: string; youtube?: string;
   };
   announcement?: { enabled?: boolean; textKa?: string; textEn?: string; link?: string };
-  aiChat?: { enabled?: boolean; greetingKa?: string; greetingEn?: string; systemPrompt?: string };
+  aiChat?: AiChatSettings;
   pages?: {
     aboutKa?: string; aboutEn?: string;
     deliveryKa?: string; deliveryEn?: string;
@@ -78,9 +89,11 @@ export const SiteSettingsProvider = ({ children }: { children: ReactNode }) => {
   const settingsQ = useQuery({
     queryKey: ["site_settings"],
     queryFn: async () => {
-      const { data } = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
+      const { data, error } = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
+      if (error) throw error;
       return (data?.data || {}) as SiteSettings;
     },
+    refetchInterval: 30000,
   });
   const catsQ = useQuery({
     queryKey: ["categories"],
