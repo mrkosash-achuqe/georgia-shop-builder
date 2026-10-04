@@ -113,6 +113,30 @@ export type Database = {
         }
         Relationships: []
       }
+      bot_settings: {
+        Row: {
+          access_denied: Json | null
+          created_at: string
+          data: Json
+          id: number
+          updated_at: string
+        }
+        Insert: {
+          access_denied?: Json | null
+          created_at?: string
+          data?: Json
+          id?: number
+          updated_at?: string
+        }
+        Update: {
+          access_denied?: Json | null
+          created_at?: string
+          data?: Json
+          id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -718,6 +742,7 @@ export type Database = {
         Args: { _order_id: string; _points: number }
         Returns: number
       }
+      save_site_settings: { Args: { _data: Json }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "user"
