@@ -23,7 +23,7 @@ const AdminSettings = () => {
   useEffect(() => setS(settings), [settings]);
 
   const set = <K extends keyof SiteSettings>(k: K, v: SiteSettings[K]) => setS((p) => ({ ...p, [k]: v }));
-  const setIn = <K extends "colors" | "banner" | "contact" | "announcement" | "pages">(k: K, field: string, v: unknown) =>
+  const setIn = <K extends "colors" | "banner" | "contact" | "announcement" | "pages" | "aiChat">(k: K, field: string, v: unknown) =>
     setS((p) => ({ ...p, [k]: { ...(p[k] as object || {}), [field]: v } }));
 
   const save = async () => {
@@ -74,6 +74,7 @@ const AdminSettings = () => {
             <TabsTrigger value="contact">კონტაქტი</TabsTrigger>
             <TabsTrigger value="announce">განცხადება</TabsTrigger>
             <TabsTrigger value="pages">გვერდები</TabsTrigger>
+            <TabsTrigger value="ai">AI კონსულტანტი</TabsTrigger>
           </TabsList>
 
           <TabsContent value="design" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-5">
@@ -165,6 +166,16 @@ const AdminSettings = () => {
             {Field({ label: "Delivery (EN)", value: s.pages?.deliveryEn, onChange: (v) => setIn("pages", "deliveryEn", v), area: true })}
             {Field({ label: "დაბრუნება (ქართ.)", value: s.pages?.returnsKa, onChange: (v) => setIn("pages", "returnsKa", v), area: true })}
             {Field({ label: "Returns (EN)", value: s.pages?.returnsEn, onChange: (v) => setIn("pages", "returnsEn", v), area: true })}
+          </TabsContent>
+
+          <TabsContent value="ai" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-3">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <input type="checkbox" checked={s.aiChat?.enabled !== false} onChange={(e) => setIn("aiChat", "enabled", e.target.checked)} /> AI ასისტენტის ჩართვა საიტზე
+            </label>
+            {Field({ label: "მისალმება (ქართ.)", value: s.aiChat?.greetingKa, onChange: (v) => setIn("aiChat", "greetingKa", v), placeholder: "გამარჯობა! რით შემიძლია დაგეხმაროთ?" })}
+            {Field({ label: "Greeting (EN)", value: s.aiChat?.greetingEn, onChange: (v) => setIn("aiChat", "greetingEn", v), placeholder: "Hi! How can I help you?" })}
+            {Field({ label: "ინსტრუქცია ასისტენტისთვის (როგორ უპასუხოს მომხმარებლებს)", value: s.aiChat?.systemPrompt, onChange: (v) => setIn("aiChat", "systemPrompt", v), area: true, placeholder: "მაგ.: იყავი თბილი და მეგობრული, ყოველთვის შესთავაზე პერსონალიზაცია, ფასდაკლებებზე ნუ დაჰპირდები..." })}
+            <p className="text-xs text-muted-foreground">ცარიელი ველები ნიშნავს სტანდარტულ ტექსტს. მაღაზიის ძირითადი წესები და პროდუქტების სია ასისტენტს ავტომატურად ეცოდინება.</p>
           </TabsContent>
         </Tabs>
       </main>

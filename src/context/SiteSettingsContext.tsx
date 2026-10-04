@@ -21,6 +21,7 @@ export type SiteSettings = {
     facebook?: string; instagram?: string; tiktok?: string; youtube?: string;
   };
   announcement?: { enabled?: boolean; textKa?: string; textEn?: string; link?: string };
+  aiChat?: { enabled?: boolean; greetingKa?: string; greetingEn?: string; systemPrompt?: string };
   pages?: {
     aboutKa?: string; aboutEn?: string;
     deliveryKa?: string; deliveryEn?: string;

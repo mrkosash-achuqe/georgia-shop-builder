@@ -37,6 +37,16 @@ serve(async (req) => {
       .map((p) => `- ${p.name_ka} / ${p.name_en} | ${p.category} | ${p.material ?? ""} | ${p.price} GEL`)
       .join("\n");
 
+    const { data: settingsRow } = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
+    const ai = ((settingsRow?.data as Record<string, unknown> | null)?.aiChat ?? {}) as { enabled?: boolean; systemPrompt?: string };
+    if (ai.enabled === false) {
+      return new Response(JSON.stringify({ reply: "", disabled: true }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const customPrompt = String(ai.systemPrompt ?? "").trim().slice(0, 4000);
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -47,6 +57,7 @@ Rules:
 - Order tracking is available on the /track page with the order number and email/phone.
 - When suggesting products, only use ones from the catalog below, and include their price.
 - Never invent products, prices, or policies. If you don't know, say so politely.
+${customPrompt ? `\nStore owner's instructions (follow these; they take priority over the defaults above):\n${customPrompt}\n` : ""}
 Available products:
 ${catalog}`;
 
