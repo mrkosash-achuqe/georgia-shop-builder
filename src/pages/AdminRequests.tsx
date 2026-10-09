@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AdminExtraNav from "@/components/AdminNav";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -107,21 +108,7 @@ const AdminRequests = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-6 sm:py-8">
-        <div className="flex gap-2 mb-6 border-b border-border overflow-x-auto">
-          <Link to="/admin/dashboard" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><BarChart3 className="h-4 w-4" /> დაშბორდი</Link>
-          <Link to="/admin" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><Package className="h-4 w-4" /> პროდუქტები</Link>
-          <Link to="/admin/users" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><UsersIcon className="h-4 w-4" /> მომხმარებლები</Link>
-          <Link to="/admin/orders" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><ShoppingBag className="h-4 w-4" /> შეკვეთები</Link>
-          <span className="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary flex items-center gap-2 whitespace-nowrap -mb-px"><RotateCcw className="h-4 w-4" /> მოთხოვნები{pendingCount ? ` (${pendingCount})` : ""}</span>
-          <Link to="/admin/shipping" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><Truck className="h-4 w-4" /> მიწოდება</Link>
-          <Link to="/admin/promo" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><Tag className="h-4 w-4" /> პრომო</Link>
-          <Link to="/admin/reviews" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><MessageSquare className="h-4 w-4" /> მიმოხილვები</Link>
-          <Link to="/admin/blog" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><FileText className="h-4 w-4" /> ბლოგი</Link>
-          <Link to="/admin/inventory" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><Boxes className="h-4 w-4" /> მარაგი</Link>
-          <Link to="/admin/questions" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><HelpCircle className="h-4 w-4" /> კითხვები</Link>
-          <Link to="/admin/categories" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><Tags className="h-4 w-4" /> კატეგორიები</Link>
-          <Link to="/admin/settings" className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 whitespace-nowrap"><Palette className="h-4 w-4" /> დიზაინი</Link>
-        </div>
+        <AdminExtraNav />
 
         <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
           <h1 className="text-2xl font-bold">გაუქმება / დაბრუნება</h1>
