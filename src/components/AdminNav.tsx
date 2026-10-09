@@ -80,6 +80,7 @@ const AdminExtraNav = () => {
                   <Link
                     key={to}
                     to={to}
+                    ref={active ? (el) => el?.scrollIntoView({ block: "nearest", inline: "center" }) : undefined}
                     className={`relative flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                     }`}
