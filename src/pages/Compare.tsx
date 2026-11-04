@@ -126,7 +126,7 @@ const Compare = () => {
                             <img
                               src={p.img}
                               alt={name}
-                              className="w-28 h-28 object-cover rounded-xl border border-border mx-auto"
+                              className="w-28 h-28 object-contain bg-muted rounded-xl border border-border mx-auto"
                               loading="lazy"
                             />
                             <p className="text-sm font-medium text-foreground mt-2 text-center line-clamp-2">{name}</p>

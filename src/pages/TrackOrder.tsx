@@ -163,7 +163,7 @@ const TrackOrder = () => {
               {items.map((it, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 sm:p-4">
                   {it.product_image ? (
-                    <img src={it.product_image} alt={it.product_name} loading="lazy" className="w-12 h-12 rounded-lg object-cover shrink-0" />
+                    <img src={it.product_image} alt={it.product_name} loading="lazy" className="w-12 h-12 rounded-lg object-contain bg-muted shrink-0" />
                   ) : (
                     <div className="w-12 h-12 rounded-lg bg-secondary shrink-0" />
                   )}
