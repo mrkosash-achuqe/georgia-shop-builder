@@ -1,5 +1,5 @@
 # Tasks
 - [x] Expand administrator chatbot settings and save public/private values safely.
 - [x] Apply appearance, starter questions and private knowledge to the storefront assistant.
-- [x] Product card photos: full image visible (object-fit: contain), fixed-height image frame so every card matches.
+- [x] Product card photos: reverted to full-bleed object-fit: cover in square frames (user asked for the enlarged look back).
 - [ ] Verify settings controls, persistence, visibility and a live AI response.
