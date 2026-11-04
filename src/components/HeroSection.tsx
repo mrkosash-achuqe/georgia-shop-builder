@@ -18,7 +18,7 @@ const HeroSection = () => {
         <img
           src={b.imageUrl || heroBanner}
           alt={title}
-          className="w-full h-full object-contain bg-muted"
+          className="w-full h-full object-cover"
           width={1024}
           height={512}
           loading="eager"

@@ -47,7 +47,7 @@ const CategoriesSidebar = ({ selectedCategory, onSelectCategory }: CategoriesSid
             <li key={c.id}>
               <button onClick={() => onSelectCategory?.(c.slug)} className={itemClass(selectedCategory === c.slug)}>
                 {c.image_url ? (
-                  <img src={c.image_url} alt="" className="h-6 w-6 rounded object-contain bg-muted shrink-0" loading="lazy" />
+                  <img src={c.image_url} alt="" className="h-6 w-6 rounded object-cover shrink-0" loading="lazy" />
                 ) : (
                   <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
                 )}
