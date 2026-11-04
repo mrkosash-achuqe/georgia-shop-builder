@@ -84,7 +84,7 @@ const Wishlist = () => {
                     <img
                       src={product.img}
                       alt={name}
-                      className="w-20 h-20 rounded-lg object-cover border border-border"
+                      className="w-20 h-20 rounded-lg object-contain bg-muted border border-border"
                     />
                   </Link>
                   <div className="flex-1 min-w-0">

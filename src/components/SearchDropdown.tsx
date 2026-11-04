@@ -177,7 +177,7 @@ const SearchDropdown = () => {
                 <img
                   src={r.images?.[0] || "/placeholder.svg"}
                   alt={name(r)}
-                  className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
+                  className="w-12 h-12 rounded-lg object-contain bg-muted border border-border shrink-0"
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{name(r)}</p>
