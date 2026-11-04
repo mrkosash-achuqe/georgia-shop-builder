@@ -26,15 +26,13 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
       to={`/product/${product.id}`}
       className="group bg-card rounded-xl border border-border overflow-hidden hover:shadow-lg transition-shadow block"
     >
-      <div className="relative aspect-square overflow-hidden">
+      <div className="relative h-64 md:h-72 overflow-hidden bg-muted flex items-center justify-center">
         <img
           src={product.img}
           alt={name}
-          className="w-full h-full object-contain bg-muted group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
           decoding="async"
-          width={512}
-          height={512}
         />
         <button
           onClick={(e) => {
