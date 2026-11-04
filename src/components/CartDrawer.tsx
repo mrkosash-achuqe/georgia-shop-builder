@@ -76,7 +76,7 @@ const CartDrawer = () => {
                       <img
                         src={item.product.img}
                         alt={name}
-                        className="w-full h-full object-contain bg-muted"
+                        className="w-full h-full object-cover"
                       />
                     </Link>
                     <div className="flex-1 min-w-0">

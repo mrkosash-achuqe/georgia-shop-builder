@@ -113,7 +113,7 @@ const Blog = () => {
           {posts.map((post) => (
             <article key={post.id} className="bg-card rounded-xl border border-border overflow-hidden group flex flex-col">
               <div className="aspect-video overflow-hidden relative bg-secondary flex items-center justify-center">
-                <img src={post.img} alt={lang === "ka" ? post.titleKa : post.titleEn} className={post.img && post.img !== "/placeholder.svg" ? "w-full h-full object-contain bg-muted" : "max-w-[60%] max-h-[60%] object-contain opacity-30"} />
+                <img src={post.img} alt={lang === "ka" ? post.titleKa : post.titleEn} className={post.img && post.img !== "/placeholder.svg" ? "w-full h-full object-cover" : "max-w-[60%] max-h-[60%] object-contain opacity-30"} />
                 <Badge className="absolute top-3 left-3" variant="secondary">
                   {lang === "ka" ? post.categoryKa : post.categoryEn}
                 </Badge>

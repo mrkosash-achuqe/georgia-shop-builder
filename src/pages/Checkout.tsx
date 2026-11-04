@@ -332,7 +332,7 @@ const Checkout = () => {
                     const name = lang === "ka" ? item.product.nameKa : item.product.nameEn;
                     return (
                       <div key={item.product.id} className="flex gap-3">
-                        <img src={item.product.img} alt={name} className="w-14 h-14 rounded-lg object-contain bg-muted shrink-0" />
+                        <img src={item.product.img} alt={name} className="w-14 h-14 rounded-lg object-cover shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground line-clamp-1">{name}</p>
                           <p className="text-xs text-muted-foreground">{item.quantity} × {item.product.price} {t.products.currency}</p>

@@ -268,7 +268,7 @@ const ProductReviews = ({ productId }: Props) => {
                 <div className="flex gap-2 mt-2 flex-wrap">
                   {photos.map((f, i) => (
                     <div key={i} className="relative">
-                      <img src={URL.createObjectURL(f)} alt="" className="w-16 h-16 rounded-lg object-contain bg-muted border border-border" />
+                      <img src={URL.createObjectURL(f)} alt="" className="w-16 h-16 rounded-lg object-cover border border-border" />
                       <button
                         onClick={() => setPhotos((p) => p.filter((_, j) => j !== i))}
                         className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground rounded-full p-0.5"
@@ -313,7 +313,7 @@ const ProductReviews = ({ productId }: Props) => {
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0 overflow-hidden">
                   {r.author_avatar ? (
-                    <img src={r.author_avatar} alt="" className="w-full h-full object-contain bg-muted" />
+                    <img src={r.author_avatar} alt="" className="w-full h-full object-cover" />
                   ) : (
                     (r.author_name?.[0] || "U").toUpperCase()
                   )}
@@ -342,7 +342,7 @@ const ProductReviews = ({ productId }: Props) => {
                     <div className="flex gap-2 mt-3 flex-wrap">
                       {r.photo_urls.map((u, i) => (
                         <a key={i} href={u} target="_blank" rel="noreferrer">
-                          <img src={u} alt="" className="w-20 h-20 rounded-lg object-contain bg-muted border border-border hover:opacity-80" />
+                          <img src={u} alt="" className="w-20 h-20 rounded-lg object-cover border border-border hover:opacity-80" />
                         </a>
                       ))}
                     </div>

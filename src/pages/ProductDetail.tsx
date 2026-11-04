@@ -240,7 +240,7 @@ const ProductDetailContent = () => {
                 className="relative w-full block group"
                 aria-label={tp.zoomHint}
               >
-                <img src={product.images[selectedImage]} alt={name} className="w-full aspect-square object-contain bg-muted" width={600} height={600} />
+                <img src={product.images[selectedImage]} alt={name} className="w-full aspect-square object-cover" width={600} height={600} />
                 <span className="absolute bottom-2 right-2 flex items-center gap-1.5 bg-background/90 text-foreground text-xs px-2.5 py-1.5 rounded-md border border-border opacity-0 group-hover:opacity-100 transition-opacity">
                   <ZoomIn className="h-3.5 w-3.5" /> {tp.zoomHint}
                 </span>
@@ -250,7 +250,7 @@ const ProductDetailContent = () => {
             <div className="flex gap-3">
               {product.images.map((img, i) => (
                 <button key={i} onClick={() => setSelectedImage(i)} className={`w-20 h-20 rounded-xl border-2 overflow-hidden transition-all ${selectedImage === i ? "border-primary shadow-md" : "border-border hover:border-primary/50"}`}>
-                  <img src={img} alt={`${name} ${i + 1}`} className="w-full h-full object-contain bg-muted" />
+                  <img src={img} alt={`${name} ${i + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
               {videoId && (
@@ -447,7 +447,7 @@ const ProductDetailContent = () => {
                   onClick={() => { setSelectedImage(i); setZoomLevel(1); }}
                   className={`w-16 h-16 rounded-lg border-2 overflow-hidden shrink-0 transition-all ${selectedImage === i ? "border-primary" : "border-border hover:border-primary/50"}`}
                 >
-                  <img src={img} alt={`${name} ${i + 1}`} className="w-full h-full object-contain bg-muted" />
+                  <img src={img} alt={`${name} ${i + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
