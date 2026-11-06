@@ -1,3 +1,4 @@
+import { useFeature } from "@/context/SiteSettingsContext";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, MapPin, CreditCard, Truck, CheckCircle2, ShieldCheck, Tag, X, Gift } from "lucide-react";
@@ -33,6 +34,7 @@ type AppliedPromo = {
 
 const Checkout = () => {
   const { lang, t } = useLanguage();
+  const fLoyalty = useFeature("loyalty");
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -353,7 +355,7 @@ const Checkout = () => {
                   )}
                   <div className="flex justify-between text-foreground font-bold text-lg pt-2 border-t border-border"><span>{ct.total}</span><span className="text-primary">{grandTotal} {t.products.currency}</span></div>
                 </div>
-                {user && loyaltyBalance > 0 && (
+                {fLoyalty && user && loyaltyBalance > 0 && (
                   <label className="mt-4 flex items-start gap-3 rounded-lg border border-border bg-secondary/30 p-3 cursor-pointer">
                     <input type="checkbox" checked={usePoints} onChange={(e) => setUsePoints(e.target.checked)}
                       className="mt-0.5 h-4 w-4 accent-primary" />

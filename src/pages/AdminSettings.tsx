@@ -4,10 +4,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdminExtraNav from "@/components/AdminNav";
 import AdminAiSettings from "@/components/AdminAiSettings";
+import AdminTextsEditor from "@/components/AdminTextsEditor";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { DEFAULT_COLORS, FONT_PRESETS, SiteSettings, useSiteSettings } from "@/context/SiteSettingsContext";
+import { DEFAULT_COLORS, FEATURES, FeatureKey, FONT_PRESETS, SiteSettings, useSiteSettings } from "@/context/SiteSettingsContext";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadImage } from "@/lib/uploadImage";
 import { toast } from "sonner";
@@ -76,7 +78,7 @@ const AdminSettings = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-6 flex-1 max-w-4xl">
+      <main className="container mx-auto px-4 py-6 flex-1 max-w-5xl">
         <AdminExtraNav />
         <div className="flex items-center justify-between gap-3 mb-4">
           <h1 className="text-2xl font-bold text-foreground">დიზაინი და პარამეტრები</h1>
@@ -84,13 +86,15 @@ const AdminSettings = () => {
         </div>
 
         <Tabs defaultValue="design">
-          <TabsList className="flex flex-wrap h-auto">
+          <TabsList className="flex flex-wrap h-auto justify-start gap-1 w-full">
             <TabsTrigger value="design">დიზაინი</TabsTrigger>
             <TabsTrigger value="banner">ბანერი</TabsTrigger>
             <TabsTrigger value="contact">კონტაქტი</TabsTrigger>
             <TabsTrigger value="announce">განცხადება</TabsTrigger>
             <TabsTrigger value="pages">გვერდები</TabsTrigger>
             <TabsTrigger value="ai">AI კონსულტანტი</TabsTrigger>
+            <TabsTrigger value="texts">ყველა ტექსტი</TabsTrigger>
+            <TabsTrigger value="features">ფუნქციები</TabsTrigger>
           </TabsList>
 
           <TabsContent value="design" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-5">
@@ -186,6 +190,19 @@ const AdminSettings = () => {
 
           <TabsContent value="ai" className="data-[state=inactive]:hidden">
             {botError ? <p role="alert" className="text-destructive">{botError}</p> : botLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <AdminAiSettings value={s.aiChat || {}} onChange={v => set("aiChat", v)} />}
+          </TabsContent>
+          <TabsContent value="texts" className="data-[state=inactive]:hidden">
+            <AdminTextsEditor value={s.texts || {}} onChange={(v) => set("texts", v)} />
+          </TabsContent>
+
+          <TabsContent value="features" className="data-[state=inactive]:hidden bg-card border border-border rounded-xl p-4 space-y-1">
+            <p className="text-xs text-muted-foreground mb-3">გამორთეთ ის, რაც საიტზე არ გინდათ. მიწოდების ფასები და უფასო ზღვარი იცვლება მენიუში „მიწოდება“.</p>
+            {(Object.keys(FEATURES) as FeatureKey[]).map((k) => (
+              <label key={k} className="flex items-center justify-between gap-3 py-2.5 border-b border-border last:border-0 text-sm cursor-pointer">
+                <span>{FEATURES[k]}</span>
+                <Switch checked={s.features?.[k] !== false} onCheckedChange={(v) => set("features", { ...(s.features || {}), [k]: v })} />
+              </label>
+            ))}
           </TabsContent>
         </Tabs>
       </main>

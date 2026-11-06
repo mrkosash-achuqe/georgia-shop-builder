@@ -1,3 +1,4 @@
+import { useFeature } from "@/context/SiteSettingsContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
@@ -61,6 +62,8 @@ const PageFallback = () => (
   </div>
 );
 
+const ConsentGate = () => (useFeature("consentBanner") ? <ConsentBanner consentKey="cookies" learnMoreHref="/returns" /> : null);
+
 const CartPersistence = () => {
   useAbandonedCart();
   return null;
@@ -81,7 +84,7 @@ const App = () => (
               <AuthModal />
               <AnalyticsTracker />
               <CartPersistence />
-              <ConsentBanner consentKey="cookies" learnMoreHref="/returns" />
+              <ConsentGate />
               <SupportChat />
               <Suspense fallback={<PageFallback />}>
               <Routes>

@@ -1,3 +1,4 @@
+import { useFeature } from "@/context/SiteSettingsContext";
 import { Heart, Star, Zap, Scale } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Product } from "@/data/products";
@@ -18,6 +19,7 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { toggleCompare, isInCompare, isFull } = useCompare();
   const { t } = useLanguage();
+  const fWish = useFeature("wishlist"), fCompare = useFeature("compare");
   const navigate = useNavigate();
   const wishlisted = isInWishlist(product.id);
 
@@ -36,7 +38,7 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
           width={512}
           height={512}
         />
-        <button
+        {fWish && <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -47,8 +49,8 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
           }`}
         >
           <Heart className={`h-4 w-4 ${wishlisted ? "fill-primary" : ""}`} />
-        </button>
-        <button
+        </button>}
+        {fCompare && <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
           disabled={!isInCompare(product.id) && isFull}
           aria-label={lang === "ka" ? "შედარება" : "Compare"}
@@ -57,7 +59,7 @@ const ProductCard = ({ product, lang, currency }: ProductCardProps) => {
           }`}
         >
           <Scale className="h-4 w-4" />
-        </button>
+        </button>}
         {!product.inStock && (
           <div className="absolute top-3 left-3 bg-destructive text-destructive-foreground text-xs font-medium px-2 py-1 rounded-md">
             {lang === "ka" ? "არ არის მარაგში" : "Out of Stock"}

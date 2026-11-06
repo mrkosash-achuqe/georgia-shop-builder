@@ -1,3 +1,4 @@
+import { useFeature } from "@/context/SiteSettingsContext";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
@@ -11,6 +12,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 
 const Index = () => {
   const { lang } = useLanguage();
+  const fCats = useFeature("categoriesSidebar"), fHero = useFeature("hero");
   const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,15 +45,15 @@ const Index = () => {
       <Header />
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row gap-6">
-          <div className="md:w-64 shrink-0">
+          {fCats && <div className="md:w-64 shrink-0">
             <CategoriesSidebar
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}
             />
-          </div>
-          <div className="flex-1">
+          </div>}
+          {fHero && <div className="flex-1">
             <HeroSection />
-          </div>
+          </div>}
         </div>
       </div>
       <div id="products">

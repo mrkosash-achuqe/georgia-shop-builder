@@ -1,3 +1,4 @@
+import { useFeature } from "@/context/SiteSettingsContext";
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ChevronLeft, Heart, Star, ShoppingCart, Check, X, Truck, RotateCcw, Shield, Loader2, ZoomIn, Plus, Minus, Scale } from "lucide-react";
@@ -55,6 +56,7 @@ type ProductSeo = {
 const ProductDetailContent = () => {
   const { id } = useParams<{ id: string }>();
   const { lang, t } = useLanguage();
+  const fShare = useFeature("share"), fAi = useFeature("aiRecommendations"), fReviews = useFeature("reviews"), fQuestions = useFeature("questions"), fRecent = useFeature("recentlyViewed");
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { toggleCompare, isInCompare, isFull } = useCompare();
@@ -287,7 +289,7 @@ const ProductDetailContent = () => {
             </div>
             <p className="text-muted-foreground leading-relaxed mb-4">{desc}</p>
             <div className="mb-6">
-              <ShareButtons url={canonical} title={name} />
+              {fShare && <ShareButtons url={canonical} title={name} />}
             </div>
             {product.personalizationEnabled && (
             <div className="bg-card rounded-xl border border-border mb-6 overflow-hidden">
@@ -403,13 +405,13 @@ const ProductDetailContent = () => {
           </section>
         )}
 
-        <AiRecommendations productId={product.id} />
+        {fAi && <AiRecommendations productId={product.id} />}
 
-        <ProductReviews productId={product.id} />
+        {fReviews && <ProductReviews productId={product.id} />}
 
-        <ProductQuestions productId={product.id} />
+        {fQuestions && <ProductQuestions productId={product.id} />}
 
-        <RecentlyViewed excludeId={product.id} />
+        {fRecent && <RecentlyViewed excludeId={product.id} />}
       </main>
       <div className="mt-auto"><Footer /></div>
       <CartDrawer />

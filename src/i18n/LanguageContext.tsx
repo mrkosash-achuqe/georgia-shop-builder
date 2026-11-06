@@ -1,4 +1,7 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSiteSettings } from "@/context/siteSettingsQuery";
+import { applyTextOverrides } from "./textOverrides";
 import { Language, translations } from "./translations";
 
 type LanguageContextType = {
@@ -23,7 +26,9 @@ const detectInitial = (): Language => {
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLangState] = useState<Language>(detectInitial);
-  const t = translations[lang];
+  const { data: settings } = useQuery({ queryKey: ["site_settings"], queryFn: fetchSiteSettings, refetchInterval: 30000 });
+  const overrides = (settings as { texts?: Record<string, Record<string, string>> } | undefined)?.texts?.[lang];
+  const t = useMemo(() => applyTextOverrides(translations[lang], overrides), [lang, overrides]) as (typeof translations)[Language];
 
   const setLang = (next: Language) => {
     setLangState(next);

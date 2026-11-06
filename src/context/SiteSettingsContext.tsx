@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchSiteSettings } from "./siteSettingsQuery";
 
 export type AiChatSettings = {
   enabled?: boolean; assistantName?: string; titleKa?: string; titleEn?: string;
@@ -12,6 +13,21 @@ export type AiChatSettings = {
   faqs?: { question: string; answer: string }[];
   suggestions?: { ka: string; en: string }[];
 };
+
+export const FEATURES = {
+  hero: "მთავარი ბანერი",
+  categoriesSidebar: "კატეგორიების მენიუ მთავარზე",
+  wishlist: "სურვილების სია (გული)",
+  compare: "პროდუქტების შედარება",
+  reviews: "შეფასებები / რეცენზიები",
+  questions: "კითხვა-პასუხი პროდუქტზე",
+  aiRecommendations: "AI რეკომენდაციები",
+  recentlyViewed: "ბოლოს ნანახი პროდუქტები",
+  share: "გაზიარების ღილაკები",
+  loyalty: "ქულების გამოყენება შეკვეთისას",
+  consentBanner: "Cookie შეტყობინება",
+} as const;
+export type FeatureKey = keyof typeof FEATURES;
 
 export type SiteSettings = {
   storeNameKa?: string;
@@ -33,6 +49,10 @@ export type SiteSettings = {
   };
   announcement?: { enabled?: boolean; textKa?: string; textEn?: string; link?: string };
   aiChat?: AiChatSettings;
+  /** Admin edits of any site text, keyed by translation path, e.g. "delivery.freeTitle". */
+  texts?: { ka?: Record<string, string>; en?: Record<string, string> };
+  /** Feature switches; missing = on. */
+  features?: Partial<Record<FeatureKey, boolean>>;
   pages?: {
     aboutKa?: string; aboutEn?: string;
     deliveryKa?: string; deliveryEn?: string;
@@ -88,11 +108,7 @@ export const SiteSettingsProvider = ({ children }: { children: ReactNode }) => {
   const qc = useQueryClient();
   const settingsQ = useQuery({
     queryKey: ["site_settings"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
-      if (error) throw error;
-      return (data?.data || {}) as SiteSettings;
-    },
+    queryFn: fetchSiteSettings as () => Promise<SiteSettings>,
     refetchInterval: 30000,
   });
   const catsQ = useQuery({
@@ -169,3 +185,5 @@ export const youtubeId = (url?: string | null): string | null => {
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([\w-]{11})/);
   return m ? m[1] : /^[\w-]{11}$/.test(url.trim()) ? url.trim() : null;
 };
+
+export const useFeature = (key: FeatureKey) => useSiteSettings().settings.features?.[key] !== false;

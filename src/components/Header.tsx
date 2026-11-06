@@ -1,3 +1,4 @@
+import { useFeature } from "@/context/SiteSettingsContext";
 import { useState, useEffect } from "react";
 import { Globe, User, ShoppingCart, Menu, X, ChevronRight, LogOut, Heart, Shield } from "lucide-react";
 import SearchDropdown from "@/components/SearchDropdown";
@@ -12,6 +13,7 @@ import { useSiteSettings, useActiveCategories } from "@/context/SiteSettingsCont
 
 const Header = () => {
   const { lang, setLang, t } = useLanguage();
+  const fWish = useFeature("wishlist");
   const { totalItems, setIsOpen } = useCart();
   const { user, profile, signOut, setAuthModalOpen } = useAuth();
   const { items: wishlistItems } = useWishlist();
@@ -83,7 +85,7 @@ const Header = () => {
               <span className="hidden sm:inline">{lang === "ka" ? "EN" : "ქარ"}</span>
             </button>
 
-            <Link
+            {fWish && <Link
               to="/wishlist"
               className="relative text-muted-foreground hover:text-foreground transition-colors hidden sm:flex"
               title={t.nav.wishlist}
@@ -94,7 +96,7 @@ const Header = () => {
                   {wishlistItems.length}
                 </span>
               )}
-            </Link>
+            </Link>}
 
             <button
               onClick={() => setIsOpen(true)}
@@ -259,7 +261,7 @@ const Header = () => {
               )}
 
               {/* Wishlist link */}
-              <Link
+              {fWish && <Link
                 to="/wishlist"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center justify-between px-3 py-3 rounded-lg text-foreground hover:bg-secondary hover:text-primary transition-colors text-sm font-medium mb-1"
@@ -274,7 +276,7 @@ const Header = () => {
                   )}
                 </span>
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
+              </Link>}
 
               <ul className="space-y-1">
                 {navLinks.map((link) => (
