@@ -7,8 +7,10 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { printInvoice } from "@/lib/invoice";
+import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { Package, Users as UsersIcon, Truck, ShoppingBag, ArrowLeft,
-  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText, Boxes, Printer, RotateCcw, HelpCircle, Tags, Palette } from "lucide-react";
+  ChevronDown, Search, XCircle, AlertTriangle, Eye, X, BarChart3 , MessageSquare, FileText, Boxes, Printer, RotateCcw, HelpCircle, Tags, Palette, Trash2, Loader2 } from "lucide-react";
 
 type Order = {
   id: string;
@@ -57,6 +59,8 @@ const AdminOrders = () => {
   const [selected, setSelected] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [updating, setUpdating] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -95,6 +99,24 @@ const AdminOrders = () => {
       setOrders((prev) => prev.map((o) => (o.id === selected.id ? { ...o, status: newStatus } : o)));
     }
     setUpdating(false);
+  };
+
+  const deleteOrder = async () => {
+    if (!selected || deleting || updating) return;
+    setDeleting(true);
+    try {
+      const { data, error } = await supabase.from("orders").delete().eq("id", selected.id).select("id").single();
+      if (error || !data) throw error || new Error("შეკვეთა ვერ წაიშალა");
+      setOrders((prev) => prev.filter((order) => order.id !== data.id));
+      setConfirmDelete(false);
+      setSelected(null);
+      setItems([]);
+      toast.success("შეკვეთა წაიშალა");
+    } catch {
+      toast.error("შეკვეთის წაშლა ვერ მოხერხდა. სცადეთ ხელახლა.");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (authLoading || checking) {
@@ -203,7 +225,7 @@ const AdminOrders = () => {
 
       {/* Detail modal */}
       {selected && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setSelected(null)}>
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => { if (!deleting && !confirmDelete) setSelected(null); }}>
           <div className="bg-card w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-border" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 bg-card border-b border-border p-4 flex items-center justify-between">
               <div>
@@ -217,7 +239,7 @@ const AdminOrders = () => {
                 >
                   <Printer className="h-4 w-4" /> ინვოისი
                 </button>
-                <button onClick={() => setSelected(null)} className="p-2 hover:bg-secondary rounded-lg"><X className="h-4 w-4" /></button>
+                <button disabled={deleting} onClick={() => setSelected(null)} className="p-2 hover:bg-secondary rounded-lg"><X className="h-4 w-4" /></button>
               </div>
             </div>
             <div className="p-4 space-y-4">
@@ -226,7 +248,7 @@ const AdminOrders = () => {
                 <label className="text-xs text-muted-foreground mb-2 block">სტატუსი</label>
                 <div className="flex gap-2 flex-wrap">
                   {STATUSES.map((s) => (
-                    <button key={s.id} onClick={() => updateStatus(s.id)} disabled={updating} className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${selected.status === s.id ? s.color + " font-semibold" : "border-border text-muted-foreground hover:bg-secondary"}`}>{s.label}</button>
+                    <button key={s.id} onClick={() => updateStatus(s.id)} disabled={updating || deleting} className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${selected.status === s.id ? s.color + " font-semibold" : "border-border text-muted-foreground hover:bg-secondary"}`}>{s.label}</button>
                   ))}
                 </div>
               </div>
@@ -261,10 +283,25 @@ const AdminOrders = () => {
                 <div className="flex justify-between text-muted-foreground"><span>მიწოდება</span><span>{Number(selected.shipping_fee).toFixed(0)} ₾</span></div>
                 <div className="flex justify-between font-bold text-lg pt-2 border-t border-border"><span>სულ</span><span className="text-primary">{Number(selected.total).toFixed(0)} ₾</span></div>
               </div>
+              <div className="border-t border-border pt-4 flex justify-end">
+                <Button variant="destructive" disabled={updating || deleting} onClick={() => setConfirmDelete(true)}><Trash2 /> შეკვეთის წაშლა</Button>
+              </div>
             </div>
           </div>
         </div>
       )}
+      <AlertDialog open={confirmDelete && !!selected} onOpenChange={(open) => { if (!deleting) setConfirmDelete(open); }}>
+        <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle>წავშალოთ შეკვეთა #{selected?.order_number}?</AlertDialogTitle>
+            <AlertDialogDescription>შეკვეთა, მისი პროდუქტების სია და დაბრუნების მოთხოვნები სამუდამოდ წაიშლება. ეს მოქმედება ვერ გაუქმდება. მომხმარებლის ანგარიში, ბონუს ქულების ისტორია და პროდუქტის მარაგი უცვლელი დარჩება.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>დატოვება</AlertDialogCancel>
+            <Button variant="destructive" disabled={deleting || updating} onClick={deleteOrder}>{deleting ? <Loader2 className="animate-spin" /> : <Trash2 />} სამუდამოდ წაშლა</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <Footer />
     </div>
   );

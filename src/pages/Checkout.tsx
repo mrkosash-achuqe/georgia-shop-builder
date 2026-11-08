@@ -32,6 +32,19 @@ type AppliedPromo = {
   discount_value: number;
 };
 
+const InputField = ({ label, field, value, error, onChange, type = "text", placeholder = "", colSpan = false }: {
+  label: string; field: string; value: string; error?: string; onChange: (field: string, value: string) => void;
+  type?: string; placeholder?: string; colSpan?: boolean;
+}) => (
+  <div className={colSpan ? "sm:col-span-2" : ""}>
+    <label htmlFor={`checkout-${field}`} className="block text-sm font-medium text-foreground mb-1.5">{label}</label>
+    <input id={`checkout-${field}`} name={field} type={type} value={value} onChange={(e) => onChange(field, e.target.value)} placeholder={placeholder}
+      aria-invalid={!!error} aria-describedby={error ? `checkout-${field}-error` : undefined}
+      className={`w-full rounded-lg border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors ${error ? "border-destructive" : "border-border"}`} />
+    {error && <p id={`checkout-${field}-error`} className="text-xs text-destructive mt-1">{error}</p>}
+  </div>
+);
+
 const Checkout = () => {
   const { lang, t } = useLanguage();
   const fLoyalty = useFeature("loyalty");
@@ -250,15 +263,6 @@ const Checkout = () => {
     );
   }
 
-  const InputField = ({ label, field, type = "text", placeholder = "", colSpan = false }: { label: string; field: string; type?: string; placeholder?: string; colSpan?: boolean }) => (
-    <div className={colSpan ? "sm:col-span-2" : ""}>
-      <label className="block text-sm font-medium text-foreground mb-1.5">{label}</label>
-      <input type={type} value={(form as Record<string, string>)[field] || ""} onChange={(e) => updateField(field, e.target.value)} placeholder={placeholder}
-        className={`w-full rounded-lg border px-4 py-2.5 text-sm text-foreground bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors ${errors[field] ? "border-destructive" : "border-border"}`} />
-      {errors[field] && <p className="text-xs text-destructive mt-1">{errors[field]}</p>}
-    </div>
-  );
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEO
@@ -280,12 +284,12 @@ const Checkout = () => {
               <section className="bg-card rounded-xl border border-border p-5 md:p-6">
                 <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2"><MapPin className="h-5 w-5 text-primary" />{ct.deliveryAddress}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <InputField label={ct.firstName} field="firstName" />
-                  <InputField label={ct.lastName} field="lastName" />
-                  <InputField label={ct.phone} field="phone" type="tel" placeholder="+995 5XX XX XX XX" />
-                  <InputField label={ct.email} field="email" type="email" placeholder="email@example.com" />
-                  <InputField label={ct.city} field="city" />
-                  <InputField label={ct.address} field="address" colSpan />
+                  <InputField label={ct.firstName} field="firstName" value={form.firstName} error={errors.firstName} onChange={updateField} />
+                  <InputField label={ct.lastName} field="lastName" value={form.lastName} error={errors.lastName} onChange={updateField} />
+                  <InputField label={ct.phone} field="phone" value={form.phone} error={errors.phone} onChange={updateField} type="tel" placeholder="+995 5XX XX XX XX" />
+                  <InputField label={ct.email} field="email" value={form.email} error={errors.email} onChange={updateField} type="email" placeholder="email@example.com" />
+                  <InputField label={ct.city} field="city" value={form.city} error={errors.city} onChange={updateField} />
+                  <InputField label={ct.address} field="address" value={form.address} error={errors.address} onChange={updateField} colSpan />
                   {zones.length > 0 && (
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-foreground mb-1.5">{ct.delivery}</label>
