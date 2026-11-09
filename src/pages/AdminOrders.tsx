@@ -202,7 +202,8 @@ const AdminOrders = () => {
               {filtered.map((o) => {
                 const s = statusOf(o.status);
                 return (
-                  <button key={o.id} onClick={() => openOrder(o)} className="w-full p-4 hover:bg-secondary/50 transition-colors flex items-center gap-4 text-left">
+                  <div key={o.id} className="flex items-center hover:bg-secondary/50 transition-colors">
+                  <button onClick={() => openOrder(o)} className="flex-1 min-w-0 p-4 flex items-center gap-4 text-left">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <span className="font-semibold text-sm text-foreground">#{o.order_number}</span>
@@ -216,6 +217,15 @@ const AdminOrders = () => {
                       <Eye className="h-4 w-4 text-muted-foreground inline-block mt-1" />
                     </div>
                   </button>
+                  <button
+                    aria-label={`შეკვეთის წაშლა #${o.order_number}`}
+                    title="შეკვეთის წაშლა"
+                    onClick={() => { openOrder(o); setConfirmDelete(true); }}
+                    className="mr-3 p-2 rounded-lg text-destructive hover:bg-destructive/10 shrink-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                  </div>
                 );
               })}
             </div>

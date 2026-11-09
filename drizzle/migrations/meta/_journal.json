@@ -8,6 +8,13 @@
       "when": 1794143129410,
       "tag": "0000_admin_order_deletion",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794236307170,
+      "tag": "0001_fix_loyalty_unique_index",
+      "breakpoints": true
     }
   ]
 }

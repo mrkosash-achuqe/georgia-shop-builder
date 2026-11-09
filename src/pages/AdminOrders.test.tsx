@@ -27,7 +27,7 @@ describe("order deletion", () => {
       return { select: () => ({ single: () => Promise.resolve({ data: { id }, error: null }) }) };
     } });
     render(<MemoryRouter><AdminOrders /></MemoryRouter>);
-    fireEvent.click(await screen.findByRole("button", { name: /TEST-1/ }));
+    fireEvent.click(await screen.findByRole("button", { name: /^#TEST-1/ }));
     fireEvent.click(screen.getByRole("button", { name: "შეკვეთის წაშლა" }));
     expect(mocks.deleteOrder).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "დატოვება" }));
