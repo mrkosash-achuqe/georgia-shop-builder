@@ -38,14 +38,6 @@ export const registerPwa = () => {
     void unregisterMatching();
     return;
   }
-  // When a newly published version takes over, reload once so the page runs it.
-  const hadController = !!navigator.serviceWorker.controller;
-  let reloaded = false;
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (!hadController || reloaded) return;
-    reloaded = true;
-    window.location.reload();
-  });
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register(SW_PATH, { updateViaCache: "none" })
