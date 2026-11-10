@@ -13,7 +13,12 @@ Deno.serve(async req => {
     const body = await req.json();
     if (!Array.isArray(body.messages) || !body.messages.length || JSON.stringify(body.messages).length > 200000) return json("Invalid or oversized conversation", 400);
     // Only text and reasoning are accepted; clients cannot inject system instructions or tools.
-    if (body.messages.some((m: { role?: string; parts?: { type?: string }[] }) => !["user", "assistant"].includes(m.role || "") || !Array.isArray(m.parts) || m.parts.some(p => !["text", "reasoning"].includes(p.type || "")))) return json("Invalid message", 400);
+    // Earlier assistant turns carry extra parts (step markers, reasoning); keep only text so follow-up questions work.
+    body.messages = body.messages
+      .filter((m: { role?: string }) => ["user", "assistant"].includes(m.role || ""))
+      .map((m: { id?: string; role: string; parts?: { type?: string; text?: string }[] }) => ({ id: m.id || crypto.randomUUID(), role: m.role, parts: (Array.isArray(m.parts) ? m.parts : []).filter(p => p?.type === "text" && typeof p.text === "string" && p.text.length > 0).map(p => ({ type: "text", text: p.text })) }))
+      .filter((m: { parts: unknown[] }) => m.parts.length > 0);
+    if (!body.messages.length || body.messages[body.messages.length - 1].role !== "user") return json("Invalid message", 400);
     const messages = await validateUIMessages({ messages: body.messages });
     const db = createClient(Deno.env.get("SUPABASE_URL") || "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "");
     const [siteResult, botResult] = await Promise.all([db.from("site_settings").select("data").eq("id", 1).maybeSingle(), db.from("bot_settings").select("data,access_denied").eq("id", 1).maybeSingle()]);
