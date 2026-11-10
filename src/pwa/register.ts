@@ -38,9 +38,25 @@ export const registerPwa = () => {
     void unregisterMatching();
     return;
   }
+  // When a newly published version takes over, reload once so the page runs it.
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!hadController || reloaded) return;
+    reloaded = true;
+    window.location.reload();
+  });
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register(SW_PATH).catch(() => {
-      /* ignore registration errors */
-    });
+    navigator.serviceWorker
+      .register(SW_PATH, { updateViaCache: "none" })
+      .then((reg) => {
+        void reg.update();
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") void reg.update();
+        });
+      })
+      .catch(() => {
+        /* ignore registration errors */
+      });
   });
 };

@@ -40,9 +40,13 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/~oauth/, /^\/api/],
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff2}"],
+        // New versions must reach visitors right after publishing:
+        // activate the new worker immediately and never serve a stale index.html.
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+        navigateFallback: null,
+        globPatterns: ["**/*.{js,css,ico,png,svg,webp,woff2}"],
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.mode === "navigate",
