@@ -112,7 +112,7 @@ const AdminRequests = () => {
 
         <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
           <h1 className="text-2xl font-bold">გაუქმება / დაბრუნება</h1>
-          <div className="flex gap-1 bg-muted rounded-lg p-1">
+          <div className="flex flex-wrap gap-1 bg-muted rounded-lg p-1">
             {(["all", "pending", "approved", "rejected"] as const).map((f) => (
               <button key={f} onClick={() => setFilter(f)}
                 className={`px-3 py-1.5 text-sm rounded-md transition-colors ${filter === f ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>

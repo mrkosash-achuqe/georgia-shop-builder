@@ -93,7 +93,7 @@ const AdminCategories = () => {
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <AdminExtraNav />
-        <div className="flex items-center justify-between mb-4 gap-3">
+        <div className="flex flex-wrap items-center justify-between mb-4 gap-3">
           <h1 className="text-2xl font-bold text-foreground">კატეგორიები</h1>
           <Button onClick={() => setEditing({ is_active: true })}><Plus /> ახალი კატეგორია</Button>
         </div>
